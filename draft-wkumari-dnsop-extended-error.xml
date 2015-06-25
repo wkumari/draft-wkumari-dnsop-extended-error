@@ -3,7 +3,8 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-wkumari-dnsop-extended-error" ipr="trust200902">
+<rfc category="info" docName="draft-wkumari-dnsop-extended-error-0.1"
+     ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <?rfc toc="yes" ?>
@@ -21,7 +22,8 @@
   <front>
     <!-- WK: Set long title. -->
 
-    <title abbrev="draft-wkumari-dnsop-extended-error">TODO: Template.</title>
+    <title abbrev="draft-wkumari-dnsop-extended-error">Extended DNS
+    Errors</title>
 
     <author fullname="Warren Kumari" initials="W." surname="Kumari">
       <organization>Google</organization>
@@ -41,6 +43,56 @@
       </address>
     </author>
 
+    <author fullname="Evan Hunt" initials="E." surname="Hunt">
+      <organization>ISC</organization>
+
+      <address>
+        <postal>
+          <street>950 Charter St</street>
+
+          <city>Redwood City, CA</city>
+
+          <code>94063</code>
+
+          <country>US</country>
+        </postal>
+
+        <email>each@isc.org</email>
+      </address>
+    </author>
+
+    <author fullname="Roy Arends" initials="R." surname="Arends">
+      <organization>Nominet</organization>
+
+      <address>
+        <postal>
+          <street/>
+
+          <country>UK</country>
+        </postal>
+
+        <email>TBD</email>
+      </address>
+    </author>
+
+    <author fullname="Wes Hardaker" initials="W." surname="Hardaker">
+      <organization>Parsons</organization>
+
+      <address>
+        <postal>
+          <street>P.O. Box 382</street>
+
+          <city>Davis, VA</city>
+
+          <code>95617</code>
+
+          <country>US</country>
+        </postal>
+
+        <email>ietf@hardakers.net</email>
+      </address>
+    </author>
+
     <date day="30" month="January" year="2015"/>
 
     <area>template</area>
@@ -48,7 +100,10 @@
     <workgroup>template</workgroup>
 
     <abstract>
-      <t>This is my standard ID Template.</t>
+      <t>This document defines an extensible method to return additional
+      information about the cause of DNS errors. The primary expected use for
+      this is to extend SERVFAIL to provide more information about the cause
+      of DNSSEC failures, but it can be used to annotate many DNS errors.</t>
 
       <t>[ Ed note: Text inside square brackets ([]) is additional background
       information, answers to freqently asked questions, general musings, etc.
@@ -58,14 +113,39 @@
       https://github.com/wkumari/&lt;TEMPLATE&gt;. The most recent version of
       the document, open issues, etc should all be available here. The authors
       (gratefully) acept pull requests ]</t>
+
+      <t>[ Note: I always have a hard time with EDNS terminology - I'm saying
+      that Extended DNS Errors are carried as EDNS Options, but is this
+      actually correct terminology? They are optional TLVs in "options" in
+      RDATA in OPTion RR , but that's not readable. ]</t>
     </abstract>
   </front>
 
   <middle>
-    <section title="Introduction">
-      <t>This document is a template.</t>
+    <section title="Introduction and background">
+      <t>There are many reasons that a DNS query may fail, some of them
+      transient, some permenant; some can be resolved by querying another
+      server, some (e.g DNSSEC bogus) are best handled by stopping resolution.
+      The range of errors that DNS servers can return are very limited, and
+      are not very expressive. This means that applications and resolvers
+      often have to "guess" at what the issue is - e.g is a SERVFAIL because
+      there is a lame delegation, it is a DNSSEC vailidation issue, or is the
+      nameserver experiancing a bad day? </t>
 
-      <t/>
+      <t>A good exampe of issues caused by this is DNSSEC validation issues.
+      When a user attempts to resolver a DNSSEC bogus name (using a validating
+      resolver), their machine receives a SERVFAIL response. Unfortunaty,
+      SERVFAIL is used to signal may sorts of DNS errors, and so their machine
+      / stub resolver simply asks the next configured DNS resolver. This may
+      result in two outcomes, either the next resolver does not validate, in
+      which case the user resolves the name (defeating the protection provided
+      by DNSSEC), or it does, and they get a failure that is largely
+      incomprehensible to the average user.</t>
+
+      <t>This document specifies a mechanism to extend (or annotate) DNS
+      errors to provide additional information about the cause of the error.
+      This information can be used by the resolver to make a decision to retry
+      or not, or by users attempting to debug issues.</t>
 
       <t>Here is a reference to an "external" (non-RFC / draft) thing: (<xref
       target="IANA.AS_Numbers"/>). And this is a link to an ID:<xref
@@ -79,15 +159,149 @@
       </section>
     </section>
 
-    <section title="Another section.">
-      <t>Template.</t>
+    <section title="Extended Error EDNS0 option format">
+      <t>This draft uses an EDNS0 ([RFC2671]) option to include extended error
+      information in DNS messages. The option is structured as follows:</t>
+
+      <figure>
+        <artwork align="left"><![CDATA[
+                                             1   1   1   1   1   1
+     0   1   2   3   4   5   6   7   8   9   0   1   2   3   4   5  
+   +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+0: |                            OPTION-CODE                        |
+   +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+2: |                           OPTION-LENGTH                       |
+   +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+4: | R |                         FLAGS                             |
+   +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+6: |                             CODE                              |
+   +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+]]></artwork>
+      </figure>
 
       <t/>
+
+      <t><list style="symbols">
+          <t>OPTION-CODE, 2 octets (Defined in [RFC6891]), for ExtError is
+          TBD.</t>
+
+          <t>OPTION-LENGTH, 2 octets ((Defined in [RFC6891]) contains the
+          length of the payload (everything after OPTION-LENGTH) in
+          octets.</t>
+
+          <t>FLAGS, 2 octets.</t>
+
+          <t>CODE, 2 octets.</t>
+        </list></t>
+
+      <t>Currently the only defined flag is the R flag. <list style="hanging">
+          <t hangText="R - Retry">The R (or Retry) flag provides a hint to the
+          receiver if it should retry the query, possiably by querying another
+          server. If the R bit is set (1), the sender believes that retrying
+          the query may provide a sucessful answer, if the R bit is clear (0),
+          the sender believes that it should not ask another resolver. </t>
+        </list></t>
+
+      <t>The remaining bits in the flags field MUST be set to 0 by the sender
+      and MUST be ignored by the receiver. </t>
+
+      <t>Code: A code point into the IANA "Extended DNS Errors" registry.</t>
+    </section>
+
+    <section title="Use of the Extended DNS Error option">
+      <t>The Extended DNS Error is an EDNS option. It can be included in any
+      error response to a query that includes an EDNS option - SERVFAIL,
+      NXDOMAIN, REFUSED, etc. This document includes a set of initial
+      codepoints (and requests to the IANA to add them to the registry), but
+      is extensible to allow additional error codes to be defined. </t>
+
+      <t>The R (Retry) flag provides a hint (or suggestion) as to what the
+      receiver may want to do with this annotated error. The mechanism is
+      specifically designed to be extensible, and so implementations may
+      receive EDE codes that it does not understand. The R flag allows
+      implmentations to make a decision as to what to do if it receives a
+      response with an unknown code - retry or drop the query. </t>
+    </section>
+
+    <section title="Defined Extended DNS Errors">
+      <t>This document defines some initial EDE codes. The mechanism is
+      intended to be extensible, and additional codepoint will be registered
+      in the "Extended DNS Errors" registry.</t>
+
+      <section title="Extended DNS Error Code 1 - DNSSEC Bogus">
+        <t>The resolver attemped to perform DNSSEC validation, but validation
+        ended in a Bogus or Indeterminite state.</t>
+
+        <t>Usually attached to SERVFAIL messages. The R flag SHOUD be set.</t>
+      </section>
+
+      <section title="Extended DNS Error Code 2 - Lame">
+        <t>An authorative resolver that receives a query (with the RD bit
+        clear) for a domain for which it is not authorative SHOULD include
+        this EDE code in the REFUSED response. </t>
+
+        <t>Implementations SHOULD allow operators to define what to set the R
+        flag to in this case.</t>
+      </section>
+
+      <section title="Extended DNS Error Code 3 - Prohibited">
+        <t>An authorative or recursive resolver that receives a query from an
+        "unauthorized" client can annotate its REFUSED message with this code.
+        Examples of "unauthorized" clients are recursive queries from IP
+        addresses outside the network, blacklisted IP addresses, etc. </t>
+
+        <t>Implementations SHOULD allow operators to define what to set the R
+        flag to in this case.</t>
+      </section>
+
+      <section title="Extended DNS Error Code 4 - Ratelimited">
+        <t>A nameserver which is under excessive load (for example, because it
+        is experiancing a DoS) may annotate any error with this code. </t>
+
+        <t>It is RECOMMENDED that implementations set the R flag in this case,
+        but may allow operators to define what to set the R flag to.</t>
+      </section>
     </section>
 
     <section title="IANA Considerations">
-      <t>This document contains no IANA considerations.Template: Fill this
-      in!</t>
+      <t>[This section under constuction ]</t>
+
+      <t>This document defines a new EDNS(0) option, entitled "Extended DNS
+      Error", assigned a value of TBD1 from the "DNS EDNS0 Option Codes (OPT)"
+      registry [to be removed upon publication:
+      [http://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-11]</t>
+
+      <t><figure>
+          <artwork><![CDATA[Value  Name                 Status    Reference
+-----  ----------------     ------    ------------------
+ TBD   Extended DNS Error    TBD       [ This document ]]]></artwork>
+        </figure></t>
+
+      <t> Data Tag Name Length Meaning ---- ---- ------ ------- TBD1 FooBar N
+      FooBar server</t>
+
+      <t>The IANA is requested to create and maintain the "Extended DNS Error
+      codes" registry. The codepoint space is broken into 3 ranges:<list
+          style="symbols">
+          <t>1 - 16384: Specification required.</t>
+
+          <t>16385 - 65000: First Come First Served</t>
+
+          <t>65000 - 65534: Experimental / Private use</t>
+        </list>The codepoints 0, 65535 are reserved.</t>
+
+      <t>The </t>
+    </section>
+
+    <section title="Open questions">
+      <t><list style="hanging">
+          <t hangText="1">Can this be included in *any* response or only
+          responses to requests that included an EDNS option? Resolvers are
+          supposed to ignore additional. EDNS capable ones are supposed to
+          simply ignore unknonw options.</t>
+
+          <t hangText="2">Can this be applied to *any* respinse, or only error
+          responses?</t>
+        </list></t>
     </section>
 
     <section anchor="security" title="Security Considerations">

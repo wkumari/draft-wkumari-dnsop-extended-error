@@ -128,7 +128,7 @@
       server, some (e.g DNSSEC bogus) are best handled by stopping resolution.
       The range of errors that DNS servers can return are very limited, and
       are not very expressive. This means that applications and resolvers
-      often have to "guess" at what the issue is - e.g is a SERVFAIL because
+      often have to "guess" at what the issue is - e.g is a REFUSED because
       there is a lame delegation, it is a DNSSEC vailidation issue, or is the
       nameserver experiancing a bad day? </t>
 
@@ -229,21 +229,27 @@
 
       <section title="Extended DNS Error Code 1 - DNSSEC Bogus">
         <t>The resolver attemped to perform DNSSEC validation, but validation
-        ended in a Bogus or Indeterminite state.</t>
+        ended in the Bogus state. </t>
 
         <t>Usually attached to SERVFAIL messages. The R flag SHOUD be set.</t>
       </section>
 
-      <section title="Extended DNS Error Code 2 - Lame">
+      <section title="Extended DNS Error Code 2 - DNSSEC Indeterminite">
+        <t>The resolver attemped to perform DNSSEC validation, but validation
+        ended in the Indeterminite state.</t>
+
+        <t>Usually attached to SERVFAIL messages. The R flag SHOUD be set.</t>
+      </section>
+
+      <section title="Extended DNS Error Code 3 - Lame">
         <t>An authorative resolver that receives a query (with the RD bit
         clear) for a domain for which it is not authorative SHOULD include
         this EDE code in the REFUSED response. </t>
 
-        <t>Implementations SHOULD allow operators to define what to set the R
-        flag to in this case.</t>
+        <t>Implementations SHOULD NOT set the R flag in this case.</t>
       </section>
 
-      <section title="Extended DNS Error Code 3 - Prohibited">
+      <section title="Extended DNS Error Code 4 - Prohibited">
         <t>An authorative or recursive resolver that receives a query from an
         "unauthorized" client can annotate its REFUSED message with this code.
         Examples of "unauthorized" clients are recursive queries from IP
@@ -253,12 +259,16 @@
         flag to in this case.</t>
       </section>
 
-      <section title="Extended DNS Error Code 4 - Ratelimited">
+      <section title="Extended DNS Error Code 5 - Ratelimited">
+        <t>[ Ed: This might be a horrendous idea. Anyone who is on a position
+        where they can do a "cache poisoning" type attach could also insert
+        one of these, and turn this into a DoS. Straw</t>
+
         <t>A nameserver which is under excessive load (for example, because it
         is experiancing a DoS) may annotate any error with this code. </t>
 
         <t>It is RECOMMENDED that implementations set the R flag in this case,
-        but may allow operators to define what to set the R flag to.</t>
+        but may allow operators to define what to set the R flag to. </t>
       </section>
     </section>
 

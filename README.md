@@ -130,9 +130,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
    resolution.  The error signals that a DNS server can return are very
    limited, and are not very expressive.  This means that applications
    and resolvers often have to "guess" at what the issue is - e.g is a
-   REFUSED [TODO: Check] because there is a lame delegation or because
-   the nameserver is still starting and loading zones?  Is a SERVFAIL a
-   DNSSEC validation issue, or is the nameserver experiencing a bad day?
+   REFUSED because there is a lame delegation or because the nameserver
+   is still starting and loading zones?  Is a SERVFAIL a DNSSEC
+   validation issue, or is the nameserver experiencing a bad day?
 
    A good example of issues caused by this is DNSSEC validation issues.
    [TODO: Fix prior sentence.]  When a stub resolvers queries a DNSSEC

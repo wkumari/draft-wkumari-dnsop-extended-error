@@ -101,51 +101,66 @@
 
     <abstract>
       <t>This document defines an extensible method to return additional
-      information about the cause of DNS errors. The primary expected use for
-      this is to extend SERVFAIL to provide more information about the cause
-      of DNSSEC failures, but it can be used to annotate many DNS errors.</t>
+      information about the cause of DNS errors. The primary use case is to
+      extend SERVFAIL to provide additional information about the cause of
+      DNSSEC failures, but it can be used to annotate many other DNS
+      errors.</t>
 
       <t>[ Ed note: Text inside square brackets ([]) is additional background
-      information, answers to freqently asked questions, general musings, etc.
-      They will be removed before publication.]</t>
-
-      <t>[ This document is being collaborated on in Github at:
-      https://github.com/wkumari/&lt;TEMPLATE&gt;. The most recent version of
-      the document, open issues, etc should all be available here. The authors
-      (gratefully) acept pull requests ]</t>
+      information, answers to frequently asked questions, general musings,
+      etc. They will be removed before publication. This document is being
+      collaborated on in Github at:
+      https://github.com/wkumari/draft-wkumari-dnsop-extended-error. The
+      authors (gratefully) accept pull requests. ]</t>
 
       <t>[ Note: I always have a hard time with EDNS terminology - I'm saying
       that Extended DNS Errors are carried as EDNS Options, but is this
-      actually correct terminology? They are optional TLVs in "options" in
-      RDATA in OPTion RR , but that's not readable. ]</t>
+      correct? They are optional TLVs in "options" in RDATA in OPTion RR , but
+      that's not readable. ]</t>
+
+      <t>[ Open question: The document currently defines a registry for
+      errors. It has also been suggested that the option also carry human
+      readable (text) messages, so allow the server admin to provide
+      additional annotation (e.g: "example.com pointed their NS at us. No idea
+      why...", "We don't provide recursive DNS to 192.0.2.0. Please stop
+      asking...", "Have you tried Acme Anvil and DNS? We do DNS right..." (!).
+      Please let us know if you think text is needed, or if a 16bit FCFS
+      registry is expressive enough. ]</t>
+
+      <t>[ Open question: This document discusses extended *errors*, but it
+      has been suggested that this could be used to also annotate *non-error*
+      messages. The authors do not think that this is a good idea, but could
+      be persuaded otherwise. ]</t>
     </abstract>
   </front>
 
   <middle>
     <section title="Introduction and background">
       <t>There are many reasons that a DNS query may fail, some of them
-      transient, some permenant; some can be resolved by querying another
-      server, some (e.g DNSSEC bogus) are best handled by stopping resolution.
-      The range of errors that DNS servers can return are very limited, and
-      are not very expressive. This means that applications and resolvers
-      often have to "guess" at what the issue is - e.g is a REFUSED because
-      there is a lame delegation, it is a DNSSEC vailidation issue, or is the
-      nameserver experiancing a bad day? </t>
+      transient, some permanent; some can be resolved by querying another
+      server, some (e.g DNSSEC bogus) are likely best handled by stopping
+      resolution. The error signals that a DNS server can return are very
+      limited, and are not very expressive. This means that applications and
+      resolvers often have to "guess" at what the issue is - e.g is a REFUSED
+      [TODO: Check] because there is a lame delegation or because the
+      nameserver is still starting and loading zones? Is a SERVFAIL a DNSSEC
+      validation issue, or is the nameserver experiencing a bad day?</t>
 
-      <t>A good exampe of issues caused by this is DNSSEC validation issues.
-      When a user attempts to resolver a DNSSEC bogus name (using a validating
-      resolver), their machine receives a SERVFAIL response. Unfortunaty,
-      SERVFAIL is used to signal may sorts of DNS errors, and so their machine
-      / stub resolver simply asks the next configured DNS resolver. This may
-      result in two outcomes, either the next resolver does not validate, in
-      which case the user resolves the name (defeating the protection provided
-      by DNSSEC), or it does, and they get a failure that is largely
-      incomprehensible to the average user.</t>
+      <t>A good example of issues caused by this is DNSSEC validation issues.
+      [TODO: Fix prior sentence.] When a stub resolvers queries a DNSSEC bogus
+      name (using a validating resolver), their machine receives a SERVFAIL
+      response. Unfortunately, SERVFAIL is used to signal many sorts of DNS
+      errors, and so their machine / stub resolver simply asks the next
+      configured DNS resolver. This may result in [one of] two outcomes:
+      either the next resolver does not validate, in which case the user
+      resolves the name (defeating the protection provided by DNSSEC); or it
+      does, and they get a failure that is largely incomprehensible to the
+      average user.</t>
 
       <t>This document specifies a mechanism to extend (or annotate) DNS
       errors to provide additional information about the cause of the error.
-      This information can be used by the resolver to make a decision to retry
-      or not, or by users attempting to debug issues.</t>
+      This information can be used by the resolver to make a decision whether
+      to retry or not, or by technical users attempting to debug issues.</t>
 
       <t>Here is a reference to an "external" (non-RFC / draft) thing: (<xref
       target="IANA.AS_Numbers"/>). And this is a link to an ID:<xref
@@ -161,7 +176,8 @@
 
     <section title="Extended Error EDNS0 option format">
       <t>This draft uses an EDNS0 ([RFC2671]) option to include extended error
-      information in DNS messages. The option is structured as follows:</t>
+      (ExtError) information in DNS messages. The option is structured as
+      follows:</t>
 
       <figure>
         <artwork align="left"><![CDATA[
@@ -195,14 +211,15 @@
 
       <t>Currently the only defined flag is the R flag. <list style="hanging">
           <t hangText="R - Retry">The R (or Retry) flag provides a hint to the
-          receiver if it should retry the query, possiably by querying another
+          receiver if it should retry the query, possibly by querying another
           server. If the R bit is set (1), the sender believes that retrying
-          the query may provide a sucessful answer, if the R bit is clear (0),
-          the sender believes that it should not ask another resolver. </t>
+          the query may provide a successful answer, if the R bit is clear
+          (0), the sender believes that it should not ask another
+          resolver.</t>
         </list></t>
 
       <t>The remaining bits in the flags field MUST be set to 0 by the sender
-      and MUST be ignored by the receiver. </t>
+      and SHOULD be ignored by the receiver.</t>
 
       <t>Code: A code point into the IANA "Extended DNS Errors" registry.</t>
     </section>
@@ -212,68 +229,78 @@
       error response to a query that includes an EDNS option - SERVFAIL,
       NXDOMAIN, REFUSED, etc. This document includes a set of initial
       codepoints (and requests to the IANA to add them to the registry), but
-      is extensible to allow additional error codes to be defined. </t>
+      is extensible to allow additional error codes to be defined.</t>
 
       <t>The R (Retry) flag provides a hint (or suggestion) as to what the
       receiver may want to do with this annotated error. The mechanism is
       specifically designed to be extensible, and so implementations may
       receive EDE codes that it does not understand. The R flag allows
-      implmentations to make a decision as to what to do if it receives a
-      response with an unknown code - retry or drop the query. </t>
+      implementations to make a decision as to what to do if it receives a
+      response with an unknown code - retry or drop the query. Note that this
+      flag is only a suggestion or hint. Receivers can choose to ignore this
+      hint.</t>
     </section>
 
     <section title="Defined Extended DNS Errors">
       <t>This document defines some initial EDE codes. The mechanism is
       intended to be extensible, and additional codepoint will be registered
-      in the "Extended DNS Errors" registry.</t>
+      in the "Extended DNS Errors" registry. This document provides
+      suggestions for the R flag, but the originating server may ignore these
+      recommendations if it knows better.</t>
 
       <section title="Extended DNS Error Code 1 - DNSSEC Bogus">
-        <t>The resolver attemped to perform DNSSEC validation, but validation
-        ended in the Bogus state. </t>
+        <t>The resolver attempted to perform DNSSEC validation, but validation
+        ended in the Bogus state.</t>
 
-        <t>Usually attached to SERVFAIL messages. The R flag SHOUD be set.</t>
+        <t>Usually attached to SERVFAIL messages. The R flag should be
+        set.</t>
       </section>
 
       <section title="Extended DNS Error Code 2 - DNSSEC Indeterminite">
-        <t>The resolver attemped to perform DNSSEC validation, but validation
-        ended in the Indeterminite state.</t>
+        <t>The resolver attempted to perform DNSSEC validation, but validation
+        ended in the Indeterminate state.</t>
 
-        <t>Usually attached to SERVFAIL messages. The R flag SHOUD be set.</t>
+        <t>Usually attached to SERVFAIL messages. The R flag should be
+        set.</t>
       </section>
 
       <section title="Extended DNS Error Code 3 - Lame">
-        <t>An authorative resolver that receives a query (with the RD bit
-        clear) for a domain for which it is not authorative SHOULD include
-        this EDE code in the REFUSED response. </t>
+        <t>An authoritative resolver that receives a query (with the RD bit
+        clear) for a domain for which it is not authoritative SHOULD include
+        this EDE code in the REFUSED response.</t>
 
-        <t>Implementations SHOULD NOT set the R flag in this case.</t>
+        <t>Implementations should not set the R flag in this case (another
+        nameserver might not be lame).</t>
       </section>
 
       <section title="Extended DNS Error Code 4 - Prohibited">
-        <t>An authorative or recursive resolver that receives a query from an
-        "unauthorized" client can annotate its REFUSED message with this code.
-        Examples of "unauthorized" clients are recursive queries from IP
-        addresses outside the network, blacklisted IP addresses, etc. </t>
+        <t>An authoritative or recursive resolver that receives a query from
+        an "unauthorized" client can annotate its REFUSED message with this
+        code. Examples of "unauthorized" clients are recursive queries from IP
+        addresses outside the network, blacklisted IP addresses, etc.</t>
 
         <t>Implementations SHOULD allow operators to define what to set the R
         flag to in this case.</t>
       </section>
 
       <section title="Extended DNS Error Code 5 - Ratelimited">
-        <t>[ Ed: This might be a horrendous idea. Anyone who is on a position
-        where they can do a "cache poisoning" type attach could also insert
-        one of these, and turn this into a DoS. Straw</t>
+        <t>[ Ed: This might be a bad idea. It is intended to allow servers
+        under a DoS (for example a random subdomain attack) to signal to
+        recursive clients that they are being abusive and should back off.
+        This may be a bad idea -- it may "complete the attack", it may be
+        spoofable (by anyone who could also do a MITM style attack), etc. ]
+        </t>
 
         <t>A nameserver which is under excessive load (for example, because it
-        is experiancing a DoS) may annotate any error with this code. </t>
+        is experiencing a DoS) may annotate any answer with this code.</t>
 
         <t>It is RECOMMENDED that implementations set the R flag in this case,
-        but may allow operators to define what to set the R flag to. </t>
+        but may allow operators to define what to set the R flag to.</t>
       </section>
     </section>
 
     <section title="IANA Considerations">
-      <t>[This section under constuction ]</t>
+      <t>[This section under construction ]</t>
 
       <t>This document defines a new EDNS(0) option, entitled "Extended DNS
       Error", assigned a value of TBD1 from the "DNS EDNS0 Option Codes (OPT)"
@@ -286,7 +313,7 @@
  TBD   Extended DNS Error    TBD       [ This document ]]]></artwork>
         </figure></t>
 
-      <t> Data Tag Name Length Meaning ---- ---- ------ ------- TBD1 FooBar N
+      <t>Data Tag Name Length Meaning ---- ---- ------ ------- TBD1 FooBar N
       FooBar server</t>
 
       <t>The IANA is requested to create and maintain the "Extended DNS Error
@@ -299,7 +326,7 @@
           <t>65000 - 65534: Experimental / Private use</t>
         </list>The codepoints 0, 65535 are reserved.</t>
 
-      <t>The </t>
+      <t/>
     </section>
 
     <section title="Open questions">
@@ -307,19 +334,32 @@
           <t hangText="1">Can this be included in *any* response or only
           responses to requests that included an EDNS option? Resolvers are
           supposed to ignore additional. EDNS capable ones are supposed to
-          simply ignore unknonw options.</t>
+          simply ignore unknown options.</t>
 
-          <t hangText="2">Can this be applied to *any* respinse, or only error
+          <t hangText="2">Can this be applied to *any* response, or only error
           responses?</t>
         </list></t>
     </section>
 
     <section anchor="security" title="Security Considerations">
-      <t>TODO: Fill this out!</t>
+      <t>DNSSEC is being deployed - unfortunately a significant number of
+      clients (TODO: Link to Geoff H stats), when receiving a SERVFAIL from a
+      validating resolver because of a DNSSEC validaion issue simply ask the
+      next (non-validating) resolver in their list, and do don't get any of
+      the protections which DNSSEC should provide. This is very similar to a
+      kid asking his mother if he can have another cookie. When the mother
+      says "No, it will ruin your dinner!", going off and asking his (more
+      permissive) father and getting a "Yes, sure, cookie!".</t>
     </section>
 
     <section title="Acknowledgements">
-      <t>The authors wish to thank some folk.</t>
+      <t>The authors wish to thank Geoff Huston. They also vaguely remember
+      discussing this with a number of people over the years, but have
+      forgotten who all they were -- if you were one of them, and are not
+      listed, please let us know and we'll acknowledge you.</t>
+
+      <t>I also want to thank the band Infected Mushroom for providing a good
+      background soundtrack (and to see if I can get away with this!)</t>
     </section>
   </middle>
 
@@ -349,10 +389,10 @@
     <section title="Changes / Author Notes.">
       <t>[RFC Editor: Please remove this section before publication ]</t>
 
-      <t>From -00 to -01.</t>
+      <t>From -00 to -01;</t>
 
       <t><list style="symbols">
-          <t>Nothing changed in the template!</t>
+          <t>Placeholder to remind me to include changelog.</t>
         </list></t>
     </section>
   </back>

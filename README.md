@@ -16,22 +16,14 @@ Expires: August 3, 2015                                              ISC
 
 
                           Extended DNS Errors
-                 draft-wkumari-dnsop-extended-error-0.1
+                 draft-wkumari-dnsop-extended-error-00
 
 Abstract
 
    This document defines an extensible method to return additional
    information about the cause of DNS errors.  The primary use case is
    to extend SERVFAIL to provide additional information about the cause
-   of DNSSEC failures, but it can be used to annotate many other DNS
-   errors.
-
-   [ Ed note: Text inside square brackets ([]) is additional background
-   information, answers to frequently asked questions, general musings,
-   etc.  They will be removed before publication.  This document is
-   being collaborated on in Github at: https://github.com/wkumari/draft-
-   wkumari-dnsop-extended-error.  The authors (gratefully) accept pull
-   requests. ]
+   of DNS and DNSSEC failures.
 
    [ Note: I always have a hard time with EDNS terminology - I'm saying
    that Extended DNS Errors are carried as EDNS Options, but is this
@@ -41,16 +33,24 @@ Abstract
    [ Open question: The document currently defines a registry for
    errors.  It has also been suggested that the option also carry human
    readable (text) messages, so allow the server admin to provide
-   additional annotation (e.g: "example.com pointed their NS at us.  No
-   idea why...", "We don't provide recursive DNS to 192.0.2.0.  Please
-   stop asking...", "Have you tried Acme Anvil and DNS?  We do DNS
-   right..." (!).  Please let us know if you think text is needed, or if
-   a 16bit FCFS registry is expressive enough. ]
+   additional debugging information (e.g: "example.com pointed their NS
+   at us.  No idea why...", "We don't provide recursive DNS to
+   192.0.2.0.  Please stop asking...", "Have you tried Acme Anvil and
+   DNS?  We do DNS right..." (!).  Please let us know if you think text
+   is needed, or if a 16bit FCFS registry is expressive enough. ]
 
    [ Open question: This document discusses extended *errors*, but it
    has been suggested that this could be used to also annotate *non-
    error* messages.  The authors do not think that this is a good idea,
    but could be persuaded otherwise. ]
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
 
 
 
@@ -60,13 +60,6 @@ Kumari, et al.           Expires August 3, 2015                 [Page 1]
 Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 
 
-Status of This Memo
-
-   This Internet-Draft is submitted in full conformance with the
-   provisions of BCP 78 and BCP 79.
-
-   Internet-Drafts are working documents of the Internet Engineering
-   Task Force (IETF).  Note that other groups may also distribute
    working documents as Internet-Drafts.  The list of current Internet-
    Drafts is at http://datatracker.ietf.org/drafts/current/.
 
@@ -103,11 +96,18 @@ Table of Contents
      4.2.  Extended DNS Error Code 2 - DNSSEC Indeterminite  . . . .   5
      4.3.  Extended DNS Error Code 3 - Lame  . . . . . . . . . . . .   5
      4.4.  Extended DNS Error Code 4 - Prohibited  . . . . . . . . .   5
-     4.5.  Extended DNS Error Code 5 - Ratelimited . . . . . . . . .   6
+     4.5.  Extended DNS Error Code 5 - TooBusy . . . . . . . . . . .   6
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
    6.  Open questions  . . . . . . . . . . . . . . . . . . . . . . .   7
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
    8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
+   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   7
+     9.1.  Normative References  . . . . . . . . . . . . . . . . . .   7
+     9.2.  Informative References  . . . . . . . . . . . . . . . . .   8
+   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   8
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
+
+
 
 
 
@@ -116,40 +116,42 @@ Kumari, et al.           Expires August 3, 2015                 [Page 2]
 Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 
 
-   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   7
-     9.1.  Normative References  . . . . . . . . . . . . . . . . . .   7
-     9.2.  Informative References  . . . . . . . . . . . . . . . . .   8
-   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   8
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
-
 1.  Introduction and background
 
    There are many reasons that a DNS query may fail, some of them
    transient, some permanent; some can be resolved by querying another
-   server, some (e.g DNSSEC bogus) are likely best handled by stopping
-   resolution.  The error signals that a DNS server can return are very
-   limited, and are not very expressive.  This means that applications
-   and resolvers often have to "guess" at what the issue is - e.g is a
-   REFUSED because there is a lame delegation or because the nameserver
-   is still starting and loading zones?  Is a SERVFAIL a DNSSEC
-   validation issue, or is the nameserver experiencing a bad day?
+   server, some are likely best handled by stopping resolution.
+   Unfortunately, the error signals that a DNS server can return are
+   very limited, and are not very expressive.  This means that
+   applications and resolvers often have to "guess" at what the issue is
+   - e.g the answer was marked REFUSED because of a lame delegation, or
+   because there is a lame delegation or because the nameserver is still
+   starting up and loading zones?  Is a SERVFAIL a DNSSEC validation
+   issue, or is the nameserver experiencing a bad hair day?
 
-   A good example of issues caused by this is DNSSEC validation issues.
-   [TODO: Fix prior sentence.]  When a stub resolvers queries a DNSSEC
-   bogus name (using a validating resolver), their machine receives a
-   SERVFAIL response.  Unfortunately, SERVFAIL is used to signal many
-   sorts of DNS errors, and so their machine / stub resolver simply asks
-   the next configured DNS resolver.  This may result in [one of] two
-   outcomes: either the next resolver does not validate, in which case
-   the user resolves the name (defeating the protection provided by
-   DNSSEC); or it does, and they get a failure that is largely
-   incomprehensible to the average user.
+   A good example of issues that would benefit by additional error
+   information is an error caused by a DNSSEC validation issue.  When a
+   stub resolver queries a DNSSEC bogus name (using a validating
+   resolver), their machine receives a SERVFAIL in response.
+   Unfortunately, SERVFAIL is used to signal many sorts of DNS errors,
+   and so the stub resolver simply asks the next configured DNS
+   resolver.  The result of trying the next resulver is one of two
+   outcomes: either the next resolver also validates, a SERVFAIL is
+   returned again, and the user gets an (largely) incomprehensible error
+   message, or either the next resolver is not a validating resolver,
+   and the user is returned a potentially harmful result.
 
    This document specifies a mechanism to extend (or annotate) DNS
    errors to provide additional information about the cause of the
    error.  This information can be used by the resolver to make a
    decision whether to retry or not, or by technical users attempting to
    debug issues.
+
+   This document specifies a mechanism to extend (or annotate) DNS
+   errors to provide additional information about the cause of the
+   error.  This information can be used by a resolver to make a decision
+   whether or no to retry, or by administrators and technical users
+   attempting to debug issues.
 
    Here is a reference to an "external" (non-RFC / draft) thing:
    ([IANA.AS_Numbers]).  And this is a link to an
@@ -160,8 +162,6 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in [RFC2119].
-
-
 
 
 
@@ -193,7 +193,8 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
    o  OPTION-CODE, 2 octets (Defined in [RFC6891]), for ExtError is TBD.
 
    o  OPTION-LENGTH, 2 octets ((Defined in [RFC6891]) contains the
-      length of the payload (everything after OPTION-LENGTH) in octets.
+      length of the payload (everything after OPTION-LENGTH) in octets
+      and should be 4.
 
    o  FLAGS, 2 octets.
 
@@ -204,8 +205,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
    R - Retry  The R (or Retry) flag provides a hint to the receiver if
       it should retry the query, possibly by querying another server.
       If the R bit is set (1), the sender believes that retrying the
-      query may provide a successful answer, if the R bit is clear (0),
-      the sender believes that it should not ask another resolver.
+      query may provide a successful answer next time; if the R bit is
+      clear (0), the sender believes that it should not ask another
+      server.
 
    The remaining bits in the flags field MUST be set to 0 by the sender
    and SHOULD be ignored by the receiver.
@@ -214,12 +216,10 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 
 3.  Use of the Extended DNS Error option
 
-   The Extended DNS Error is an EDNS option.  It can be included in any
-   error response to a query that includes an EDNS option - SERVFAIL,
-   NXDOMAIN, REFUSED, etc.  This document includes a set of initial
-   codepoints (and requests to the IANA to add them to the registry),
-   but is extensible to allow additional error codes to be defined.
-
+   The Extended DNS Error (EDE) is an EDNS option.  It can be included
+   in any error response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query
+   that includes an EDNS option.  This document includes a set of
+   initial codepoints (and requests to the IANA to add them to the
 
 
 
@@ -227,6 +227,9 @@ Kumari, et al.           Expires August 3, 2015                 [Page 4]
 
 Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 
+
+   registry), but is extensible via the IANA registry to allow
+   additional error codes to be defined in the future.
 
    The R (Retry) flag provides a hint (or suggestion) as to what the
    receiver may want to do with this annotated error.  The mechanism is
@@ -240,7 +243,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 4.  Defined Extended DNS Errors
 
    This document defines some initial EDE codes.  The mechanism is
-   intended to be extensible, and additional codepoint will be
+   intended to be extensible, and additional codepoints will be
    registered in the "Extended DNS Errors" registry.  This document
    provides suggestions for the R flag, but the originating server may
    ignore these recommendations if it knows better.
@@ -248,9 +251,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 4.1.  Extended DNS Error Code 1 - DNSSEC Bogus
 
    The resolver attempted to perform DNSSEC validation, but validation
-   ended in the Bogus state.
-
-   Usually attached to SERVFAIL messages.  The R flag should be set.
+   ended in the Bogus state.  The R flag should be set.
 
 4.2.  Extended DNS Error Code 2 - DNSSEC Indeterminite
 
@@ -278,7 +279,6 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 
 
 
-
 Kumari, et al.           Expires August 3, 2015                 [Page 5]
 
 Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
@@ -287,19 +287,21 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
    Implementations SHOULD allow operators to define what to set the R
    flag to in this case.
 
-4.5.  Extended DNS Error Code 5 - Ratelimited
+4.5.  Extended DNS Error Code 5 - TooBusy
 
    [ Ed: This might be a bad idea.  It is intended to allow servers
    under a DoS (for example a random subdomain attack) to signal to
    recursive clients that they are being abusive and should back off.
    This may be a bad idea -- it may "complete the attack", it may be
-   spoofable (by anyone who could also do a MITM style attack), etc. ]
+   spoofable (by anyone who could also do a MITM style attack), etc.  ]
 
    A nameserver which is under excessive load (for example, because it
    is experiencing a DoS) may annotate any answer with this code.
 
    It is RECOMMENDED that implementations set the R flag in this case,
    but may allow operators to define what to set the R flag to.
+
+   [ agreed: bad idea -wjh ]
 
 5.  IANA Considerations
 
@@ -333,8 +335,6 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 
 
 
-
-
 Kumari, et al.           Expires August 3, 2015                 [Page 6]
 
 Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
@@ -348,6 +348,10 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
       ignore unknown options.
 
    2  Can this be applied to *any* response, or only error responses?
+
+      Only ones signaling EDNS support; all the EDNS code points were
+      designed to only be responded to when clients indicated they could
+      handle them. -- 95% sure wjh
 
 7.  Security Considerations
 
@@ -368,8 +372,10 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
    forgotten who all they were -- if you were one of them, and are not
    listed, please let us know and we'll acknowledge you.
 
-   I also want to thank the band Infected Mushroom for providing a good
-   background soundtrack (and to see if I can get away with this!)
+   I also want to thank the band "Infected Mushroom" for providing a
+   good background soundtrack (and to see if I can get away with this!)
+
+   Another author would like to thank the band "Mushroom Infectors"
 
 9.  References
 
@@ -378,12 +384,6 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
    [IANA.AS_Numbers]
               IANA, "Autonomous System (AS) Numbers",
               <http://www.iana.org/assignments/as-numbers>.
-
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
-              RFC2119, March 1997,
-              <http://www.rfc-editor.org/info/rfc2119>.
-
 
 
 
@@ -395,6 +395,11 @@ Kumari, et al.           Expires August 3, 2015                 [Page 7]
 
 Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
+              RFC2119, March 1997,
+              <http://www.rfc-editor.org/info/rfc2119>.
 
 9.2.  Informative References
 
@@ -436,11 +441,6 @@ Authors' Addresses
    UK
 
    Email: TBD
-
-
-
-
-
 
 
 

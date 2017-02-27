@@ -104,14 +104,10 @@
       information about the cause of DNS errors. The primary use case is to
       extend SERVFAIL to provide additional information about the cause of
       DNSSEC failures, but it can be used to annotate many other DNS
-      errors.</t>
-
-      <t>[ Ed note: Text inside square brackets ([]) is additional background
-      information, answers to frequently asked questions, general musings,
-      etc. They will be removed before publication. This document is being
-      collaborated on in Github at:
-      https://github.com/wkumari/draft-wkumari-dnsop-extended-error. The
-      authors (gratefully) accept pull requests. ]</t>
+      errors.
+      [wjh: I think we have to take on all errors, not just DNSSEC]
+      [wjh #2: can it annotate non-error messages too?  If not, why not?]
+      </t>
 
       <t>[ Note: I always have a hard time with EDNS terminology - I'm saying
       that Extended DNS Errors are carried as EDNS Options, but is this
@@ -139,19 +135,29 @@
       <t>There are many reasons that a DNS query may fail, some of them
       transient, some permanent; some can be resolved by querying another
       server, some (e.g DNSSEC bogus) are likely best handled by stopping
-      resolution. The error signals that a DNS server can return are very
+      resolution.
+      [wjh: no: bogus should continue to other servers too]
+      Unfortunately, the error signals that a DNS server can return are very
       limited, and are not very expressive. This means that applications and
-      resolvers often have to "guess" at what the issue is - e.g is a REFUSED
-      because there is a lame delegation or because the nameserver is still
-      starting and loading zones? Is a SERVFAIL a DNSSEC validation issue, or
-      is the nameserver experiencing a bad day?</t>
+      resolvers often have to "guess" at what the issue is -  e.g the
+      answer was marked REFUSED because of a lame delegation, 
+      or because there is a lame delegation or because the nameserver is still
+      starting up and loading zones? Is a SERVFAIL a DNSSEC validation issue, or
+      is the nameserver experiencing a bad hair day?</t>
 
-      <t>A good example of issues caused by this is DNSSEC validation issues.
-      [TODO: Fix prior sentence.] When a stub resolvers queries a DNSSEC bogus
+      <t>A good example of issues that would benefit by additional
+      error information is an error caused by a DNSSEC validation issue.
+      When a stub resolver queries a DNSSEC bogus
       name (using a validating resolver), their machine receives a SERVFAIL
-      response. Unfortunately, SERVFAIL is used to signal many sorts of DNS
-      errors, and so their machine / stub resolver simply asks the next
-      configured DNS resolver. This may result in [one of] two outcomes:
+      in response. Unfortunately, SERVFAIL is used to signal many sorts of DNS
+      errors, and so the stub resolver simply asks the next
+      configured DNS resolver.
+      <!-- again: this is still correct in many cases even if you do
+           know the error in question; stale auth servers cause this
+           problem and the right thing to do is ask the next guy,
+           which is hopefully less stale -wjh -->
+      <!-- this next sentence makes no sense and I can't fix it -wjh -->
+      This may result in [one of] two outcomes:
       either the next resolver does not validate, in which case the user
       resolves the name (defeating the protection provided by DNSSEC); or it
       does, and they get a failure that is largely incomprehensible to the
@@ -161,6 +167,12 @@
       errors to provide additional information about the cause of the error.
       This information can be used by the resolver to make a decision whether
       to retry or not, or by technical users attempting to debug issues.</t>
+
+      <t>This document specifies a mechanism to extend (or annotate)
+      DNS errors to provide additional information about the cause of
+      the error.  This information can be used by a resolver to make a
+      decision whether or no to retry, or by administrators and
+      technical users attempting to debug issues.</t>
 
       <t>Here is a reference to an "external" (non-RFC / draft) thing: (<xref
       target="IANA.AS_Numbers"/>). And this is a link to an ID:<xref
@@ -202,20 +214,23 @@
 
           <t>OPTION-LENGTH, 2 octets ((Defined in [RFC6891]) contains the
           length of the payload (everything after OPTION-LENGTH) in
-          octets.</t>
+          octets. [um, can't we say "and should be 4"? --wjh]
+          </t>
 
           <t>FLAGS, 2 octets.</t>
 
           <t>CODE, 2 octets.</t>
+          <!-- you know someone will want user strings too -->
         </list></t>
 
       <t>Currently the only defined flag is the R flag. <list style="hanging">
           <t hangText="R - Retry">The R (or Retry) flag provides a hint to the
           receiver if it should retry the query, possibly by querying another
           server. If the R bit is set (1), the sender believes that retrying
-          the query may provide a successful answer, if the R bit is clear
+          the query may provide a successful answer next time;
+          if the R bit is clear
           (0), the sender believes that it should not ask another
-          resolver.</t>
+          server.</t>
         </list></t>
 
       <t>The remaining bits in the flags field MUST be set to 0 by the sender
@@ -225,25 +240,28 @@
     </section>
 
     <section title="Use of the Extended DNS Error option">
-      <t>The Extended DNS Error is an EDNS option. It can be included in any
-      error response to a query that includes an EDNS option - SERVFAIL,
-      NXDOMAIN, REFUSED, etc. This document includes a set of initial
-      codepoints (and requests to the IANA to add them to the registry), but
-      is extensible to allow additional error codes to be defined.</t>
+      <t>The Extended DNS Error (EDE) is an EDNS option. It can be included
+      in any error response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a
+      query that includes an EDNS option. This document includes a set
+      of initial codepoints (and requests to the IANA to add them to
+      the registry), but is extensible via the IANA registry to allow
+      additional error codes to be defined in the future [by standards
+      action, or what? --wjh].</t>
 
-      <t>The R (Retry) flag provides a hint (or suggestion) as to what the
-      receiver may want to do with this annotated error. The mechanism is
-      specifically designed to be extensible, and so implementations may
-      receive EDE codes that it does not understand. The R flag allows
-      implementations to make a decision as to what to do if it receives a
-      response with an unknown code - retry or drop the query. Note that this
-      flag is only a suggestion or hint. Receivers can choose to ignore this
+      <t>The R (Retry) flag provides a hint (or suggestion) as to what
+      the receiver may want to do with this annotated error. The
+      mechanism is specifically designed to be extensible, and so
+      implementations may receive EDE codes that it does not
+      understand. The R flag allows implementations to make a decision
+      as to what to do if it receives a response with an unknown code
+      - retry or drop the query. Note that this flag is only a
+      suggestion or hint. Receivers can choose to ignore this
       hint.</t>
     </section>
 
     <section title="Defined Extended DNS Errors">
       <t>This document defines some initial EDE codes. The mechanism is
-      intended to be extensible, and additional codepoint will be registered
+      intended to be extensible, and additional codepoints will be registered
       in the "Extended DNS Errors" registry. This document provides
       suggestions for the R flag, but the originating server may ignore these
       recommendations if it knows better.</t>
@@ -253,7 +271,7 @@
         ended in the Bogus state.</t>
 
         <t>Usually attached to SERVFAIL messages. The R flag should be
-        set.</t>
+        set.</t> <!-- when is not? ever? -->
       </section>
 
       <section title="Extended DNS Error Code 2 - DNSSEC Indeterminite">
@@ -296,6 +314,9 @@
 
         <t>It is RECOMMENDED that implementations set the R flag in this case,
         but may allow operators to define what to set the R flag to.</t>
+
+        <t>[ agreed: bad idea -wjh ]</t>
+
       </section>
     </section>
 
@@ -338,6 +359,11 @@
 
           <t hangText="2">Can this be applied to *any* response, or only error
           responses?</t>
+
+          <t>Only ones signaling EDNS support; all the EDNS code
+          points were designed to only be responded to when clients
+          indicated they could handle them.  -- 95% sure wjh</t>
+
         </list></t>
     </section>
 
@@ -360,6 +386,9 @@
 
       <t>I also want to thank the band Infected Mushroom for providing a good
       background soundtrack (and to see if I can get away with this!)</t>
+
+      <t>Another author would like to thank the band "Mushroom Infectors"</t>
+
     </section>
   </middle>
 

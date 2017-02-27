@@ -334,14 +334,14 @@
           <t hangText="1">Can this be included in *any* response or only
           responses to requests that included an EDNS option? Resolvers are
           supposed to ignore additional. EDNS capable ones are supposed to
-          simply ignore unknown options.</t>
+          simply ignore unknown options. I know the spec says you can only
+          include EDNS0 in a response if in a request -- it is time to
+          reevaluate this?</t>
 
           <t hangText="2">Can this be applied to *any* response, or only error
           responses?</t>
 
-          <t>Only ones signaling EDNS support; all the EDNS code points were
-          designed to only be responded to when clients indicated they could
-          handle them. -- 95% sure wjh</t>
+          <t/>
         </list></t>
     </section>
 

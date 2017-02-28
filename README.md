@@ -7,12 +7,12 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Informational                                   E. Hunt
-Expires: August 3, 2015                                              ISC
+Expires: August 31, 2017                                             ISC
                                                                R. Arends
                                                                  Nominet
                                                              W. Hardaker
                                                                  USC/ISI
-                                                        January 30, 2015
+                                                       February 27, 2017
 
 
                           Extended DNS Errors
@@ -55,9 +55,9 @@ Status of This Memo
 
 
 
-Kumari, et al.           Expires August 3, 2015                 [Page 1]
+Kumari, et al.           Expires August 31, 2017                [Page 1]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
+Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
 
    working documents as Internet-Drafts.  The list of current Internet-
@@ -68,11 +68,11 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on August 3, 2015.
+   This Internet-Draft will expire on August 31, 2017.
 
 Copyright Notice
 
-   Copyright (c) 2015 IETF Trust and the persons identified as the
+   Copyright (c) 2017 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -111,9 +111,9 @@ Table of Contents
 
 
 
-Kumari, et al.           Expires August 3, 2015                 [Page 2]
+Kumari, et al.           Expires August 31, 2017                [Page 2]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
+Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
 
 1.  Introduction and background
@@ -167,9 +167,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 
 
 
-Kumari, et al.           Expires August 3, 2015                 [Page 3]
+Kumari, et al.           Expires August 31, 2017                [Page 3]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
+Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
 
 2.  Extended Error EDNS0 option format
@@ -223,9 +223,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 
 
 
-Kumari, et al.           Expires August 3, 2015                 [Page 4]
+Kumari, et al.           Expires August 31, 2017                [Page 4]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
+Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
 
    registry), but is extensible via the IANA registry to allow
@@ -279,9 +279,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 
 
 
-Kumari, et al.           Expires August 3, 2015                 [Page 5]
+Kumari, et al.           Expires August 31, 2017                [Page 5]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
+Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
 
    Implementations SHOULD allow operators to define what to set the R
@@ -335,9 +335,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 
 
 
-Kumari, et al.           Expires August 3, 2015                 [Page 6]
+Kumari, et al.           Expires August 31, 2017                [Page 6]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
+Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
 
 6.  Open questions
@@ -391,9 +391,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 
 
 
-Kumari, et al.           Expires August 3, 2015                 [Page 7]
+Kumari, et al.           Expires August 31, 2017                [Page 7]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
+Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -447,9 +447,9 @@ Authors' Addresses
 
 
 
-Kumari, et al.           Expires August 3, 2015                 [Page 8]
+Kumari, et al.           Expires August 31, 2017                [Page 8]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
+Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
 
    Wes Hardaker
@@ -503,5 +503,5 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
 
 
 
-Kumari, et al.           Expires August 3, 2015                 [Page 9]
+Kumari, et al.           Expires August 31, 2017                [Page 9]
 ```

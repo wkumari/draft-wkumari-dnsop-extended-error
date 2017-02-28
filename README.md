@@ -4,7 +4,7 @@
 
 
 
-template                                                       W. Kumari
+Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Informational                                   E. Hunt
 Expires: August 3, 2015                                              ISC
@@ -458,7 +458,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error       January 2015
    Davis, VA  95617
    US
 
-   Email: ietf@hardakers.net
+
 
 
 

@@ -191,10 +191,10 @@
       <t/>
 
       <t><list style="symbols">
-          <t>OPTION-CODE, 2 octets (Defined in [RFC6891]), for ExtError is
+          <t>OPTION-CODE, 2 octets (defined in [RFC6891]), for ExtError is
           TBD.</t>
 
-          <t>OPTION-LENGTH, 2 octets ((Defined in [RFC6891]) contains the
+          <t>OPTION-LENGTH, 2 octets ((defined in [RFC6891]) contains the
           length of the payload (everything after OPTION-LENGTH) in octets and
           should be 4.</t>
 
@@ -294,7 +294,7 @@
     </section>
 
     <section title="IANA Considerations">
-      <t>[This section under construction ]</t>
+      <t>[This section under construction, beware. ]</t>
 
       <t>This document defines a new EDNS(0) option, entitled "Extended DNS
       Error", assigned a value of TBD1 from the "DNS EDNS0 Option Codes (OPT)"

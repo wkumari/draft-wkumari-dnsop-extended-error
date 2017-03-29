@@ -191,10 +191,10 @@
       <t/>
 
       <t><list style="symbols">
-          <t>OPTION-CODE, 2 octets (Defined in [RFC6891]), for ExtError is
+          <t>OPTION-CODE, 2 octets (defined in [RFC6891]), for ExtError is
           TBD.</t>
 
-          <t>OPTION-LENGTH, 2 octets ((Defined in [RFC6891]) contains the
+          <t>OPTION-LENGTH, 2 octets ((defined in [RFC6891]) contains the
           length of the payload (everything after OPTION-LENGTH) in octets and
           should be 4.</t>
 

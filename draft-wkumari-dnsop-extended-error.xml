@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-wkumari-dnsop-extended-error-00"
+<rfc category="info" docName="draft-wkumari-dnsop-extended-error-01"
      ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -91,7 +91,7 @@
       </address>
     </author>
 
-    <date day="27" month="February" year="2017"/>
+    <date day="2" month="July" year="2017"/>
 
     <abstract>
       <t>This document defines an extensible method to return additional
@@ -99,14 +99,9 @@
       extend SERVFAIL to provide additional information about the cause of DNS
       and DNSSEC failures.</t>
 
-      <t>[ Note: I always have a hard time with EDNS terminology - I'm saying
-      that Extended DNS Errors are carried as EDNS Options, but is this
-      correct? They are optional TLVs in "options" in RDATA in OPTion RR , but
-      that's not readable. ]</t>
-
       <t>[ Open question: The document currently defines a registry for
       errors. It has also been suggested that the option also carry human
-      readable (text) messages, so allow the server admin to provide
+      readable (text) messages, to allow the server admin to provide
       additional debugging information (e.g: "example.com pointed their NS at
       us. No idea why...", "We don't provide recursive DNS to 192.0.2.0.
       Please stop asking...", "Have you tried Acme Anvil and DNS? We do DNS
@@ -135,25 +130,20 @@
 
       <t>A good example of issues that would benefit by additional error
       information is an error caused by a DNSSEC validation issue. When a stub
-      resolver queries a DNSSEC bogus name (using a validating resolver),
-      their machine receives a SERVFAIL in response. Unfortunately, SERVFAIL
-      is used to signal many sorts of DNS errors, and so the stub resolver
-      simply asks the next configured DNS resolver. The result of trying the
-      next resulver is one of two outcomes: either the next resolver also
-      validates, a SERVFAIL is returned again, and the user gets an (largely)
-      incomprehensible error message, or either the next resolver is not a
-      validating resolver, and the user is returned a potentially harmful
+      resolver queries a DNSSEC bogus name (using a validating resolver), the
+      stub resolver receives only a SERVFAIL in response. Unfortunately,
+      SERVFAIL is used to signal many sorts of DNS errors, and so the stub
+      resolver simply asks the next configured DNS resolver. The result of
+      trying the next resolver is one of two outcomes: either the next
+      resolver also validates, a SERVFAIL is returned again, and the user gets
+      an (largely) incomprehensible error message; or the next resolver is not
+      a validating resolver, and the user is returned a potentially harmful
       result.</t>
 
       <t>This document specifies a mechanism to extend (or annotate) DNS
       errors to provide additional information about the cause of the error.
-      This information can be used by the resolver to make a decision whether
-      to retry or not, or by technical users attempting to debug issues.</t>
-
-      <t>This document specifies a mechanism to extend (or annotate) DNS
-      errors to provide additional information about the cause of the error.
-      This information can be used by a resolver to make a decision whether or
-      no to retry, or by administrators and technical users attempting to
+      This information can be used by the resolver to make a decision
+      regarding whether or not to retry, or by technical users attempting to
       debug issues.</t>
 
       <t>Here is a reference to an "external" (non-RFC / draft) thing: (<xref
@@ -335,19 +325,22 @@
           <t hangText="2">Can this be applied to *any* response, or only error
           responses?</t>
 
-          <t/>
+          <t hangText="3">Should textual information be allowed as well? What
+          if the only thing allowed is a domain name, e.g to point at where
+          validation began failing? </t>
         </list></t>
     </section>
 
     <section anchor="security" title="Security Considerations">
       <t>DNSSEC is being deployed - unfortunately a significant number of
-      clients (TODO: Link to Geoff H stats), when receiving a SERVFAIL from a
-      validating resolver because of a DNSSEC validaion issue simply ask the
-      next (non-validating) resolver in their list, and do don't get any of
-      the protections which DNSSEC should provide. This is very similar to a
-      kid asking his mother if he can have another cookie. When the mother
-      says "No, it will ruin your dinner!", going off and asking his (more
-      permissive) father and getting a "Yes, sure, cookie!".</t>
+      clients (~11% according to <xref target="GeoffValidation"/>), when
+      receiving a SERVFAIL from a validating resolver because of a DNSSEC
+      validaion issue simply ask the next (non-validating) resolver in their
+      list, and do don't get any of the protections which DNSSEC should
+      provide. This is very similar to a kid asking his mother if he can have
+      another cookie. When the mother says "No, it will ruin your dinner!",
+      going off and asking his (more permissive) father and getting a "Yes,
+      sure, cookie!".</t>
     </section>
 
     <section title="Acknowledgements">
@@ -357,9 +350,9 @@
       listed, please let us know and we'll acknowledge you.</t>
 
       <t>I also want to thank the band "Infected Mushroom" for providing a
-      good background soundtrack (and to see if I can get away with this!)</t>
-
-      <t>Another author would like to thank the band "Mushroom Infectors"</t>
+      good background soundtrack (and to see if I can get away with this!)
+      Another author would like to thank the band "Mushroom Infectors". This
+      was funny at the time we wrote it, but I cannot remember why...</t>
     </section>
   </middle>
 
@@ -383,7 +376,22 @@
     </references>
 
     <references title="Informative References">
-      <?rfc include='reference.I-D.draft-ietf-sidr-iana-objects-03.xml'?>
+      <?rfc include='reference.I-D.draft-ietf-sidr-iana-objects-03.xml'
+?>
+
+      <reference anchor="GeoffValidation"
+                 target="http://www.potaroo.net/presentations/2016-06-27-dnssec.pdf">
+        <front>
+          <title abbrev="Validation today">A quick review of DNSSEC Validation
+          in today&rsquo;s Internet</title>
+
+          <author fullname="Geoff Huston, APNIC">
+            <organization>IANA</organization>
+          </author>
+
+          <date month="June" year="2016"/>
+        </front>
+      </reference>
     </references>
 
     <section title="Changes / Author Notes.">
@@ -392,7 +400,7 @@
       <t>From -00 to -01;</t>
 
       <t><list style="symbols">
-          <t>Placeholder to remind me to include changelog.</t>
+          <t>Fixed up some of the text, minor clarifications.</t>
         </list></t>
     </section>
   </back>

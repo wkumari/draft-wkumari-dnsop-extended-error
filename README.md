@@ -7,16 +7,16 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Informational                                   E. Hunt
-Expires: August 31, 2017                                             ISC
+Expires: January 3, 2018                                             ISC
                                                                R. Arends
                                                                  Nominet
                                                              W. Hardaker
                                                                  USC/ISI
-                                                       February 27, 2017
+                                                            July 2, 2017
 
 
                           Extended DNS Errors
-                 draft-wkumari-dnsop-extended-error-00
+                 draft-wkumari-dnsop-extended-error-01
 
 Abstract
 
@@ -25,14 +25,9 @@ Abstract
    to extend SERVFAIL to provide additional information about the cause
    of DNS and DNSSEC failures.
 
-   [ Note: I always have a hard time with EDNS terminology - I'm saying
-   that Extended DNS Errors are carried as EDNS Options, but is this
-   correct?  They are optional TLVs in "options" in RDATA in OPTion RR ,
-   but that's not readable. ]
-
    [ Open question: The document currently defines a registry for
    errors.  It has also been suggested that the option also carry human
-   readable (text) messages, so allow the server admin to provide
+   readable (text) messages, to allow the server admin to provide
    additional debugging information (e.g: "example.com pointed their NS
    at us.  No idea why...", "We don't provide recursive DNS to
    192.0.2.0.  Please stop asking...", "Have you tried Acme Anvil and
@@ -51,24 +46,24 @@ Status of This Memo
 
    Internet-Drafts are working documents of the Internet Engineering
    Task Force (IETF).  Note that other groups may also distribute
-
-
-
-
-Kumari, et al.           Expires August 31, 2017                [Page 1]
-
-Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
-
-
    working documents as Internet-Drafts.  The list of current Internet-
    Drafts is at http://datatracker.ietf.org/drafts/current/.
 
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
+
+
+
+
+Kumari, et al.           Expires January 3, 2018                [Page 1]
+
+Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+
+
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on August 31, 2017.
+   This Internet-Draft will expire on January 3, 2018.
 
 Copyright Notice
 
@@ -87,9 +82,9 @@ Copyright Notice
 
 Table of Contents
 
-   1.  Introduction and background . . . . . . . . . . . . . . . . .   3
+   1.  Introduction and background . . . . . . . . . . . . . . . . .   2
      1.1.  Requirements notation . . . . . . . . . . . . . . . . . .   3
-   2.  Extended Error EDNS0 option format  . . . . . . . . . . . . .   4
+   2.  Extended Error EDNS0 option format  . . . . . . . . . . . . .   3
    3.  Use of the Extended DNS Error option  . . . . . . . . . . . .   4
    4.  Defined Extended DNS Errors . . . . . . . . . . . . . . . . .   5
      4.1.  Extended DNS Error Code 1 - DNSSEC Bogus  . . . . . . . .   5
@@ -107,21 +102,20 @@ Table of Contents
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   8
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
 
-
-
-
-
-Kumari, et al.           Expires August 31, 2017                [Page 2]
-
-Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
-
-
 1.  Introduction and background
 
    There are many reasons that a DNS query may fail, some of them
    transient, some permanent; some can be resolved by querying another
    server, some are likely best handled by stopping resolution.
    Unfortunately, the error signals that a DNS server can return are
+
+
+
+Kumari, et al.           Expires January 3, 2018                [Page 2]
+
+Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+
+
    very limited, and are not very expressive.  This means that
    applications and resolvers often have to "guess" at what the issue is
    - e.g the answer was marked REFUSED because of a lame delegation, or
@@ -132,25 +126,19 @@ Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
    A good example of issues that would benefit by additional error
    information is an error caused by a DNSSEC validation issue.  When a
    stub resolver queries a DNSSEC bogus name (using a validating
-   resolver), their machine receives a SERVFAIL in response.
+   resolver), the stub resolver receives only a SERVFAIL in response.
    Unfortunately, SERVFAIL is used to signal many sorts of DNS errors,
    and so the stub resolver simply asks the next configured DNS
-   resolver.  The result of trying the next resulver is one of two
+   resolver.  The result of trying the next resolver is one of two
    outcomes: either the next resolver also validates, a SERVFAIL is
    returned again, and the user gets an (largely) incomprehensible error
-   message, or either the next resolver is not a validating resolver,
-   and the user is returned a potentially harmful result.
+   message; or the next resolver is not a validating resolver, and the
+   user is returned a potentially harmful result.
 
    This document specifies a mechanism to extend (or annotate) DNS
    errors to provide additional information about the cause of the
    error.  This information can be used by the resolver to make a
-   decision whether to retry or not, or by technical users attempting to
-   debug issues.
-
-   This document specifies a mechanism to extend (or annotate) DNS
-   errors to provide additional information about the cause of the
-   error.  This information can be used by a resolver to make a decision
-   whether or no to retry, or by administrators and technical users
+   decision regarding whether or not to retry, or by technical users
    attempting to debug issues.
 
    Here is a reference to an "external" (non-RFC / draft) thing:
@@ -163,20 +151,26 @@ Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in [RFC2119].
 
-
-
-
-
-Kumari, et al.           Expires August 31, 2017                [Page 3]
-
-Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
-
-
 2.  Extended Error EDNS0 option format
 
    This draft uses an EDNS0 ([RFC2671]) option to include extended error
    (ExtError) information in DNS messages.  The option is structured as
    follows:
+
+
+
+
+
+
+
+
+
+
+
+Kumari, et al.           Expires January 3, 2018                [Page 3]
+
+Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+
 
                                                 1   1   1   1   1   1
         0   1   2   3   4   5   6   7   8   9   0   1   2   3   4   5
@@ -190,9 +184,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
    6: |                             CODE                              |
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
-   o  OPTION-CODE, 2 octets (Defined in [RFC6891]), for ExtError is TBD.
+   o  OPTION-CODE, 2 octets (defined in [RFC6891]), for ExtError is TBD.
 
-   o  OPTION-LENGTH, 2 octets ((Defined in [RFC6891]) contains the
+   o  OPTION-LENGTH, 2 octets ((defined in [RFC6891]) contains the
       length of the payload (everything after OPTION-LENGTH) in octets
       and should be 4.
 
@@ -220,20 +214,20 @@ Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
    in any error response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query
    that includes an EDNS option.  This document includes a set of
    initial codepoints (and requests to the IANA to add them to the
-
-
-
-Kumari, et al.           Expires August 31, 2017                [Page 4]
-
-Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
-
-
    registry), but is extensible via the IANA registry to allow
    additional error codes to be defined in the future.
 
    The R (Retry) flag provides a hint (or suggestion) as to what the
    receiver may want to do with this annotated error.  The mechanism is
    specifically designed to be extensible, and so implementations may
+
+
+
+Kumari, et al.           Expires January 3, 2018                [Page 4]
+
+Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+
+
    receive EDE codes that it does not understand.  The R flag allows
    implementations to make a decision as to what to do if it receives a
    response with an unknown code - retry or drop the query.  Note that
@@ -276,16 +270,19 @@ Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
    code.  Examples of "unauthorized" clients are recursive queries from
    IP addresses outside the network, blacklisted IP addresses, etc.
 
-
-
-
-Kumari, et al.           Expires August 31, 2017                [Page 5]
-
-Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
-
-
    Implementations SHOULD allow operators to define what to set the R
    flag to in this case.
+
+
+
+
+
+
+
+Kumari, et al.           Expires January 3, 2018                [Page 5]
+
+Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+
 
 4.5.  Extended DNS Error Code 5 - TooBusy
 
@@ -305,7 +302,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
 5.  IANA Considerations
 
-   [This section under construction ]
+   [This section under construction, beware. ]
 
    This document defines a new EDNS(0) option, entitled "Extended DNS
    Error", assigned a value of TBD1 from the "DNS EDNS0 Option Codes
@@ -335,9 +332,12 @@ Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
 
 
-Kumari, et al.           Expires August 31, 2017                [Page 6]
+
+
+
+Kumari, et al.           Expires January 3, 2018                [Page 6]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
+Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
 6.  Open questions
@@ -351,19 +351,21 @@ Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
    2  Can this be applied to *any* response, or only error responses?
 
-
+   3  Should textual information be allowed as well?  What if the only
+      thing allowed is a domain name, e.g to point at where validation
+      began failing?
 
 7.  Security Considerations
 
    DNSSEC is being deployed - unfortunately a significant number of
-   clients (TODO: Link to Geoff H stats), when receiving a SERVFAIL from
-   a validating resolver because of a DNSSEC validaion issue simply ask
-   the next (non-validating) resolver in their list, and do don't get
-   any of the protections which DNSSEC should provide.  This is very
-   similar to a kid asking his mother if he can have another cookie.
-   When the mother says "No, it will ruin your dinner!", going off and
-   asking his (more permissive) father and getting a "Yes, sure,
-   cookie!".
+   clients (~11% according to [GeoffValidation]), when receiving a
+   SERVFAIL from a validating resolver because of a DNSSEC validaion
+   issue simply ask the next (non-validating) resolver in their list,
+   and do don't get any of the protections which DNSSEC should provide.
+   This is very similar to a kid asking his mother if he can have
+   another cookie.  When the mother says "No, it will ruin your
+   dinner!", going off and asking his (more permissive) father and
+   getting a "Yes, sure, cookie!".
 
 8.  Acknowledgements
 
@@ -374,8 +376,8 @@ Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
    I also want to thank the band "Infected Mushroom" for providing a
    good background soundtrack (and to see if I can get away with this!)
-
-   Another author would like to thank the band "Mushroom Infectors"
+   Another author would like to thank the band "Mushroom Infectors".
+   This was funny at the time we wrote it, but I cannot remember why...
 
 9.  References
 
@@ -389,11 +391,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
 
 
-
-
-Kumari, et al.           Expires August 31, 2017                [Page 7]
+Kumari, et al.           Expires January 3, 2018                [Page 7]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
+Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -402,6 +402,11 @@ Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
               <http://www.rfc-editor.org/info/rfc2119>.
 
 9.2.  Informative References
+
+   [GeoffValidation]
+              IANA, "A quick review of DNSSEC Validation in today's
+              Internet", June 2016, <http://www.potaroo.net/
+              presentations/2016-06-27-dnssec.pdf>.
 
    [I-D.ietf-sidr-iana-objects]
               Manderson, T., Vegoda, L., and S. Kent, "RPKI Objects
@@ -414,7 +419,7 @@ Appendix A.  Changes / Author Notes.
 
    From -00 to -01;
 
-   o  Placeholder to remind me to include changelog.
+   o  Fixed up some of the text, minor clarifications.
 
 Authors' Addresses
 
@@ -436,20 +441,22 @@ Authors' Addresses
    Email: each@isc.org
 
 
+
+
+
+
+
+
+Kumari, et al.           Expires January 3, 2018                [Page 8]
+
+Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+
+
    Roy Arends
    Nominet
    UK
 
    Email: TBD
-
-
-
-
-
-
-Kumari, et al.           Expires August 31, 2017                [Page 8]
-
-Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
 
    Wes Hardaker
@@ -496,12 +503,5 @@ Internet-Draft     draft-wkumari-dnsop-extended-error      February 2017
 
 
 
-
-
-
-
-
-
-
-Kumari, et al.           Expires August 31, 2017                [Page 9]
+Kumari, et al.           Expires January 3, 2018                [Page 9]
 ```

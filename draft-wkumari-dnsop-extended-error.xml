@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="info" docName="draft-wkumari-dnsop-extended-error-01"
+<rfc category="info" docName="draft-wkumari-dnsop-extended-error-02"
      ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -91,7 +91,25 @@
       </address>
     </author>
 
-    <date day="2" month="July" year="2017"/>
+    <author fullname="David C Lawrence" initials="D." surname="Lawrence">
+      <organization>Akamai Technologies</organization>
+
+      <address>
+        <postal>
+          <street>150 Broadway</street>
+
+          <city>Cambridge, MA</city>
+
+          <code>02142-1054</code>
+
+          <country>US</country>
+        </postal>
+
+        <email>tale@akamai.com</email>
+      </address>
+    </author>
+
+    <date day="17" month="July" year="2017"/>
 
     <abstract>
       <t>This document defines an extensible method to return additional
@@ -327,7 +345,7 @@
 
           <t hangText="3">Should textual information be allowed as well? What
           if the only thing allowed is a domain name, e.g to point at where
-          validation began failing? </t>
+          validation began failing?</t>
         </list></t>
     </section>
 
@@ -396,6 +414,11 @@
 
     <section title="Changes / Author Notes.">
       <t>[RFC Editor: Please remove this section before publication ]</t>
+
+      <t>From -02 to -03:<list style="symbols">
+          <t>Added David Lawrence -- I somehow missed that in last
+          version.</t>
+        </list></t>
 
       <t>From -00 to -01;</t>
 

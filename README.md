@@ -7,16 +7,18 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Informational                                   E. Hunt
-Expires: January 3, 2018                                             ISC
+Expires: January 18, 2018                                            ISC
                                                                R. Arends
                                                                  Nominet
                                                              W. Hardaker
                                                                  USC/ISI
-                                                            July 2, 2017
+                                                             D. Lawrence
+                                                     Akamai Technologies
+                                                           July 17, 2017
 
 
                           Extended DNS Errors
-                 draft-wkumari-dnsop-extended-error-01
+                 draft-wkumari-dnsop-extended-error-02
 
 Abstract
 
@@ -49,21 +51,21 @@ Status of This Memo
    working documents as Internet-Drafts.  The list of current Internet-
    Drafts is at http://datatracker.ietf.org/drafts/current/.
 
-   Internet-Drafts are draft documents valid for a maximum of six months
-   and may be updated, replaced, or obsoleted by other documents at any
 
 
 
 
-Kumari, et al.           Expires January 3, 2018                [Page 1]
+Kumari, et al.          Expires January 18, 2018                [Page 1]
 
 Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 3, 2018.
+   This Internet-Draft will expire on January 18, 2018.
 
 Copyright Notice
 
@@ -82,7 +84,7 @@ Copyright Notice
 
 Table of Contents
 
-   1.  Introduction and background . . . . . . . . . . . . . . . . .   2
+   1.  Introduction and background . . . . . . . . . . . . . . . . .   3
      1.1.  Requirements notation . . . . . . . . . . . . . . . . . .   3
    2.  Extended Error EDNS0 option format  . . . . . . . . . . . . .   3
    3.  Use of the Extended DNS Error option  . . . . . . . . . . . .   4
@@ -102,20 +104,24 @@ Table of Contents
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   8
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
 
+
+
+
+
+
+
+
+Kumari, et al.          Expires January 18, 2018                [Page 2]
+
+Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+
+
 1.  Introduction and background
 
    There are many reasons that a DNS query may fail, some of them
    transient, some permanent; some can be resolved by querying another
    server, some are likely best handled by stopping resolution.
    Unfortunately, the error signals that a DNS server can return are
-
-
-
-Kumari, et al.           Expires January 3, 2018                [Page 2]
-
-Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
-
-
    very limited, and are not very expressive.  This means that
    applications and resolvers often have to "guess" at what the issue is
    - e.g the answer was marked REFUSED because of a lame delegation, or
@@ -161,13 +167,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
 
-
-
-
-
-
-
-Kumari, et al.           Expires January 3, 2018                [Page 3]
+Kumari, et al.          Expires January 18, 2018                [Page 3]
 
 Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
@@ -223,7 +223,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
 
-Kumari, et al.           Expires January 3, 2018                [Page 4]
+Kumari, et al.          Expires January 18, 2018                [Page 4]
 
 Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
@@ -279,7 +279,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
 
-Kumari, et al.           Expires January 3, 2018                [Page 5]
+Kumari, et al.          Expires January 18, 2018                [Page 5]
 
 Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
@@ -335,7 +335,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
 
-Kumari, et al.           Expires January 3, 2018                [Page 6]
+Kumari, et al.          Expires January 18, 2018                [Page 6]
 
 Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
@@ -391,7 +391,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
 
-Kumari, et al.           Expires January 3, 2018                [Page 7]
+Kumari, et al.          Expires January 18, 2018                [Page 7]
 
 Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
@@ -416,6 +416,10 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 Appendix A.  Changes / Author Notes.
 
    [RFC Editor: Please remove this section before publication ]
+
+   From -02 to -03:
+
+   o  Added David Lawrence -- I somehow missed that in last version.
 
    From -00 to -01;
 
@@ -443,11 +447,7 @@ Authors' Addresses
 
 
 
-
-
-
-
-Kumari, et al.           Expires January 3, 2018                [Page 8]
+Kumari, et al.          Expires January 18, 2018                [Page 8]
 
 Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
@@ -466,6 +466,13 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
    US
 
 
+   David C Lawrence
+   Akamai Technologies
+   150 Broadway
+   Cambridge, MA  02142-1054
+   US
+
+   Email: tale@akamai.com
 
 
 
@@ -496,12 +503,5 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
 
-
-
-
-
-
-
-
-Kumari, et al.           Expires January 3, 2018                [Page 9]
+Kumari, et al.          Expires January 18, 2018                [Page 9]
 ```

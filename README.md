@@ -90,7 +90,7 @@ Table of Contents
    3.  Use of the Extended DNS Error option  . . . . . . . . . . . .   4
    4.  Defined Extended DNS Errors . . . . . . . . . . . . . . . . .   5
      4.1.  Extended DNS Error Code 1 - DNSSEC Bogus  . . . . . . . .   5
-     4.2.  Extended DNS Error Code 2 - DNSSEC Indeterminite  . . . .   5
+     4.2.  Extended DNS Error Code 2 - DNSSEC Indeterminate  . . . .   5
      4.3.  Extended DNS Error Code 3 - Lame  . . . . . . . . . . . .   5
      4.4.  Extended DNS Error Code 4 - Prohibited  . . . . . . . . .   5
      4.5.  Extended DNS Error Code 5 - TooBusy . . . . . . . . . . .   6
@@ -99,7 +99,7 @@ Table of Contents
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
    8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
    9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   7
-     9.1.  Normative References  . . . . . . . . . . . . . . . . . .   7
+     9.1.  Normative References  . . . . . . . . . . . . . . . . . .   8
      9.2.  Informative References  . . . . . . . . . . . . . . . . .   8
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   8
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
@@ -247,7 +247,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
    The resolver attempted to perform DNSSEC validation, but validation
    ended in the Bogus state.  The R flag should be set.
 
-4.2.  Extended DNS Error Code 2 - DNSSEC Indeterminite
+4.2.  Extended DNS Error Code 2 - DNSSEC Indeterminate
 
    The resolver attempted to perform DNSSEC validation, but validation
    ended in the Indeterminate state.
@@ -379,13 +379,13 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
    Another author would like to thank the band "Mushroom Infectors".
    This was funny at the time we wrote it, but I cannot remember why...
 
+   We would like to especially thank Peter van Dijk, who sent GitHub
+   pull requests.
+
 9.  References
 
-9.1.  Normative References
 
-   [IANA.AS_Numbers]
-              IANA, "Autonomous System (AS) Numbers",
-              <http://www.iana.org/assignments/as-numbers>.
+
 
 
 
@@ -395,6 +395,12 @@ Kumari, et al.          Expires January 18, 2018                [Page 7]
 
 Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
+
+9.1.  Normative References
+
+   [IANA.AS_Numbers]
+              IANA, "Autonomous System (AS) Numbers",
+              <http://www.iana.org/assignments/as-numbers>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
@@ -436,13 +442,7 @@ Authors' Addresses
    Email: warren@kumari.net
 
 
-   Evan Hunt
-   ISC
-   950 Charter St
-   Redwood City, CA  94063
-   US
 
-   Email: each@isc.org
 
 
 
@@ -450,6 +450,15 @@ Authors' Addresses
 Kumari, et al.          Expires January 18, 2018                [Page 8]
 
 Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+
+
+   Evan Hunt
+   ISC
+   950 Charter St
+   Redwood City, CA  94063
+   US
+
+   Email: each@isc.org
 
 
    Roy Arends
@@ -473,15 +482,6 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
    US
 
    Email: tale@akamai.com
-
-
-
-
-
-
-
-
-
 
 
 

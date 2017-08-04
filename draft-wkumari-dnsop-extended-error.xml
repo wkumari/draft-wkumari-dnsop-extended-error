@@ -256,7 +256,7 @@
         ended in the Bogus state. The R flag should be set.</t>
       </section>
 
-      <section title="Extended DNS Error Code 2 - DNSSEC Indeterminite">
+      <section title="Extended DNS Error Code 2 - DNSSEC Indeterminate">
         <t>The resolver attempted to perform DNSSEC validation, but validation
         ended in the Indeterminate state.</t>
 

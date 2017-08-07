@@ -196,8 +196,8 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
    Currently the only defined flag is the R flag.
 
-   R - Retry  The R (or Retry) flag provides a hint to the receiver if
-      it should retry the query, possibly by querying another server.
+   R - Retry  The R (or Retry) flag provides a hint to the receiver that
+      it should retry the query, probably by querying another server.
       If the R bit is set (1), the sender believes that retrying the
       query may provide a successful answer next time; if the R bit is
       clear (0), the sender believes that it should not ask another
@@ -245,14 +245,14 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 4.1.  Extended DNS Error Code 1 - DNSSEC Bogus
 
    The resolver attempted to perform DNSSEC validation, but validation
-   ended in the Bogus state.  The R flag should be set.
+   ended in the Bogus state.  The R flag should not be set.
 
 4.2.  Extended DNS Error Code 2 - DNSSEC Indeterminate
 
    The resolver attempted to perform DNSSEC validation, but validation
    ended in the Indeterminate state.
 
-   Usually attached to SERVFAIL messages.  The R flag should be set.
+   Usually attached to SERVFAIL messages.  The R flag should not be set.
 
 4.3.  Extended DNS Error Code 3 - Lame
 
@@ -260,7 +260,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
    clear) for a domain for which it is not authoritative SHOULD include
    this EDE code in the REFUSED response.
 
-   Implementations should not set the R flag in this case (another
+   Implementations should set the R flag in this case (another
    nameserver might not be lame).
 
 4.4.  Extended DNS Error Code 4 - Prohibited

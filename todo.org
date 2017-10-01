@@ -1,0 +1,21 @@
+* TODO write dnsop with options:
+  1. individual codes, per existing doc
+  2. 16 bit code field, with 16 bit lookup field based on rcode
+  3. 32 bit code field, repeating rcode from elsewhere in the packet
+  4. integer ranges where NNYY indicates the NN integer rcode and YY
+     indicates the sub-code.  Note that this needs a 32 bit field too
+* TODO can we include more than one error code?
+  + [ ] more than one edns0 rr, should be able to
+  + [ ] more than one odns0 sub-option; don't know
+* TODO what would a forwarding server do?
+  1. always send back edns0?
+  2. never send back edns0
+  3. send if server believes client can receive it
+* TODO informative code to add: type any only one type of data
+* TODO set the 1 bit as a flag and reserve the other 15 bits are unused...
+  + but not necessarily flags
+* TODO unauthenticated errors?  see Paul Wouters
+  + can we secure them?
+  + it doesn't matter anyway
+  + they're just informational
+

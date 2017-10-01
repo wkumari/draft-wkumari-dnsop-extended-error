@@ -141,7 +141,7 @@
       Unfortunately, the error signals that a DNS server can return are very
       limited, and are not very expressive. This means that applications and
       resolvers often have to "guess" at what the issue is - e.g the answer
-      was marked REFUSED because of a lame delegation, or because there is a
+      was marked REFUSED because of a lame delegation, or because of a
       lame delegation or because the nameserver is still starting up and
       loading zones? Is a SERVFAIL a DNSSEC validation issue, or is the
       nameserver experiencing a bad hair day?</t>
@@ -252,7 +252,7 @@
       suggestions for the R flag, but the originating server may ignore these
       recommendations if it knows better.</t>
 
-      <section title="Extended DNS Error Code 1 - DNSSEC Bogus">
+      <section title="Extended DNS Error Code 100 - DNSSEC Bogus">
         <t>The resolver attempted to perform DNSSEC validation, but validation
         ended in the Bogus state. The R flag should not be set.</t>
       </section>
@@ -363,10 +363,13 @@
     </section>
 
     <section title="Acknowledgements">
-      <t>The authors wish to thank Geoff Huston. They also vaguely remember
-      discussing this with a number of people over the years, but have
-      forgotten who all they were -- if you were one of them, and are not
-      listed, please let us know and we'll acknowledge you.</t>
+      <t>The authors wish to thank Geoff Huston and Bob Harold, Carlos
+      M. Martinez, Peter DeVries, George Michelson, Mark Andrews,
+      Ondrej Sury, Edward Lewis, Paul Vixie, Shane Kerr. They also
+      vaguely remember discussing this with a number of people over
+      the years, but have forgotten who all they were -- if you were
+      one of them, and are not listed, please let us know and we'll
+      acknowledge you.</t>
 
       <t>I also want to thank the band "Infected Mushroom" for providing a
       good background soundtrack (and to see if I can get away with this!)

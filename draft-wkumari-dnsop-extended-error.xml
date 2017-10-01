@@ -355,7 +355,7 @@
       clients (~11% according to <xref target="GeoffValidation"/>), when
       receiving a SERVFAIL from a validating resolver because of a DNSSEC
       validaion issue simply ask the next (non-validating) resolver in their
-      list, and do don't get any of the protections which DNSSEC should
+      list, and don't get any of the protections which DNSSEC should
       provide. This is very similar to a kid asking his mother if he can have
       another cookie. When the mother says "No, it will ruin your dinner!",
       going off and asking his (more permissive) father and getting a "Yes,

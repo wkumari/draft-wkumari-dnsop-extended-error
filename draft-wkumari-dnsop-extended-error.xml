@@ -220,7 +220,8 @@
           another server.</t>
         </list></t>
 
-      <t>The remaining bits in the flags field MUST be set to 0 by the sender
+      <t>The remaining bits in the flags fields are reserved for
+      future use and MUST be set to 0 by the sender
       and SHOULD be ignored by the receiver.</t>
 
       <t>Code: A code point into the IANA "Extended DNS Errors" registry.</t>

@@ -11,7 +11,8 @@
   1. always send back edns0?
   2. never send back edns0
   3. send if server believes client can receive it
-* TODO informative code to add: type any only one type of data
+* TODO informative code to add: type ANY only one type of data
+  + is this useful?
 * DONE set the 1 bit as a flag and reserve the other 15 bits are unused...
   :LOGBOOK:
   - State "DONE"       from "TODO"       [2017-10-16 Mon 14:45]

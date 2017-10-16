@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="std" docName="draft-wkumari-dnsop-extended-error-02"
+<rfc category="std" docName="draft-ietf-dnsop-extended-error-00"
      ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -22,7 +22,7 @@
   <front>
     <!-- WK: Set long title. -->
 
-    <title abbrev="draft-wkumari-dnsop-extended-error">Extended DNS
+    <title abbrev="draft-ietf-dnsop-extended-error">Extended DNS
     Errors</title>
 
     <author fullname="Warren Kumari" initials="W." surname="Kumari">
@@ -109,7 +109,7 @@
       </address>
     </author>
 
-    <date day="17" month="July" year="2017"/>
+    <date day="16" month="October" year="2017"/>
 
     <abstract>
       <t>This document defines an extensible method to return additional

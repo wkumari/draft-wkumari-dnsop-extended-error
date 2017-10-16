@@ -7,18 +7,18 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Standards Track                                 E. Hunt
-Expires: January 18, 2018                                            ISC
+Expires: April 19, 2018                                              ISC
                                                                R. Arends
                                                                  Nominet
                                                              W. Hardaker
                                                                  USC/ISI
                                                              D. Lawrence
                                                      Akamai Technologies
-                                                           July 17, 2017
+                                                        October 16, 2017
 
 
                           Extended DNS Errors
-                 draft-wkumari-dnsop-extended-error-02
+                   draft-ietf-dnsop-extended-error-00
 
 Abstract
 
@@ -55,9 +55,9 @@ Status of This Memo
 
 
 
-Kumari, et al.          Expires January 18, 2018                [Page 1]
+Kumari, et al.           Expires April 19, 2018                 [Page 1]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
    Internet-Drafts are draft documents valid for a maximum of six months
@@ -65,7 +65,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 18, 2018.
+   This Internet-Draft will expire on April 19, 2018.
 
 Copyright Notice
 
@@ -111,9 +111,9 @@ Table of Contents
 
 
 
-Kumari, et al.          Expires January 18, 2018                [Page 2]
+Kumari, et al.           Expires April 19, 2018                 [Page 2]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
 1.  Introduction and background
@@ -167,9 +167,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
 
-Kumari, et al.          Expires January 18, 2018                [Page 3]
+Kumari, et al.           Expires April 19, 2018                 [Page 3]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
                                                 1   1   1   1   1   1
@@ -223,9 +223,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
 
-Kumari, et al.          Expires January 18, 2018                [Page 4]
+Kumari, et al.           Expires April 19, 2018                 [Page 4]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
    The R (Retry) flag provides a hint (or suggestion) as to what the
@@ -279,9 +279,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
 
-Kumari, et al.          Expires January 18, 2018                [Page 5]
+Kumari, et al.           Expires April 19, 2018                 [Page 5]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
 4.5.  Extended DNS Error Code 5 - TooBusy
@@ -335,9 +335,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
 
-Kumari, et al.          Expires January 18, 2018                [Page 6]
+Kumari, et al.           Expires April 19, 2018                 [Page 6]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
 6.  Open questions
@@ -391,9 +391,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
 
-Kumari, et al.          Expires January 18, 2018                [Page 7]
+Kumari, et al.           Expires April 19, 2018                 [Page 7]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
 9.  References
@@ -447,9 +447,9 @@ Authors' Addresses
 
 
 
-Kumari, et al.          Expires January 18, 2018                [Page 8]
+Kumari, et al.           Expires April 19, 2018                 [Page 8]
 
-Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
+Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
    Evan Hunt
@@ -503,5 +503,5 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
 
-Kumari, et al.          Expires January 18, 2018                [Page 9]
+Kumari, et al.           Expires April 19, 2018                 [Page 9]
 ```

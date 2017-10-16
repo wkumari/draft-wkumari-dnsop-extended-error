@@ -6,7 +6,7 @@
 
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
-Intended status: Informational                                   E. Hunt
+Intended status: Standards Track                                 E. Hunt
 Expires: January 18, 2018                                            ISC
                                                                R. Arends
                                                                  Nominet
@@ -89,7 +89,7 @@ Table of Contents
    2.  Extended Error EDNS0 option format  . . . . . . . . . . . . .   3
    3.  Use of the Extended DNS Error option  . . . . . . . . . . . .   4
    4.  Defined Extended DNS Errors . . . . . . . . . . . . . . . . .   5
-     4.1.  Extended DNS Error Code 1 - DNSSEC Bogus  . . . . . . . .   5
+     4.1.  Extended DNS Error Code 100 - DNSSEC Bogus  . . . . . . .   5
      4.2.  Extended DNS Error Code 2 - DNSSEC Indeterminate  . . . .   5
      4.3.  Extended DNS Error Code 3 - Lame  . . . . . . . . . . . .   5
      4.4.  Extended DNS Error Code 4 - Prohibited  . . . . . . . . .   5
@@ -98,7 +98,7 @@ Table of Contents
    6.  Open questions  . . . . . . . . . . . . . . . . . . . . . . .   7
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
    8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
-   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   7
+   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   8
      9.1.  Normative References  . . . . . . . . . . . . . . . . . .   8
      9.2.  Informative References  . . . . . . . . . . . . . . . . .   8
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   8
@@ -125,7 +125,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
    very limited, and are not very expressive.  This means that
    applications and resolvers often have to "guess" at what the issue is
    - e.g the answer was marked REFUSED because of a lame delegation, or
-   because there is a lame delegation or because the nameserver is still
+   because of a lame delegation or because the nameserver is still
    starting up and loading zones?  Is a SERVFAIL a DNSSEC validation
    issue, or is the nameserver experiencing a bad hair day?
 
@@ -179,9 +179,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
    2: |                           OPTION-LENGTH                       |
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-   4: | R |                         FLAGS                             |
+   4: | R |                          RESERVED                         |
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-   6: |                             CODE                              |
+   6: |                                CODE                           |
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
    o  OPTION-CODE, 2 octets (defined in [RFC6891]), for ExtError is TBD.
@@ -190,7 +190,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
       length of the payload (everything after OPTION-LENGTH) in octets
       and should be 4.
 
-   o  FLAGS, 2 octets.
+   o  RESERVED, 2 octets; the first bit (R) indicates a flag defined in
+      this specification.  The remaining bits are reserved for future
+      use, potentially as additional flags.
 
    o  CODE, 2 octets.
 
@@ -203,8 +205,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
       clear (0), the sender believes that it should not ask another
       server.
 
-   The remaining bits in the flags field MUST be set to 0 by the sender
-   and SHOULD be ignored by the receiver.
+   The remaining bits in the RESERVED field are reserved for future use
+   and MUST be set to 0 by the sender and SHOULD be ignored by the
+   receiver.
 
    Code: A code point into the IANA "Extended DNS Errors" registry.
 
@@ -217,9 +220,6 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
    registry), but is extensible via the IANA registry to allow
    additional error codes to be defined in the future.
 
-   The R (Retry) flag provides a hint (or suggestion) as to what the
-   receiver may want to do with this annotated error.  The mechanism is
-   specifically designed to be extensible, and so implementations may
 
 
 
@@ -228,6 +228,9 @@ Kumari, et al.          Expires January 18, 2018                [Page 4]
 Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
+   The R (Retry) flag provides a hint (or suggestion) as to what the
+   receiver may want to do with this annotated error.  The mechanism is
+   specifically designed to be extensible, and so implementations may
    receive EDE codes that it does not understand.  The R flag allows
    implementations to make a decision as to what to do if it receives a
    response with an unknown code - retry or drop the query.  Note that
@@ -242,7 +245,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
    provides suggestions for the R flag, but the originating server may
    ignore these recommendations if it knows better.
 
-4.1.  Extended DNS Error Code 1 - DNSSEC Bogus
+4.1.  Extended DNS Error Code 100 - DNSSEC Bogus
 
    The resolver attempted to perform DNSSEC validation, but validation
    ended in the Bogus state.  The R flag should not be set.
@@ -272,9 +275,6 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
    Implementations SHOULD allow operators to define what to set the R
    flag to in this case.
-
-
-
 
 
 
@@ -361,7 +361,7 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
    clients (~11% according to [GeoffValidation]), when receiving a
    SERVFAIL from a validating resolver because of a DNSSEC validaion
    issue simply ask the next (non-validating) resolver in their list,
-   and do don't get any of the protections which DNSSEC should provide.
+   and don't get any of the protections which DNSSEC should provide.
    This is very similar to a kid asking his mother if he can have
    another cookie.  When the mother says "No, it will ruin your
    dinner!", going off and asking his (more permissive) father and
@@ -369,7 +369,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 8.  Acknowledgements
 
-   The authors wish to thank Geoff Huston.  They also vaguely remember
+   The authors wish to thank Geoff Huston and Bob Harold, Carlos M.
+   Martinez, Peter DeVries, George Michelson, Mark Andrews, Ondrej Sury,
+   Edward Lewis, Paul Vixie, Shane Kerr.  They also vaguely remember
    discussing this with a number of people over the years, but have
    forgotten who all they were -- if you were one of them, and are not
    listed, please let us know and we'll acknowledge you.
@@ -381,8 +383,6 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
    We would like to especially thank Peter van Dijk, who sent GitHub
    pull requests.
-
-9.  References
 
 
 
@@ -396,6 +396,8 @@ Kumari, et al.          Expires January 18, 2018                [Page 7]
 Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
 
 
+9.  References
+
 9.1.  Normative References
 
    [IANA.AS_Numbers]
@@ -403,9 +405,9 @@ Internet-Draft     draft-wkumari-dnsop-extended-error          July 2017
               <http://www.iana.org/assignments/as-numbers>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
-              RFC2119, March 1997,
-              <http://www.rfc-editor.org/info/rfc2119>.
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
+              editor.org/info/rfc2119>.
 
 9.2.  Informative References
 
@@ -440,8 +442,6 @@ Authors' Addresses
    US
 
    Email: warren@kumari.net
-
-
 
 
 

@@ -190,9 +190,9 @@
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 2: |                           OPTION-LENGTH                       |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-4: | R |                         FLAGS                             |
+4: | R |                          RESERVED                         |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-6: |                             CODE                              |
+6: |                                CODE                           |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+]]></artwork>
       </figure>
 
@@ -206,7 +206,9 @@
           length of the payload (everything after OPTION-LENGTH) in octets and
           should be 4.</t>
 
-          <t>FLAGS, 2 octets.</t>
+          <t>RESERVED, 2 octets; the first bit (R) indicates a flag
+          defined in this specification.  The remaining bits are
+          reserved for future use, potentially as additional flags.</t>
 
           <t>CODE, 2 octets.</t>
         </list></t>
@@ -220,7 +222,7 @@
           another server.</t>
         </list></t>
 
-      <t>The remaining bits in the flags fields are reserved for
+      <t>The remaining bits in the RESERVED field are reserved for
       future use and MUST be set to 0 by the sender
       and SHOULD be ignored by the receiver.</t>
 

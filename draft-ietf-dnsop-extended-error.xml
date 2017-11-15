@@ -62,18 +62,14 @@
     </author>
 
     <author fullname="Roy Arends" initials="R." surname="Arends">
-      <organization>Nominet</organization>
+      <organization>ICANN</organization>
 
       <address>
         <postal>
           <street/>
-
-          <country>UK</country>
         </postal>
-
-        <email>TBD</email>
+        <email>roy.arends@icann.org</email>
       </address>
-      <email>roy.arends@icann</email>
     </author>
 
     <author fullname="Wes Hardaker" initials="W." surname="Hardaker">

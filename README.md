@@ -9,7 +9,7 @@ Internet-Draft                                                    Google
 Intended status: Standards Track                                 E. Hunt
 Expires: April 19, 2018                                              ISC
                                                                R. Arends
-                                                                 Nominet
+                                                                   ICANN
                                                              W. Hardaker
                                                                  USC/ISI
                                                              D. Lawrence
@@ -462,10 +462,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
    Roy Arends
-   Nominet
-   UK
+   ICANN
 
-   Email: TBD
+   Email: roy.arends@icann.org
 
 
    Wes Hardaker
@@ -473,6 +472,8 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
    P.O. Box 382
    Davis, VA  95617
    US
+
+   Email: ietf@hardakers.net
 
 
    David C Lawrence
@@ -482,7 +483,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
    US
 
    Email: tale@akamai.com
-
 
 
 

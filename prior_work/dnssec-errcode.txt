@@ -1,0 +1,123 @@
+
+	STUB_RESOLVER		RECURSIVE NAME SERVER		 NAME SERVER
+
+1 Security aware        1. Security aware           1. Security aware 
+  validating                                                        
+	                        
+2 Security aware        2. Security oblivious       2. Security oblivious      
+  non validating                                                    
+	                                                                    
+3 Security oblivious  
+	
+===========================================
+3 * 2 * 2 = 12 combinations                     
+5 classes of increasing functionality 
+	identify new error codes in each class
+===========================================
+
+1. [oblivious-oblivious]
+   (Security oblivious) X (security oblivious) X (security oblivious) 
+
+	0	No error condition.  									RFC 1035
+	1	Format error - The name server was unable to			RFC 1035 
+		interpret the query.
+	2	Server failure - The name server was unable to			RFC 1035 
+		process this query due to a problem with the 
+		name server.	
+	3	Name Error - Meaningful only for responses from 		RFC 1035
+		an authoritative name server, this code signifies 
+		that the domain name referenced in the query does
+		not exist.	
+	4	Not Implemented - The name server does not support		RFC 1035 
+		the requested kind of query.
+	5	Refused - The name server refuses to perform the 		RFC 1035
+		specified operation for policy reasons. 
+		For example, a name server may not wish to provide 
+		the information to the particular requester, 
+		or a name server may not wish to perform a particular 
+		operation (e.g., zone transfer) for particular data.	
+	6	YXDOMAIN - Some name that ought not to exist, 			RFC 2136
+		does exist
+	7	YXRRSET - Some RRset that ought not to exist,			RFC 2136
+		does exist
+	8	NXRRSET - Some RRset that ought to exist,				RFC 2136
+		does not exist
+	9	NOTAUTH - The server is not authoritative for			RFC 2136
+		the zone named in the Zone section
+	10	NOTZONE - A name used in the prerequisite or update		RFC 2136 
+		section is not within the zone denoted by the 
+		zone section
+	11 - 15	Reserved.	 
+
+
+
+2. [aware-oblivious]
+   (security aware non-validating) X (security oblivious) X (security oblivious) 
+   (security aware validating) X (security oblivious) X (security oblivious)
+   (security aware non-validating) X (security aware) X (security oblivious) 
+   (security aware validating) X (security aware) X (security oblivious)
+
+	XX	NOCLRPATH - one or more intermediate servers							
+		does not support DNSSEC 
+		(can be identified through EDNS0)
+	XX	LCLPOL - some local policy decision has contributed					
+		to the resultant set of RRs (accepting unsigned responses, accepting
+		authoritative data as authentic).
+
+
+3. [oblivious-aware]
+   (Security oblivious) X (security oblivious) X (security aware) 
+   (security oblivious) X (security aware) X (security oblivious) 
+   (Security oblivious) X (security aware) X (security aware) 
+   (security aware non-validating) X (security oblivious) X (security aware) 
+   (security aware validating) X (security oblivious) X (security aware)
+
+Cases to consider include parent initiated communication to the child (notify/local policy)
+
+
+
+4. [aware-aware]
+   (security aware non-validating) X (security aware) X (security aware) 
+
+	16	BADVERS - Bad OPT Version.								RFC 2671
+		BADSIG - TSIG Signature Failure.						RFC 2845
+	17	BADKEY -  Key not recognized.							RFC 2845
+	18	BADTIME - Signature out of time window.					RFC 2845
+	19	BADMODE - Bad TKEY Mode.								RFC 2930
+	20	BADNAME - Duplicate or unknown key name.				RFC 2930
+	21	BADALG - Algorithm not supported.						RFC 2930
+
+
+	XX	NODNSKEY - DNSKEY missing, was expected to be			
+		present
+	XX	NORRSIG - RRSIG missing, should have been present
+	XX	NONSEC - NSEC missing, should have been present
+	XX	NOSIG - Signature missing, but was expected to be
+		present 
+
+	NODS == INDETERMINATE
+	How can we distinguish between NODS and NONSEC (proving the absence of DS)
+
+
+	XX	NOTZONEKEY - The DNSKEY does not have the 
+		zone flag bit set
+
+	XX	SIGEXP - Signature required to be present 
+		(DS, trusted anchor), was present but has expired
+	XX	SIGNOTACT - Signature required to be present 
+		(DS, trusted anchor), was present but is not yet valid 
+	XX	BOGUS - Signature required to be present (DS), 
+		was present but failed validation
+	XX	INDERMINATE - No trusted chain of keys could be found 
+		that would allow verification of the signatures
+	XX	UNSECURE - No signatures present, not required to be 
+		present (DS)
+
+
+
+
+5. [validating-aware]
+   (security aware validating) X (security aware) X (security aware)
+		
+	XX	LCLPOL - local policy would have otherwise rejected 
+		the record but for the CD bit	

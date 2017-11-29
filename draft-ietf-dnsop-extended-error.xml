@@ -191,7 +191,11 @@
 4: | R |                          RESERVED                         |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 6: |                             INFO-CODE                         |
-   +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+]]></artwork>
+   +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+8: |                             EXTRA-TEXT                        |
+   +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+]]></artwork>
+
       </figure>
 
       <t/>
@@ -209,6 +213,10 @@
           reserved for future use, potentially as additional flags.</t>
 
           <t>INFO-CODE, 2 octets.</t>
+
+          <t>A variable length EXTRA-TEXT field holding additional
+          textual information.</t>
+
         </list></t>
 
       <t>Currently the only defined flag is the R flag. <list style="hanging">
@@ -246,6 +254,9 @@
       response with an unknown code - retry or drop the query. Note that this
       flag is only a suggestion or hint. Receivers can choose to ignore this
       hint.</t>
+
+      <t>The EXTRA-INFO textual field may be zero-length, or may hold
+      additional information useful to network operators.</t>
     </section>
 
     <section title="Defined Extended DNS Errors">

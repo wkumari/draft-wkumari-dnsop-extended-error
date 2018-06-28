@@ -190,9 +190,11 @@
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 4: | R |                          RESERVED                         |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-6: |                             INFO-CODE                         |
+6: |                           RESPONSE-CODE                       |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-8: |                             EXTRA-TEXT                        |
+8: |                             INFO-CODE                         |
+   +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+A: |                             EXTRA-TEXT                        |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 ]]></artwork>
 
@@ -210,7 +212,14 @@
 
           <t>RESERVED, 2 octets; the first bit (R) indicates a flag
           defined in this specification.  The remaining bits are
-          reserved for future use, potentially as additional flags.</t>
+          reserved for future use, potentially as additional
+          flags.</t>
+
+          <t>RESPONSE-CODE, 2 octets: this SHOULD be a copy of the
+          RCODE from the primary DNS packet.  When including multiple
+          extended error EDNS0 records in a response in order to
+          provide additional error information, the RESPONSE-CODE MAY
+          be a different RCODE.</t>
 
           <t>INFO-CODE, 2 octets.</t>
 

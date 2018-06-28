@@ -23,3 +23,5 @@
   + it doesn't matter anyway
   + they're just informational
 
+* TODO [[https://datatracker.ietf.org/meeting/100/materials/slides-100-dnsop-sessa-draft-ietf-dnsop-extended-error-00][review presentation]] and [[https://datatracker.ietf.org/meeting/100/materials/minutes-100-dnsop-00][meeting minute notes ]]
+

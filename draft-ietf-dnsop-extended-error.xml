@@ -224,7 +224,8 @@ A: |                             EXTRA-TEXT                        |
           <t>INFO-CODE, 2 octets.</t>
 
           <t>A variable length EXTRA-TEXT field holding additional
-          textual information.</t>
+          textual information.  It may be zero length when no
+          additional textual information is included.</t>
 
         </list></t>
 

@@ -1,12 +1,18 @@
-* TODO write dnsop with options:
+* DONE write dnsop with options:
+  :LOGBOOK:
+  - State "DONE"       from "TODO"       [2018-06-28 Thu 14:31]
+  :END:
   1. individual codes, per existing doc
   2. 16 bit code field, with 16 bit lookup field based on rcode
   3. 32 bit code field, repeating rcode from elsewhere in the packet
   4. integer ranges where NNYY indicates the NN integer rcode and YY
      indicates the sub-code.  Note that this needs a 32 bit field too
-* TODO can we include more than one error code?
-  + [ ] more than one edns0 rr, should be able to
-  + [ ] more than one odns0 sub-option; don't know
+* DONE can we include more than one error code?
+  :LOGBOOK:
+  - State "DONE"       from "TODO"       [2018-06-29 Fri 21:49]
+  :END:
+  + [X] more than one edns0 rr, should be able to
+  + [X] more than one odns0 sub-option; don't know
 * TODO what would a forwarding server do?
   1. always send back edns0?
   2. never send back edns0
@@ -24,4 +30,18 @@
   + they're just informational
 
 * TODO [[https://datatracker.ietf.org/meeting/100/materials/slides-100-dnsop-sessa-draft-ietf-dnsop-extended-error-00][review presentation]] and [[https://datatracker.ietf.org/meeting/100/materials/minutes-100-dnsop-00][meeting minute notes ]]
-
+  Four choices for how to create the full error code
+          Paul Hoffman: This didn't work well in HTTP, use choice 4
+          Stephane: There might be errors that would cross mulitple categories
+          Joe: First three need additional processing, so fourth is the only reasonable one
+          Ralf Weber: Copying information we already have in the packet isn't a good idea
+          Alex: IANA registry could also have the list of which RCODEs could be used together
+  Stefan: For security, use DNS-over-TLS
+  Eric: Security concern: it's OK as long as you think about what will cause an action based on error
+          Don't use transport security
+  Robert Story: Maybe use flags instead of code
+          Wes: It could get really long
+  Joe: This is definitely transport, not objects
+          Codes are about transport
+          Wes: Are we only doing things that are transport-specific?
+  Stephane: Open question about whether to have informational messages

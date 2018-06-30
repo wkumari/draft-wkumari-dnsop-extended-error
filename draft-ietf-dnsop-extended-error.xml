@@ -276,8 +276,8 @@ A: |                             EXTRA-TEXT                        |
       suggestions for the R flag, but the originating server may ignore these
       recommendations if it knows better.</t>
 
-      <t>The INFO-CODE from the EDE EDNS option is used along with the
-      RCODE from the DNS packet to serve as an index into the
+      <t>The RESPONSE-CODE and the INFO-CODE from the EDE EDNS option is used
+      to serve as a double index into the
       "Extended DNS Error codes" IANA registry, the initial values for
       which are defined in the following sub-sections.</t>
 

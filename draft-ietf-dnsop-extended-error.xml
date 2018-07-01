@@ -410,6 +410,8 @@ A: |                             EXTRA-TEXT                        |
 | SERVFAIL(2) | DNSSEC_BOGUS(1)         | DNSSEC Validation resulted in Bogus         | section <xref target="errbogus" />         |
 | SERVFAIL(2) | DNSSEC_INDETERMINATE(2) | DNSSEC Validation resulted in Indeterminate | section <xref target="errindeterminate" /> |
 
+[incomplete]
+
 ]]></artwork>
 
         </figure></t>

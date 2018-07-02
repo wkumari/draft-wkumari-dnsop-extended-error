@@ -68,6 +68,7 @@
         <postal>
           <street/>
         </postal>
+
         <email>roy.arends@icann.org</email>
       </address>
     </author>
@@ -85,6 +86,7 @@
 
           <country>US</country>
         </postal>
+
         <email>ietf@hardakers.net</email>
       </address>
     </author>
@@ -107,7 +109,7 @@
       </address>
     </author>
 
-    <date day="16" month="October" year="2017"/>
+    <date day="02" month="July" year="2018"/>
 
     <abstract>
       <t>This document defines an extensible method to return additional
@@ -139,10 +141,10 @@
       Unfortunately, the error signals that a DNS server can return are very
       limited, and are not very expressive. This means that applications and
       resolvers often have to "guess" at what the issue is - e.g the answer
-      was marked REFUSED because of a lame delegation, or because of a
-      lame delegation or because the nameserver is still starting up and
-      loading zones? Is a SERVFAIL a DNSSEC validation issue, or is the
-      nameserver experiencing a bad hair day?</t>
+      was marked REFUSED because of a lame delegation, or because of a lame
+      delegation or because the nameserver is still starting up and loading
+      zones? Is a SERVFAIL a DNSSEC validation issue, or is the nameserver
+      experiencing a bad hair day?</t>
 
       <t>A good example of issues that would benefit by additional error
       information is an error caused by a DNSSEC validation issue. When a stub
@@ -197,7 +199,6 @@
 A: |                             EXTRA-TEXT                        |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 ]]></artwork>
-
       </figure>
 
       <t/>
@@ -210,23 +211,20 @@ A: |                             EXTRA-TEXT                        |
           length of the payload (everything after OPTION-LENGTH) in octets and
           should be 4.</t>
 
-          <t>RESERVED, 2 octets; the first bit (R) indicates a flag
-          defined in this specification.  The remaining bits are
-          reserved for future use, potentially as additional
-          flags.</t>
+          <t>RESERVED, 2 octets; the first bit (R) indicates a flag defined in
+          this specification. The remaining bits are reserved for future use,
+          potentially as additional flags.</t>
 
-          <t>RESPONSE-CODE, 2 octets: this SHOULD be a copy of the
-          RCODE from the primary DNS packet.  When including multiple
-          extended error EDNS0 records in a response in order to
-          provide additional error information, the RESPONSE-CODE MAY
-          be a different RCODE.</t>
+          <t>RESPONSE-CODE, 2 octets: this SHOULD be a copy of the RCODE from
+          the primary DNS packet. When including multiple extended error EDNS0
+          records in a response in order to provide additional error
+          information, the RESPONSE-CODE MAY be a different RCODE.</t>
 
           <t>INFO-CODE, 2 octets.</t>
 
-          <t>A variable length EXTRA-TEXT field holding additional
-          textual information.  It may be zero length when no
-          additional textual information is included.</t>
-
+          <t>A variable length EXTRA-TEXT field holding additional textual
+          information. It may be zero length when no additional textual
+          information is included.</t>
         </list></t>
 
       <t>Currently the only defined flag is the R flag. <list style="hanging">
@@ -238,23 +236,22 @@ A: |                             EXTRA-TEXT                        |
           another server.</t>
         </list></t>
 
-      <t>The remaining bits in the RESERVED field are reserved for
-      future use and MUST be set to 0 by the sender
-      and SHOULD be ignored by the receiver.</t>
+      <t>The remaining bits in the RESERVED field are reserved for future use
+      and MUST be set to 0 by the sender and SHOULD be ignored by the
+      receiver.</t>
 
-      <t>INFO-CODE: A code point that, when combined with the RCODE
-      from the DNS packet, serve as a joint-index into the IANA
-      "Extended DNS Errors" registry.</t>
+      <t>INFO-CODE: A code point that, when combined with the RCODE from the
+      DNS packet, serve as a joint-index into the IANA "Extended DNS Errors"
+      registry.</t>
     </section>
 
     <section title="Use of the Extended DNS Error option">
-      <t>The Extended DNS Error (EDE) is an EDNS option. It can be
-      included in any error response (SERVFAIL, NXDOMAIN, REFUSED,
-      etc) to a query that includes an EDNS option. This document
-      includes a set of initial codepoints (and requests to the IANA
-      to add them to the registry), but is extensible via the IANA
-      registry to allow additional error and information codes to be
-      defined in the future.</t>
+      <t>The Extended DNS Error (EDE) is an EDNS option. It can be included in
+      any error response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query that
+      includes an EDNS option. This document includes a set of initial
+      codepoints (and requests to the IANA to add them to the registry), but
+      is extensible via the IANA registry to allow additional error and
+      information codes to be defined in the future.</t>
 
       <t>The R (Retry) flag provides a hint (or suggestion) as to what the
       receiver may want to do with this annotated error. The mechanism is
@@ -277,84 +274,90 @@ A: |                             EXTRA-TEXT                        |
       recommendations if it knows better.</t>
 
       <t>The RESPONSE-CODE and the INFO-CODE from the EDE EDNS option is used
-      to serve as a double index into the
-      "Extended DNS Error codes" IANA registry, the initial values for
-      which are defined in the following sub-sections.</t>
+      to serve as a double index into the "Extended DNS Error codes" IANA
+      registry, the initial values for which are defined in the following
+      sub-sections.</t>
 
       <section title="SERVFAIL(3) extended information codes">
-	    <section title="Extended DNS Error Code 1 - DNSSEC Bogus" anchor="errbogus">
-		      
-            <t>The resolver attempted to perform DNSSEC validation, but validation
-            ended in the Bogus state. The R flag should not be set.</t>
-          </section>
+        <section anchor="errbogus"
+                 title="Extended DNS Error Code 1 - DNSSEC Bogus">
+          <t>The resolver attempted to perform DNSSEC validation, but
+          validation ended in the Bogus state. The R flag should not be
+          set.</t>
+        </section>
 
-          <section title="Extended DNS Error Code 2 - DNSSEC Indeterminate" anchor="errindeterminate">
-            <t>The resolver attempted to perform DNSSEC validation, but validation
-            ended in the Indeterminate state.  The R flag should not be
-            set.</t>
-          </section>
+        <section anchor="errindeterminate"
+                 title="Extended DNS Error Code 2 - DNSSEC Indeterminate">
+          <t>The resolver attempted to perform DNSSEC validation, but
+          validation ended in the Indeterminate state. The R flag should not
+          be set.</t>
+        </section>
 
-          <section title="Extended DNS Error Code 3 - Signature Expired" anchor="errexpired">
-            <t>The resolver attempted to perform DNSSEC validation,
-            but the signature was expired.  The R flag should not be set.</t>
-          </section>
+        <section anchor="errexpired"
+                 title="Extended DNS Error Code 3 - Signature Expired">
+          <t>The resolver attempted to perform DNSSEC validation, but the
+          signature was expired. The R flag should not be set.</t>
+        </section>
 
-          <section title="Extended DNS Error Code 4 - Signature Not Yet Valid" anchor="errprior">
-            <t>The resolver attempted to perform DNSSEC validation,
-            but the signatures received were not yet valid.  The R flag should not be set.</t>
-          </section>
+        <section anchor="errprior"
+                 title="Extended DNS Error Code 4 - Signature Not Yet Valid">
+          <t>The resolver attempted to perform DNSSEC validation, but the
+          signatures received were not yet valid. The R flag should not be
+          set.</t>
+        </section>
 
-          <section title="Extended DNS Error Code 5 - Unsupported
-                          DNSKEY Algorithm" anchor="errbaddnskeyalg">
-	          <t>The resolver attempted to perform DNSSEC validation,
-	          but a DNSKEY RRSET contained only unknown
-	          algorithms.
-	          The R flag should not be set.</t>
-          </section>
-          <section title="Extended DNS Error Code 6 - Unsupported
-                          DS Algorithm" anchor="errbaddsalg">
-	          <t>The resolver attempted to perform DNSSEC validation,
-	          but a DS RRSET contained only unknown
-	          algorithms.
-	          The R flag should not be set.</t>
-          </section>
+        <section anchor="errbaddnskeyalg"
+                 title="Extended DNS Error Code 5 - Unsupported                           DNSKEY Algorithm">
+          <t>The resolver attempted to perform DNSSEC validation, but a DNSKEY
+          RRSET contained only unknown algorithms. The R flag should not be
+          set.</t>
+        </section>
 
-          <section title="Extended DNS Error Code 7 - DNSKEY missing" anchor="errnodnskey">
-            <t>A DS record existed at a parent, but no DNSKEY record
-            could be found for the child.  The R flag should not be set.</t>
-          </section>
+        <section anchor="errbaddsalg"
+                 title="Extended DNS Error Code 6 - Unsupported                           DS Algorithm">
+          <t>The resolver attempted to perform DNSSEC validation, but a DS
+          RRSET contained only unknown algorithms. The R flag should not be
+          set.</t>
+        </section>
 
-          <section title="Extended DNS Error Code 8 - RRSIGs missing" anchor="errnorrsig">
-            <t>The resolver attempted to perform DNSSEC validation,
-            but no RRSIGs could be found for at least one RRset where
-            RRSIGs were expected.</t>
-          </section>
+        <section anchor="errnodnskey"
+                 title="Extended DNS Error Code 7 - DNSKEY missing">
+          <t>A DS record existed at a parent, but no DNSKEY record could be
+          found for the child. The R flag should not be set.</t>
+        </section>
 
-          <section title="Extended DNS Error Code 9 - No Zone Key Bit Set" anchor="errnozonekey">
-            <t>The resolver attempted to perform DNSSEC validation,
-            but no Zone Key Bit was set in a DNSKEY.</t>
-          </section>
+        <section anchor="errnorrsig"
+                 title="Extended DNS Error Code 8 - RRSIGs missing">
+          <t>The resolver attempted to perform DNSSEC validation, but no
+          RRSIGs could be found for at least one RRset where RRSIGs were
+          expected.</t>
+        </section>
+
+        <section anchor="errnozonekey"
+                 title="Extended DNS Error Code 9 - No Zone Key Bit Set">
+          <t>The resolver attempted to perform DNSSEC validation, but no Zone
+          Key Bit was set in a DNSKEY.</t>
+        </section>
       </section>
 
       <section title="REFUSED(5) extended information codes">
-          <section title="Extended DNS Error Code 1 - Lame">
-            <t>An authoritative resolver that receives a query (with the
-            RD bit clear) for a domain for which it is not authoritative
-            SHOULD include this EDE code in the REFUSED response.
-            Implementations should set the R flag in this case (another
-            nameserver might not be lame).</t>
-          </section>
+        <section title="Extended DNS Error Code 1 - Lame">
+          <t>An authoritative resolver that receives a query (with the RD bit
+          clear) for a domain for which it is not authoritative SHOULD include
+          this EDE code in the REFUSED response. Implementations should set
+          the R flag in this case (another nameserver might not be lame).</t>
+        </section>
 
-          <section title="Extended DNS Error Code 2 - Prohibited">
-            <t>An authoritative or recursive resolver that receives a query from
-            an "unauthorized" client can annotate its REFUSED message with this
-            code. Examples of "unauthorized" clients are recursive queries from IP
-            addresses outside the network, blacklisted IP addresses,
-            local policy, etc.</t>
+        <section title="Extended DNS Error Code 2 - Prohibited">
+          <t>An authoritative or recursive resolver that receives a query from
+          an "unauthorized" client can annotate its REFUSED message with this
+          code. Examples of "unauthorized" clients are recursive queries from
+          IP addresses outside the network, blacklisted IP addresses, local
+          policy, etc.</t>
 
-            <t>Implementations SHOULD allow operators to define what to set the R
-            flag to in this case.</t>
-          </section>
+          <t>Implementations SHOULD allow operators to define what to set the
+          R flag to in this case.</t>
+        </section>
       </section>
     </section>
 
@@ -362,47 +365,44 @@ A: |                             EXTRA-TEXT                        |
       <t>[This section under construction, beware. ]</t>
 
       <section title="new Extended Error Code EDNS Option">
-      <t>This document defines a new EDNS(0) option, entitled "Extended DNS
-      Error", assigned a value of TBD1 from the "DNS EDNS0 Option Codes (OPT)"
-      registry [to be removed upon publication:
-      [http://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-11]</t>
+        <t>This document defines a new EDNS(0) option, entitled "Extended DNS
+        Error", assigned a value of TBD1 from the "DNS EDNS0 Option Codes
+        (OPT)" registry [to be removed upon publication:
+        [http://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-11]</t>
 
-      <t><figure>
-          <artwork><![CDATA[Value  Name                 Status    Reference
+        <t><figure>
+            <artwork><![CDATA[Value  Name                 Status    Reference
 -----  ----------------     ------    ------------------
  TBD   Extended DNS Error    TBD       [ This document ]]]></artwork>
-        </figure></t>
-
-      </section>     
+          </figure></t>
+      </section>
 
       <section title="new Extended Error Code EDNS Option">
-	  <t>This document defines a new double-index IANA registry
-	  table, where the first index value is the RCODE value and
-	  the second index value is the INFO-CODE from the Extended
-	  DNS Error EDNS option defined in this document. The IANA is
-	  requested to create and maintain this "Extended DNS Error
-          codes" registry. The codepoint space for each RCODE index
-          is to be broken into 3 ranges:
-	  </t>
-	  <t>
-          <list
-          style="symbols">
-          <t>1 - 16384: Specification required.</t>
+        <t>This document defines a new double-index IANA registry table, where
+        the first index value is the RCODE value and the second index value is
+        the INFO-CODE from the Extended DNS Error EDNS option defined in this
+        document. The IANA is requested to create and maintain this "Extended
+        DNS Error codes" registry. The codepoint space for each RCODE index is
+        to be broken into 3 ranges:</t>
 
-          <t>16385 - 65000: First Come First Served</t>
+        <t><list style="symbols">
+            <t>1 - 16384: Specification required.</t>
 
-          <t>65000 - 65534: Experimental / Private use</t>
+            <t>16385 - 65000: First Come First Served</t>
 
-        </list>The codepoints 0, 65535 are reserved.</t>
+            <t>65000 - 65534: Experimental / Private use</t>
+          </list>The codepoints 0, 65535 are reserved.</t>
 
-        <t>A starting table, based on the contents of this document,
-        is as follows:</t>
+        <t>A starting table, based on the contents of this document, is as
+        follows:</t>
 
         <!-- Note: orgtbl-mode in emacs is highly helpful when
              editing this -->
+
         <!-- This can't be a table ; too long -->
-      <t><figure>
-          <artwork><![CDATA[
+
+        <t><figure>
+            <artwork><![CDATA[
 
 
 | RCODE       | EDE-INFO-CODE           | Meaning                                     | Ref                                      |
@@ -413,10 +413,10 @@ A: |                             EXTRA-TEXT                        |
 [incomplete]
 
 ]]></artwork>
-
-        </figure></t>
-      </section>     
+          </figure></t>
+      </section>
     </section>
+
     <section title="Open questions">
       <t><list style="hanging">
           <t hangText="1">Can this be included in *any* response or only
@@ -440,21 +440,20 @@ A: |                             EXTRA-TEXT                        |
       clients (~11% according to <xref target="GeoffValidation"/>), when
       receiving a SERVFAIL from a validating resolver because of a DNSSEC
       validaion issue simply ask the next (non-validating) resolver in their
-      list, and don't get any of the protections which DNSSEC should
-      provide. This is very similar to a kid asking his mother if he can have
-      another cookie. When the mother says "No, it will ruin your dinner!",
-      going off and asking his (more permissive) father and getting a "Yes,
-      sure, cookie!".</t>
+      list, and don't get any of the protections which DNSSEC should provide.
+      This is very similar to a kid asking his mother if he can have another
+      cookie. When the mother says "No, it will ruin your dinner!", going off
+      and asking his (more permissive) father and getting a "Yes, sure,
+      cookie!".</t>
     </section>
 
     <section title="Acknowledgements">
-      <t>The authors wish to thank Geoff Huston and Bob Harold, Carlos
-      M. Martinez, Peter DeVries, George Michelson, Mark Andrews,
-      Ondrej Sury, Edward Lewis, Paul Vixie, Shane Kerr. They also
-      vaguely remember discussing this with a number of people over
-      the years, but have forgotten who all they were -- if you were
-      one of them, and are not listed, please let us know and we'll
-      acknowledge you.</t>
+      <t>The authors wish to thank Geoff Huston and Bob Harold, Carlos M.
+      Martinez, Peter DeVries, George Michelson, Mark Andrews, Ondrej Sury,
+      Edward Lewis, Paul Vixie, Shane Kerr. They also vaguely remember
+      discussing this with a number of people over the years, but have
+      forgotten who all they were -- if you were one of them, and are not
+      listed, please let us know and we'll acknowledge you.</t>
 
       <t>I also want to thank the band "Infected Mushroom" for providing a
       good background soundtrack (and to see if I can get away with this!)
@@ -508,6 +507,22 @@ A: |                             EXTRA-TEXT                        |
 
     <section title="Changes / Author Notes.">
       <t>[RFC Editor: Please remove this section before publication ]</t>
+
+      <t>From -00 to -01:<list style="symbols">
+          <t>Address comments from IETF meeting.</t>
+
+          <t>document copying the response code</t>
+
+          <t>mention zero length fields are ok</t>
+
+          <t>clarify lookup procedure </t>
+
+          <t>mention that table isn't done </t>
+        </list></t>
+
+      <t>From -03 to -IETF 00:<list style="symbols">
+          <t>Renamed to draft-ietf-dnsop-extended-error</t>
+        </list></t>
 
       <t>From -02 to -03:<list style="symbols">
           <t>Added David Lawrence -- I somehow missed that in last

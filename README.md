@@ -7,14 +7,14 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Standards Track                                 E. Hunt
-Expires: April 19, 2018                                              ISC
+Expires: January 3, 2019                                             ISC
                                                                R. Arends
                                                                    ICANN
                                                              W. Hardaker
                                                                  USC/ISI
                                                              D. Lawrence
                                                      Akamai Technologies
-                                                        October 16, 2017
+                                                           July 02, 2018
 
 
                           Extended DNS Errors
@@ -49,15 +49,15 @@ Status of This Memo
    Internet-Drafts are working documents of the Internet Engineering
    Task Force (IETF).  Note that other groups may also distribute
    working documents as Internet-Drafts.  The list of current Internet-
-   Drafts is at http://datatracker.ietf.org/drafts/current/.
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
 
 
 
 
 
-Kumari, et al.           Expires April 19, 2018                 [Page 1]
+Kumari, et al.           Expires January 3, 2019                [Page 1]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
+Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
 
 
    Internet-Drafts are draft documents valid for a maximum of six months
@@ -65,16 +65,16 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 19, 2018.
+   This Internet-Draft will expire on January 3, 2019.
 
 Copyright Notice
 
-   Copyright (c) 2017 IETF Trust and the persons identified as the
+   Copyright (c) 2018 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
-   (http://trustee.ietf.org/license-info) in effect on the date of
+   (https://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
@@ -111,9 +111,9 @@ Table of Contents
 
 
 
-Kumari, et al.           Expires April 19, 2018                 [Page 2]
+Kumari, et al.           Expires January 3, 2019                [Page 2]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
+Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
 
 
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
@@ -167,9 +167,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
 
-Kumari, et al.           Expires April 19, 2018                 [Page 3]
+Kumari, et al.           Expires January 3, 2019                [Page 3]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
+Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
 
 
 2.  Extended Error EDNS0 option format
@@ -223,9 +223,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
 
-Kumari, et al.           Expires April 19, 2018                 [Page 4]
+Kumari, et al.           Expires January 3, 2019                [Page 4]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
+Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
 
 
       query may provide a successful answer next time; if the R bit is
@@ -279,9 +279,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
 
-Kumari, et al.           Expires April 19, 2018                 [Page 5]
+Kumari, et al.           Expires January 3, 2019                [Page 5]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
+Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
 
 
 4.1.  SERVFAIL(3) extended information codes
@@ -335,9 +335,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
 
-Kumari, et al.           Expires April 19, 2018                 [Page 6]
+Kumari, et al.           Expires January 3, 2019                [Page 6]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
+Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
 
 
 4.1.9.  Extended DNS Error Code 9 - No Zone Key Bit Set
@@ -391,9 +391,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
 
-Kumari, et al.           Expires April 19, 2018                 [Page 7]
+Kumari, et al.           Expires January 3, 2019                [Page 7]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
+Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
 
 
    "Extended DNS Error codes" registry.  The codepoint space for each
@@ -447,9 +447,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
 
-Kumari, et al.           Expires April 19, 2018                 [Page 8]
+Kumari, et al.           Expires January 3, 2019                [Page 8]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
+Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
 
 
    dinner!", going off and asking his (more permissive) father and
@@ -482,8 +482,8 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
-              editor.org/info/rfc2119>.
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
 
 9.2.  Informative References
 
@@ -503,14 +503,30 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
 
-Kumari, et al.           Expires April 19, 2018                 [Page 9]
+Kumari, et al.           Expires January 3, 2019                [Page 9]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
+Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
 
 
 Appendix A.  Changes / Author Notes.
 
    [RFC Editor: Please remove this section before publication ]
+
+   From -00 to -01:
+
+   o  Address comments from IETF meeting.
+
+   o  document copying the response code
+
+   o  mention zero length fields are ok
+
+   o  clarify lookup procedure
+
+   o  mention that table isn't done
+
+   From -03 to -IETF 00:
+
+   o  Renamed to draft-ietf-dnsop-extended-error
 
    From -02 to -03:
 
@@ -540,6 +556,14 @@ Authors' Addresses
    Email: each@isc.org
 
 
+
+
+
+Kumari, et al.           Expires January 3, 2019               [Page 10]
+
+Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
+
+
    Roy Arends
    ICANN
 
@@ -553,15 +577,6 @@ Authors' Addresses
    US
 
    Email: ietf@hardakers.net
-
-
-
-
-
-
-Kumari, et al.           Expires April 19, 2018                [Page 10]
-
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
    David C Lawrence
@@ -600,20 +615,5 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2017
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Kumari, et al.           Expires April 19, 2018                [Page 11]
+Kumari, et al.           Expires January 3, 2019               [Page 11]
 ```

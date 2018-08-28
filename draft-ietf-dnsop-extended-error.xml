@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="std" docName="draft-ietf-dnsop-extended-error-01"
+<rfc category="std" docName="draft-ietf-dnsop-extended-error-02"
      ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -278,7 +278,7 @@ A: |                             EXTRA-TEXT                        |
       registry, the initial values for which are defined in the following
       sub-sections.</t>
 
-      <section title="SERVFAIL(3) extended information codes">
+      <section title="SERVFAIL(2) extended information codes">
         <section anchor="errbogus"
                  title="Extended DNS Error Code 1 - DNSSEC Bogus">
           <t>The resolver attempted to perform DNSSEC validation, but
@@ -359,7 +359,15 @@ A: |                             EXTRA-TEXT                        |
           R flag to in this case.</t>
         </section>
       </section>
+
+      <section title="NXDOMAIN(3) extended information codes">
+        <section title="Extended DNS Error Code 1 - Blocked">
+	<t> The resolver attempted to perfom a DNS query but the domain is blacklisted
+		due to the presence of malware. The R flag should not be set.
+        </t>
+      </section>
     </section>
+</section>
 
     <section title="IANA Considerations">
       <t>[This section under construction, beware. ]</t>

@@ -362,8 +362,8 @@ A: |                             EXTRA-TEXT                        |
 
       <section title="NXDOMAIN(3) extended information codes">
         <section title="Extended DNS Error Code 1 - Blocked">
-	<t> The resolver attempted to perfom a DNS query but the domain is blacklisted
-		due to the presence of malware. The R flag should not be set.
+	<t> The resolver attempted to perfom a DNS query but the domain is
+	blacklisted due to a security policy. The R flag should not be set.
         </t>
       </section>
     </section>

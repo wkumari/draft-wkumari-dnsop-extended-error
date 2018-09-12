@@ -92,44 +92,24 @@
     </author>
 
     <author fullname="David C Lawrence" initials="D." surname="Lawrence">
-      <organization>Akamai Technologies</organization>
+      <organization/>
 
       <address>
         <postal>
-          <street>150 Broadway</street>
-
-          <city>Cambridge, MA</city>
-
-          <code>02142-1054</code>
-
-          <country>US</country>
+          <street/>
         </postal>
 
-        <email>tale@akamai.com</email>
+        <email>tale@dd.org</email>
       </address>
     </author>
 
-    <date day="02" month="July" year="2018"/>
+    <date day="12" month="September" year="2018"/>
 
     <abstract>
       <t>This document defines an extensible method to return additional
       information about the cause of DNS errors. The primary use case is to
       extend SERVFAIL to provide additional information about the cause of DNS
       and DNSSEC failures.</t>
-
-      <t>[ Open question: The document currently defines a registry for
-      errors. It has also been suggested that the option also carry human
-      readable (text) messages, to allow the server admin to provide
-      additional debugging information (e.g: "example.com pointed their NS at
-      us. No idea why...", "We don't provide recursive DNS to 192.0.2.0.
-      Please stop asking...", "Have you tried Acme Anvil and DNS? We do DNS
-      right..." (!). Please let us know if you think text is needed, or if a
-      16bit FCFS registry is expressive enough. ]</t>
-
-      <t>[ Open question: This document discusses extended *errors*, but it
-      has been suggested that this could be used to also annotate *non-error*
-      messages. The authors do not think that this is a good idea, but could
-      be persuaded otherwise. ]</t>
     </abstract>
   </front>
 
@@ -362,12 +342,12 @@ A: |                             EXTRA-TEXT                        |
 
       <section title="NXDOMAIN(3) extended information codes">
         <section title="Extended DNS Error Code 1 - Blocked">
-	<t> The resolver attempted to perfom a DNS query but the domain is
-	blacklisted due to a security policy. The R flag should not be set.
-        </t>
+          <t>The resolver attempted to perfom a DNS query but the domain is
+          blacklisted due to a security policy. The R flag should not be
+          set.</t>
+        </section>
       </section>
     </section>
-</section>
 
     <section title="IANA Considerations">
       <t>[This section under construction, beware. ]</t>
@@ -456,13 +436,12 @@ A: |                             EXTRA-TEXT                        |
     </section>
 
     <section title="Acknowledgements">
-      <t>The authors wish to thank Geoff Huston and Bob Harold, Carlos
-      M.  Martinez, Peter DeVries, George Michelson, Mark Andrews,
-      Ondrej Sury, Edward Lewis, Paul Vixie, Shane Kerr, Loganaden
-      Velvindron. They also vaguely remember discussing this with a
-      number of people over the years, but have forgotten who all they
-      were -- if you were one of them, and are not listed, please let
-      us know and we'll acknowledge you.</t>
+      <t>The authors wish to thank Geoff Huston and Bob Harold, Carlos M.
+      Martinez, Peter DeVries, George Michelson, Mark Andrews, Ondrej Sury,
+      Edward Lewis, Paul Vixie, Shane Kerr, Loganaden Velvindron. They also
+      vaguely remember discussing this with a number of people over the years,
+      but have forgotten who all they were -- if you were one of them, and are
+      not listed, please let us know and we'll acknowledge you.</t>
 
       <t>I also want to thank the band "Infected Mushroom" for providing a
       good background soundtrack (and to see if I can get away with this!)
@@ -471,8 +450,6 @@ A: |                             EXTRA-TEXT                        |
 
       <t>We would like to especially thank Peter van Dijk, who sent GitHub
       pull requests.</t>
-
-      <t/>
     </section>
   </middle>
 
@@ -524,9 +501,9 @@ A: |                             EXTRA-TEXT                        |
 
           <t>mention zero length fields are ok</t>
 
-          <t>clarify lookup procedure </t>
+          <t>clarify lookup procedure</t>
 
-          <t>mention that table isn't done </t>
+          <t>mention that table isn't done</t>
         </list></t>
 
       <t>From -03 to -IETF 00:<list style="symbols">

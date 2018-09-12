@@ -7,18 +7,17 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Standards Track                                 E. Hunt
-Expires: January 3, 2019                                             ISC
+Expires: March 16, 2019                                              ISC
                                                                R. Arends
                                                                    ICANN
                                                              W. Hardaker
                                                                  USC/ISI
                                                              D. Lawrence
-                                                     Akamai Technologies
-                                                           July 02, 2018
+                                                      September 12, 2018
 
 
                           Extended DNS Errors
-                   draft-ietf-dnsop-extended-error-01
+                   draft-ietf-dnsop-extended-error-02
 
 Abstract
 
@@ -26,20 +25,6 @@ Abstract
    information about the cause of DNS errors.  The primary use case is
    to extend SERVFAIL to provide additional information about the cause
    of DNS and DNSSEC failures.
-
-   [ Open question: The document currently defines a registry for
-   errors.  It has also been suggested that the option also carry human
-   readable (text) messages, to allow the server admin to provide
-   additional debugging information (e.g: "example.com pointed their NS
-   at us.  No idea why...", "We don't provide recursive DNS to
-   192.0.2.0.  Please stop asking...", "Have you tried Acme Anvil and
-   DNS?  We do DNS right..." (!).  Please let us know if you think text
-   is needed, or if a 16bit FCFS registry is expressive enough. ]
-
-   [ Open question: This document discusses extended *errors*, but it
-   has been suggested that this could be used to also annotate *non-
-   error* messages.  The authors do not think that this is a good idea,
-   but could be persuaded otherwise. ]
 
 Status of This Memo
 
@@ -51,21 +36,12 @@ Status of This Memo
    working documents as Internet-Drafts.  The list of current Internet-
    Drafts is at https://datatracker.ietf.org/drafts/current/.
 
-
-
-
-
-Kumari, et al.           Expires January 3, 2019                [Page 1]
-
-Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
-
-
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 3, 2019.
+   This Internet-Draft will expire on March 16, 2019.
 
 Copyright Notice
 
@@ -76,6 +52,14 @@ Copyright Notice
    Provisions Relating to IETF Documents
    (https://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
+
+
+
+Kumari, et al.           Expires March 16, 2019                 [Page 1]
+
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
+
+
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
    include Simplified BSD License text as described in Section 4.e of
@@ -84,12 +68,12 @@ Copyright Notice
 
 Table of Contents
 
-   1.  Introduction and background . . . . . . . . . . . . . . . . .   3
+   1.  Introduction and background . . . . . . . . . . . . . . . . .   2
      1.1.  Requirements notation . . . . . . . . . . . . . . . . . .   3
-   2.  Extended Error EDNS0 option format  . . . . . . . . . . . . .   4
+   2.  Extended Error EDNS0 option format  . . . . . . . . . . . . .   3
    3.  Use of the Extended DNS Error option  . . . . . . . . . . . .   5
    4.  Defined Extended DNS Errors . . . . . . . . . . . . . . . . .   5
-     4.1.  SERVFAIL(3) extended information codes  . . . . . . . . .   6
+     4.1.  SERVFAIL(2) extended information codes  . . . . . . . . .   5
        4.1.1.  Extended DNS Error Code 1 - DNSSEC Bogus  . . . . . .   6
        4.1.2.  Extended DNS Error Code 2 - DNSSEC Indeterminate  . .   6
        4.1.3.  Extended DNS Error Code 3 - Signature Expired . . . .   6
@@ -100,22 +84,16 @@ Table of Contents
                DS Algorithm  . . . . . . . . . . . . . . . . . . . .   6
        4.1.7.  Extended DNS Error Code 7 - DNSKEY missing  . . . . .   6
        4.1.8.  Extended DNS Error Code 8 - RRSIGs missing  . . . . .   6
-       4.1.9.  Extended DNS Error Code 9 - No Zone Key Bit Set . . .   7
+       4.1.9.  Extended DNS Error Code 9 - No Zone Key Bit Set . . .   6
      4.2.  REFUSED(5) extended information codes . . . . . . . . . .   7
        4.2.1.  Extended DNS Error Code 1 - Lame  . . . . . . . . . .   7
        4.2.2.  Extended DNS Error Code 2 - Prohibited  . . . . . . .   7
+     4.3.  NXDOMAIN(3) extended information codes  . . . . . . . . .   7
+       4.3.1.  Extended DNS Error Code 1 - Blocked . . . . . . . . .   7
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
      5.1.  new Extended Error Code EDNS Option . . . . . . . . . . .   7
      5.2.  new Extended Error Code EDNS Option . . . . . . . . . . .   7
    6.  Open questions  . . . . . . . . . . . . . . . . . . . . . . .   8
-
-
-
-Kumari, et al.           Expires January 3, 2019                [Page 2]
-
-Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
-
-
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
    8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   9
    9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
@@ -130,6 +108,14 @@ Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
    transient, some permanent; some can be resolved by querying another
    server, some are likely best handled by stopping resolution.
    Unfortunately, the error signals that a DNS server can return are
+
+
+
+Kumari, et al.           Expires March 16, 2019                 [Page 2]
+
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
+
+
    very limited, and are not very expressive.  This means that
    applications and resolvers often have to "guess" at what the issue is
    - e.g the answer was marked REFUSED because of a lame delegation, or
@@ -165,18 +151,26 @@ Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in [RFC2119].
 
-
-
-Kumari, et al.           Expires January 3, 2019                [Page 3]
-
-Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
-
-
 2.  Extended Error EDNS0 option format
 
    This draft uses an EDNS0 ([RFC2671]) option to include extended error
    (ExtError) information in DNS messages.  The option is structured as
    follows:
+
+
+
+
+
+
+
+
+
+
+
+Kumari, et al.           Expires March 16, 2019                 [Page 3]
+
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
+
 
                                                 1   1   1   1   1   1
         0   1   2   3   4   5   6   7   8   9   0   1   2   3   4   5
@@ -220,17 +214,19 @@ Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
    R - Retry  The R (or Retry) flag provides a hint to the receiver that
       it should retry the query, probably by querying another server.
       If the R bit is set (1), the sender believes that retrying the
-
-
-
-Kumari, et al.           Expires January 3, 2019                [Page 4]
-
-Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
-
-
       query may provide a successful answer next time; if the R bit is
       clear (0), the sender believes that it should not ask another
       server.
+
+
+
+
+
+
+Kumari, et al.           Expires March 16, 2019                 [Page 4]
+
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
+
 
    The remaining bits in the RESERVED field are reserved for future use
    and MUST be set to 0 by the sender and SHOULD be ignored by the
@@ -274,17 +270,19 @@ Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
    registry, the initial values for which are defined in the following
    sub-sections.
 
+4.1.  SERVFAIL(2) extended information codes
 
 
 
 
 
-Kumari, et al.           Expires January 3, 2019                [Page 5]
+
+
+
+Kumari, et al.           Expires March 16, 2019                 [Page 5]
 
-Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
-
-4.1.  SERVFAIL(3) extended information codes
 
 4.1.1.  Extended DNS Error Code 1 - DNSSEC Bogus
 
@@ -328,22 +326,19 @@ Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
    The resolver attempted to perform DNSSEC validation, but no RRSIGs
    could be found for at least one RRset where RRSIGs were expected.
 
-
-
-
-
-
-
-
-Kumari, et al.           Expires January 3, 2019                [Page 6]
-
-Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
-
-
 4.1.9.  Extended DNS Error Code 9 - No Zone Key Bit Set
 
    The resolver attempted to perform DNSSEC validation, but no Zone Key
    Bit was set in a DNSKEY.
+
+
+
+
+
+Kumari, et al.           Expires March 16, 2019                 [Page 6]
+
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
+
 
 4.2.  REFUSED(5) extended information codes
 
@@ -364,6 +359,13 @@ Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
 
    Implementations SHOULD allow operators to define what to set the R
    flag to in this case.
+
+4.3.  NXDOMAIN(3) extended information codes
+
+4.3.1.  Extended DNS Error Code 1 - Blocked
+
+   The resolver attempted to perfom a DNS query but the domain is
+   blacklisted due to a security policy.  The R flag should not be set.
 
 5.  IANA Considerations
 
@@ -386,16 +388,15 @@ Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
    This document defines a new double-index IANA registry table, where
    the first index value is the RCODE value and the second index value
    is the INFO-CODE from the Extended DNS Error EDNS option defined in
-   this document.  The IANA is requested to create and maintain this
 
 
 
-
-Kumari, et al.           Expires January 3, 2019                [Page 7]
+Kumari, et al.           Expires March 16, 2019                 [Page 7]
 
-Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
+   this document.  The IANA is requested to create and maintain this
    "Extended DNS Error codes" registry.  The codepoint space for each
    RCODE index is to be broken into 3 ranges:
 
@@ -443,15 +444,15 @@ Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
    issue simply ask the next (non-validating) resolver in their list,
    and don't get any of the protections which DNSSEC should provide.
    This is very similar to a kid asking his mother if he can have
-   another cookie.  When the mother says "No, it will ruin your
 
 
 
-Kumari, et al.           Expires January 3, 2019                [Page 8]
+Kumari, et al.           Expires March 16, 2019                 [Page 8]
 
-Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
+   another cookie.  When the mother says "No, it will ruin your
    dinner!", going off and asking his (more permissive) father and
    getting a "Yes, sure, cookie!".
 
@@ -459,10 +460,11 @@ Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
 
    The authors wish to thank Geoff Huston and Bob Harold, Carlos M.
    Martinez, Peter DeVries, George Michelson, Mark Andrews, Ondrej Sury,
-   Edward Lewis, Paul Vixie, Shane Kerr.  They also vaguely remember
-   discussing this with a number of people over the years, but have
-   forgotten who all they were -- if you were one of them, and are not
-   listed, please let us know and we'll acknowledge you.
+   Edward Lewis, Paul Vixie, Shane Kerr, Loganaden Velvindron.  They
+   also vaguely remember discussing this with a number of people over
+   the years, but have forgotten who all they were -- if you were one of
+   them, and are not listed, please let us know and we'll acknowledge
+   you.
 
    I also want to thank the band "Infected Mushroom" for providing a
    good background soundtrack (and to see if I can get away with this!)
@@ -501,11 +503,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
 
 
 
-
-
-Kumari, et al.           Expires January 3, 2019                [Page 9]
+Kumari, et al.           Expires March 16, 2019                 [Page 9]
 
-Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
 Appendix A.  Changes / Author Notes.
@@ -559,9 +559,9 @@ Authors' Addresses
 
 
 
-Kumari, et al.           Expires January 3, 2019               [Page 10]
+Kumari, et al.           Expires March 16, 2019                [Page 10]
 
-Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
    Roy Arends
@@ -580,12 +580,8 @@ Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
 
 
    David C Lawrence
-   Akamai Technologies
-   150 Broadway
-   Cambridge, MA  02142-1054
-   US
 
-   Email: tale@akamai.com
+   Email: tale@dd.org
 
 
 
@@ -615,5 +611,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error           July 2018
 
 
 
-Kumari, et al.           Expires January 3, 2019               [Page 11]
+
+
+
+
+Kumari, et al.           Expires March 16, 2019                [Page 11]
 ```

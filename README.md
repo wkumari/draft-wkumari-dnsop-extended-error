@@ -99,7 +99,7 @@ Table of Contents
    9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
      9.1.  Normative References  . . . . . . . . . . . . . . . . . .   9
      9.2.  Informative References  . . . . . . . . . . . . . . . . .   9
-   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  10
+   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   9
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
 
 1.  Introduction and background
@@ -430,12 +430,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
       EDNS0 in a response if in a request -- it is time to reevaluate
       this?
 
-   2  Can this be applied to *any* response, or only error responses?
-
-   3  Should textual information be allowed as well?  What if the only
-      thing allowed is a domain name, e.g to point at where validation
-      began failing?
-
 7.  Security Considerations
 
    DNSSEC is being deployed - unfortunately a significant number of
@@ -444,6 +438,12 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    issue simply ask the next (non-validating) resolver in their list,
    and don't get any of the protections which DNSSEC should provide.
    This is very similar to a kid asking his mother if he can have
+   another cookie.  When the mother says "No, it will ruin your
+   dinner!", going off and asking his (more permissive) father and
+   getting a "Yes, sure, cookie!".
+
+
+
 
 
 
@@ -451,10 +451,6 @@ Kumari, et al.           Expires March 16, 2019                 [Page 8]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
-
-   another cookie.  When the mother says "No, it will ruin your
-   dinner!", going off and asking his (more permissive) father and
-   getting a "Yes, sure, cookie!".
 
 8.  Acknowledgements
 
@@ -499,7 +495,11 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
               issued by IANA", draft-ietf-sidr-iana-objects-03 (work in
               progress), May 2011.
 
+Appendix A.  Changes / Author Notes.
 
+   [RFC Editor: Please remove this section before publication ]
+
+   From -00 to -01:
 
 
 
@@ -507,12 +507,6 @@ Kumari, et al.           Expires March 16, 2019                 [Page 9]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
-
-Appendix A.  Changes / Author Notes.
-
-   [RFC Editor: Please remove this section before publication ]
-
-   From -00 to -01:
 
    o  Address comments from IETF meeting.
 
@@ -556,18 +550,18 @@ Authors' Addresses
    Email: each@isc.org
 
 
+   Roy Arends
+   ICANN
+
+   Email: roy.arends@icann.org
+
+
 
 
 
 Kumari, et al.           Expires March 16, 2019                [Page 10]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
-
-
-   Roy Arends
-   ICANN
-
-   Email: roy.arends@icann.org
 
 
    Wes Hardaker
@@ -582,6 +576,12 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    David C Lawrence
 
    Email: tale@dd.org
+
+
+
+
+
+
 
 
 

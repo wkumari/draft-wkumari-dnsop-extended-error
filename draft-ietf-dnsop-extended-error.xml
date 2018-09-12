@@ -413,13 +413,6 @@ A: |                             EXTRA-TEXT                        |
           simply ignore unknown options. I know the spec says you can only
           include EDNS0 in a response if in a request -- it is time to
           reevaluate this?</t>
-
-          <t hangText="2">Can this be applied to *any* response, or only error
-          responses?</t>
-
-          <t hangText="3">Should textual information be allowed as well? What
-          if the only thing allowed is a domain name, e.g to point at where
-          validation began failing?</t>
         </list></t>
     </section>
 

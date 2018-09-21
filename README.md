@@ -7,13 +7,14 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Standards Track                                 E. Hunt
-Expires: March 16, 2019                                              ISC
+Expires: March 25, 2019                                              ISC
                                                                R. Arends
                                                                    ICANN
                                                              W. Hardaker
                                                                  USC/ISI
                                                              D. Lawrence
-                                                      September 12, 2018
+                                                            Oracle + Dyn
+                                                      September 21, 2018
 
 
                           Extended DNS Errors
@@ -41,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on March 16, 2019.
+   This Internet-Draft will expire on March 25, 2019.
 
 Copyright Notice
 
@@ -51,15 +52,15 @@ Copyright Notice
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
    (https://trustee.ietf.org/license-info) in effect on the date of
-   publication of this document.  Please review these documents
 
 
 
-Kumari, et al.           Expires March 16, 2019                 [Page 1]
+Kumari, et al.           Expires March 25, 2019                 [Page 1]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
+   publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
    include Simplified BSD License text as described in Section 4.e of
@@ -107,15 +108,15 @@ Table of Contents
    There are many reasons that a DNS query may fail, some of them
    transient, some permanent; some can be resolved by querying another
    server, some are likely best handled by stopping resolution.
-   Unfortunately, the error signals that a DNS server can return are
 
 
 
-Kumari, et al.           Expires March 16, 2019                 [Page 2]
+Kumari, et al.           Expires March 25, 2019                 [Page 2]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
+   Unfortunately, the error signals that a DNS server can return are
    very limited, and are not very expressive.  This means that
    applications and resolvers often have to "guess" at what the issue is
    - e.g the answer was marked REFUSED because of a lame delegation, or
@@ -166,8 +167,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
 
-
-Kumari, et al.           Expires March 16, 2019                 [Page 3]
+Kumari, et al.           Expires March 25, 2019                 [Page 3]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
@@ -223,7 +223,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
 
-Kumari, et al.           Expires March 16, 2019                 [Page 4]
+Kumari, et al.           Expires March 25, 2019                 [Page 4]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
@@ -279,7 +279,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
 
-Kumari, et al.           Expires March 16, 2019                 [Page 5]
+Kumari, et al.           Expires March 25, 2019                 [Page 5]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
@@ -335,7 +335,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
 
-Kumari, et al.           Expires March 16, 2019                 [Page 6]
+Kumari, et al.           Expires March 25, 2019                 [Page 6]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
@@ -391,7 +391,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
 
-Kumari, et al.           Expires March 16, 2019                 [Page 7]
+Kumari, et al.           Expires March 25, 2019                 [Page 7]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
@@ -447,7 +447,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
 
-Kumari, et al.           Expires March 16, 2019                 [Page 8]
+Kumari, et al.           Expires March 25, 2019                 [Page 8]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
@@ -503,7 +503,7 @@ Appendix A.  Changes / Author Notes.
 
 
 
-Kumari, et al.           Expires March 16, 2019                 [Page 9]
+Kumari, et al.           Expires March 25, 2019                 [Page 9]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
@@ -559,7 +559,7 @@ Authors' Addresses
 
 
 
-Kumari, et al.           Expires March 16, 2019                [Page 10]
+Kumari, et al.           Expires March 25, 2019                [Page 10]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
@@ -567,13 +567,17 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    Wes Hardaker
    USC/ISI
    P.O. Box 382
-   Davis, VA  95617
+   Davis, CA  95617
    US
 
    Email: ietf@hardakers.net
 
 
    David C Lawrence
+   Oracle + Dyn
+   150 Dow St
+   Manchester, NH  03101
+   US
 
    Email: tale@dd.org
 
@@ -611,9 +615,5 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
 
-
-
-
-
-Kumari, et al.           Expires March 16, 2019                [Page 11]
+Kumari, et al.           Expires March 25, 2019                [Page 11]
 ```

@@ -80,7 +80,7 @@
         <postal>
           <street>P.O. Box 382</street>
 
-          <city>Davis, VA</city>
+          <city>Davis, CA</city>
 
           <code>95617</code>
 
@@ -92,18 +92,24 @@
     </author>
 
     <author fullname="David C Lawrence" initials="D." surname="Lawrence">
-      <organization/>
+      <organization>Oracle + Dyn</organization>
 
       <address>
         <postal>
-          <street/>
+          <street>150 Dow St</street>
+
+          <city>Manchester, NH</city>
+
+          <code>03101</code>
+
+          <country>US</country>
         </postal>
 
         <email>tale@dd.org</email>
       </address>
     </author>
 
-    <date day="12" month="September" year="2018"/>
+    <date day="21" month="September" year="2018"/>
 
     <abstract>
       <t>This document defines an extensible method to return additional

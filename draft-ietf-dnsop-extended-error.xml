@@ -239,14 +239,18 @@ A: |                             EXTRA-TEXT                        |
       is extensible via the IANA registry to allow additional error and
       information codes to be defined in the future.</t>
 
-      <t>The R (Retry) flag provides a hint (or suggestion) as to what the
-      receiver may want to do with this annotated error. The mechanism is
-      specifically designed to be extensible, and so implementations may
-      receive EDE codes that it does not understand. The R flag allows
-      implementations to make a decision as to what to do if it receives a
-      response with an unknown code - retry or drop the query. Note that this
-      flag is only a suggestion or hint. Receivers can choose to ignore this
-      hint.</t>
+      <t>The R (Retry) flag provides a hint (or suggestion) as to what
+      the receiver may want to do with this annotated error. The
+      mechanism is specifically designed to be extensible, and so
+      implementations may receive EDE codes that it does not
+      understand. The R flag allows implementations to make a decision
+      as to what to do if it receives a response with an unknown code
+      - retry or drop the query. Note that this flag is only a
+      suggestion or hint.  Unless a protective transport mechanism
+      (like TSIG <xref target="rfc2845"/> or TLS <xref
+      target="rfc8094" />) is used, the bit's value could have have
+      been altered by a person-in-the-middle. Receivers can choose to
+      ignore this hint.</t>
 
       <t>The EXTRA-INFO textual field may be zero-length, or may hold
       additional information useful to network operators.</t>
@@ -432,15 +436,18 @@ A: |                             EXTRA-TEXT                        |
       cookie. When the mother says "No, it will ruin your dinner!", going off
       and asking his (more permissive) father and getting a "Yes, sure,
       cookie!".</t>
+      <t>The R (or Retry) flag SHOULD NOT be trusted unless received
+      over a properly secured transport.</t>
     </section>
 
     <section title="Acknowledgements">
-      <t>The authors wish to thank Geoff Huston and Bob Harold, Carlos M.
-      Martinez, Peter DeVries, George Michelson, Mark Andrews, Ondrej Sury,
-      Edward Lewis, Paul Vixie, Shane Kerr, Loganaden Velvindron. They also
-      vaguely remember discussing this with a number of people over the years,
-      but have forgotten who all they were -- if you were one of them, and are
-      not listed, please let us know and we'll acknowledge you.</t>
+      <t>The authors wish to thank Geoff Huston and Bob Harold, Carlos
+      M.  Martinez, Peter DeVries, George Michelson, Mark Andrews,
+      Ondrej Sury, Edward Lewis, Paul Vixie, Shane Kerr, Loganaden
+      Velvindron, Evan Hunt. They also vaguely remember discussing
+      this with a number of people over the years, but have forgotten
+      who all they were -- if you were one of them, and are not
+      listed, please let us know and we'll acknowledge you.</t>
 
       <t>I also want to thank the band "Infected Mushroom" for providing a
       good background soundtrack (and to see if I can get away with this!)

@@ -247,8 +247,8 @@ A: |                             EXTRA-TEXT                        |
       as to what to do if it receives a response with an unknown code
       - retry or drop the query. Note that this flag is only a
       suggestion or hint.  Unless a protective transport mechanism
-      (like TSIG <xref target="rfc2845"/> or TLS <xref
-      target="rfc8094" />) is used, the bit's value could have have
+      (like TSIG <xref target="RFC2845"/> or TLS <xref
+      target="RFC8094" />) is used, the bit's value could have have
       been altered by a person-in-the-middle. Receivers can choose to
       ignore this hint.</t>
 
@@ -481,6 +481,8 @@ A: |                             EXTRA-TEXT                        |
     <references title="Informative References">
       <?rfc include='reference.I-D.draft-ietf-sidr-iana-objects-03.xml'
 ?>
+      <?rfc include='reference.RFC.2845' ?>
+      <?rfc include='reference.RFC.8094' ?>
 
       <reference anchor="GeoffValidation"
                  target="http://www.potaroo.net/presentations/2016-06-27-dnssec.pdf">

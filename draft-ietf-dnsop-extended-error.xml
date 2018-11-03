@@ -144,11 +144,12 @@
       a validating resolver, and the user is returned a potentially harmful
       result.</t>
 
-      <t>This document specifies a mechanism to extend (or annotate) DNS
-      errors to provide additional information about the cause of the error.
-      This information can be used by the resolver to make a decision
-      regarding whether or not to retry, or by technical users attempting to
-      debug issues.</t>
+      <t>This document specifies a mechanism to extend (or annotate)
+      DNS errors to provide additional information about the cause of
+      the error.  When properly authenticated, this information can be
+      used by the resolver to make a decision regarding whether or not
+      to retry or it can be used or by technical users
+      attempting to debug issues.</t>
 
       <t>Here is a reference to an "external" (non-RFC / draft) thing: (<xref
       target="IANA.AS_Numbers"/>). And this is a link to an ID:<xref

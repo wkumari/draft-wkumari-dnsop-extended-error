@@ -93,7 +93,7 @@ Table of Contents
        4.3.1.  Extended DNS Error Code 1 - Blocked . . . . . . . . .   7
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
      5.1.  new Extended Error Code EDNS Option . . . . . . . . . . .   7
-     5.2.  new Extended Error Code EDNS Option . . . . . . . . . . .   8
+     5.2.  New Extended Error Code EDNS Option . . . . . . . . . . .   8
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   9
    8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
@@ -396,7 +396,7 @@ Kumari, et al.           Expires March 25, 2019                 [Page 7]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
-5.2.  new Extended Error Code EDNS Option
+5.2.  New Extended Error Code EDNS Option
 
    This document defines a new double-index IANA registry table, where
    the first index value is the RCODE value and the second index value

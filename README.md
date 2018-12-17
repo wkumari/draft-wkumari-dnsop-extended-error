@@ -74,7 +74,7 @@ Table of Contents
    2.  Extended Error EDNS0 option format  . . . . . . . . . . . . .   3
    3.  Use of the Extended DNS Error option  . . . . . . . . . . . .   5
    4.  Defined Extended DNS Errors . . . . . . . . . . . . . . . . .   5
-     4.1.  SERVFAIL(2) extended information codes  . . . . . . . . .   5
+     4.1.  SERVFAIL(2) extended information codes  . . . . . . . . .   6
        4.1.1.  Extended DNS Error Code 1 - DNSSEC Bogus  . . . . . .   6
        4.1.2.  Extended DNS Error Code 2 - DNSSEC Indeterminate  . .   6
        4.1.3.  Extended DNS Error Code 3 - Signature Expired . . . .   6
@@ -85,7 +85,7 @@ Table of Contents
                DS Algorithm  . . . . . . . . . . . . . . . . . . . .   6
        4.1.7.  Extended DNS Error Code 7 - DNSKEY missing  . . . . .   6
        4.1.8.  Extended DNS Error Code 8 - RRSIGs missing  . . . . .   6
-       4.1.9.  Extended DNS Error Code 9 - No Zone Key Bit Set . . .   6
+       4.1.9.  Extended DNS Error Code 9 - No Zone Key Bit Set . . .   7
      4.2.  REFUSED(5) extended information codes . . . . . . . . . .   7
        4.2.1.  Extended DNS Error Code 1 - Lame  . . . . . . . . . .   7
        4.2.2.  Extended DNS Error Code 2 - Prohibited  . . . . . . .   7
@@ -93,14 +93,13 @@ Table of Contents
        4.3.1.  Extended DNS Error Code 1 - Blocked . . . . . . . . .   7
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
      5.1.  new Extended Error Code EDNS Option . . . . . . . . . . .   7
-     5.2.  new Extended Error Code EDNS Option . . . . . . . . . . .   7
-   6.  Open questions  . . . . . . . . . . . . . . . . . . . . . . .   8
-   7.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
-   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   9
-   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
-     9.1.  Normative References  . . . . . . . . . . . . . . . . . .   9
-     9.2.  Informative References  . . . . . . . . . . . . . . . . .   9
-   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .   9
+     5.2.  new Extended Error Code EDNS Option . . . . . . . . . . .   8
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
+   7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   9
+   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
+     8.1.  Normative References  . . . . . . . . . . . . . . . . . .   9
+     8.2.  Informative References  . . . . . . . . . . . . . . . . .   9
+   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  10
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
 
 1.  Introduction and background
@@ -108,6 +107,7 @@ Table of Contents
    There are many reasons that a DNS query may fail, some of them
    transient, some permanent; some can be resolved by querying another
    server, some are likely best handled by stopping resolution.
+   Unfortunately, the error signals that a DNS server can return are
 
 
 
@@ -116,7 +116,6 @@ Kumari, et al.           Expires March 25, 2019                 [Page 2]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
-   Unfortunately, the error signals that a DNS server can return are
    very limited, and are not very expressive.  This means that
    applications and resolvers often have to "guess" at what the issue is
    - e.g the answer was marked REFUSED because of a lame delegation, or
@@ -138,9 +137,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
    This document specifies a mechanism to extend (or annotate) DNS
    errors to provide additional information about the cause of the
-   error.  This information can be used by the resolver to make a
-   decision regarding whether or not to retry, or by technical users
-   attempting to debug issues.
+   error.  When properly authenticated, this information can be used by
+   the resolver to make a decision regarding whether or not to retry or
+   it can be used or by technical users attempting to debug issues.
 
    Here is a reference to an "external" (non-RFC / draft) thing:
    ([IANA.AS_Numbers]).  And this is a link to an
@@ -157,6 +156,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    This draft uses an EDNS0 ([RFC2671]) option to include extended error
    (ExtError) information in DNS messages.  The option is structured as
    follows:
+
 
 
 
@@ -251,8 +251,10 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    receive EDE codes that it does not understand.  The R flag allows
    implementations to make a decision as to what to do if it receives a
    response with an unknown code - retry or drop the query.  Note that
-   this flag is only a suggestion or hint.  Receivers can choose to
-   ignore this hint.
+   this flag is only a suggestion or hint.  Unless a protective
+   transport mechanism (like TSIG [RFC2845] or TLS [RFC8094]) is used,
+   the bit's value could have have been altered by a person-in-the-
+   middle.  Receivers can choose to ignore this hint.
 
    The EXTRA-INFO textual field may be zero-length, or may hold
    additional information useful to network operators.
@@ -270,8 +272,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    registry, the initial values for which are defined in the following
    sub-sections.
 
-4.1.  SERVFAIL(2) extended information codes
-
 
 
 
@@ -283,6 +283,8 @@ Kumari, et al.           Expires March 25, 2019                 [Page 5]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
+
+4.1.  SERVFAIL(2) extended information codes
 
 4.1.1.  Extended DNS Error Code 1 - DNSSEC Bogus
 
@@ -326,10 +328,8 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    The resolver attempted to perform DNSSEC validation, but no RRSIGs
    could be found for at least one RRset where RRSIGs were expected.
 
-4.1.9.  Extended DNS Error Code 9 - No Zone Key Bit Set
 
-   The resolver attempted to perform DNSSEC validation, but no Zone Key
-   Bit was set in a DNSKEY.
+
 
 
 
@@ -339,6 +339,11 @@ Kumari, et al.           Expires March 25, 2019                 [Page 6]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
+
+4.1.9.  Extended DNS Error Code 9 - No Zone Key Bit Set
+
+   The resolver attempted to perform DNSSEC validation, but no Zone Key
+   Bit was set in a DNSKEY.
 
 4.2.  REFUSED(5) extended information codes
 
@@ -383,11 +388,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    -----  ----------------     ------    ------------------
     TBD   Extended DNS Error    TBD       [ This document ]
 
-5.2.  new Extended Error Code EDNS Option
-
-   This document defines a new double-index IANA registry table, where
-   the first index value is the RCODE value and the second index value
-   is the INFO-CODE from the Extended DNS Error EDNS option defined in
 
 
 
@@ -396,6 +396,11 @@ Kumari, et al.           Expires March 25, 2019                 [Page 7]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
+5.2.  new Extended Error Code EDNS Option
+
+   This document defines a new double-index IANA registry table, where
+   the first index value is the RCODE value and the second index value
+   is the INFO-CODE from the Extended DNS Error EDNS option defined in
    this document.  The IANA is requested to create and maintain this
    "Extended DNS Error codes" registry.  The codepoint space for each
    RCODE index is to be broken into 3 ranges:
@@ -421,16 +426,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 [incomplete]
 
 
-6.  Open questions
-
-   1  Can this be included in *any* response or only responses to
-      requests that included an EDNS option?  Resolvers are supposed to
-      ignore additional.  EDNS capable ones are supposed to simply
-      ignore unknown options.  I know the spec says you can only include
-      EDNS0 in a response if in a request -- it is time to reevaluate
-      this?
-
-7.  Security Considerations
+6.  Security Considerations
 
    DNSSEC is being deployed - unfortunately a significant number of
    clients (~11% according to [GeoffValidation]), when receiving a
@@ -442,8 +438,12 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    dinner!", going off and asking his (more permissive) father and
    getting a "Yes, sure, cookie!".
 
-
-
+   This information is unauthenticated information, and an attacker (e.g
+   MITM or malicious recursive server) could insert an extended error
+   response into already untrusted data -- ideally clients and resolvers
+   would not trust any unauthenticated information, but until we live in
+   an era where all DNS answers are authenticated via DNSSEC or other
+   mechanisms, there are some tradeoffs.  As an example, an attacker who
 
 
 
@@ -452,15 +452,22 @@ Kumari, et al.           Expires March 25, 2019                 [Page 8]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
-8.  Acknowledgements
+   is able to insert the DNSSEC Bogus Extended Error into a packet could
+   instead simply reply with a fictitious address (A or AAAA) record.
+   The R bit hint and extended error information are informational -
+   implementations can choose how much to trust this information and
+   validating resolvers / stubs may choose to put a different weight on
+   it.
+
+7.  Acknowledgements
 
    The authors wish to thank Geoff Huston and Bob Harold, Carlos M.
    Martinez, Peter DeVries, George Michelson, Mark Andrews, Ondrej Sury,
-   Edward Lewis, Paul Vixie, Shane Kerr, Loganaden Velvindron.  They
-   also vaguely remember discussing this with a number of people over
-   the years, but have forgotten who all they were -- if you were one of
-   them, and are not listed, please let us know and we'll acknowledge
-   you.
+   Edward Lewis, Paul Vixie, Shane Kerr, Loganaden Velvindron, Evan
+   Hunt.  They also vaguely remember discussing this with a number of
+   people over the years, but have forgotten who all they were -- if you
+   were one of them, and are not listed, please let us know and we'll
+   acknowledge you.
 
    I also want to thank the band "Infected Mushroom" for providing a
    good background soundtrack (and to see if I can get away with this!)
@@ -470,9 +477,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    We would like to especially thank Peter van Dijk, who sent GitHub
    pull requests.
 
-9.  References
+8.  References
 
-9.1.  Normative References
+8.1.  Normative References
 
    [IANA.AS_Numbers]
               IANA, "Autonomous System (AS) Numbers",
@@ -483,23 +490,16 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
-9.2.  Informative References
+8.2.  Informative References
 
    [GeoffValidation]
               IANA, "A quick review of DNSSEC Validation in today's
               Internet", June 2016, <http://www.potaroo.net/
               presentations/2016-06-27-dnssec.pdf>.
 
-   [I-D.ietf-sidr-iana-objects]
-              Manderson, T., Vegoda, L., and S. Kent, "RPKI Objects
-              issued by IANA", draft-ietf-sidr-iana-objects-03 (work in
-              progress), May 2011.
 
-Appendix A.  Changes / Author Notes.
 
-   [RFC Editor: Please remove this section before publication ]
 
-   From -00 to -01:
 
 
 
@@ -507,6 +507,27 @@ Kumari, et al.           Expires March 25, 2019                 [Page 9]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
+
+   [I-D.ietf-sidr-iana-objects]
+              Manderson, T., Vegoda, L., and S. Kent, "RPKI Objects
+              issued by IANA", draft-ietf-sidr-iana-objects-03 (work in
+              progress), May 2011.
+
+   [RFC2845]  Vixie, P., Gudmundsson, O., Eastlake 3rd, D., and B.
+              Wellington, "Secret Key Transaction Authentication for DNS
+              (TSIG)", RFC 2845, DOI 10.17487/RFC2845, May 2000,
+              <https://www.rfc-editor.org/info/rfc2845>.
+
+   [RFC8094]  Reddy, T., Wing, D., and P. Patil, "DNS over Datagram
+              Transport Layer Security (DTLS)", RFC 8094,
+              DOI 10.17487/RFC8094, February 2017,
+              <https://www.rfc-editor.org/info/rfc8094>.
+
+Appendix A.  Changes / Author Notes.
+
+   [RFC Editor: Please remove this section before publication ]
+
+   From -00 to -01:
 
    o  Address comments from IETF meeting.
 
@@ -532,6 +553,17 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 Authors' Addresses
 
+
+
+
+
+
+
+Kumari, et al.           Expires March 25, 2019                [Page 10]
+
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
+
+
    Warren Kumari
    Google
    1600 Amphitheatre Parkway
@@ -556,14 +588,6 @@ Authors' Addresses
    Email: roy.arends@icann.org
 
 
-
-
-
-Kumari, et al.           Expires March 25, 2019                [Page 10]
-
-Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
-
-
    Wes Hardaker
    USC/ISI
    P.O. Box 382
@@ -580,30 +604,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    US
 
    Email: tale@dd.org
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

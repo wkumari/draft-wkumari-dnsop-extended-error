@@ -144,12 +144,11 @@
       a validating resolver, and the user is returned a potentially harmful
       result.</t>
 
-      <t>This document specifies a mechanism to extend (or annotate)
-      DNS errors to provide additional information about the cause of
-      the error.  When properly authenticated, this information can be
-      used by the resolver to make a decision regarding whether or not
-      to retry or it can be used or by technical users
-      attempting to debug issues.</t>
+      <t>This document specifies a mechanism to extend (or annotate) DNS
+      errors to provide additional information about the cause of the error.
+      When properly authenticated, this information can be used by the
+      resolver to make a decision regarding whether or not to retry or it can
+      be used or by technical users attempting to debug issues.</t>
 
       <t>Here is a reference to an "external" (non-RFC / draft) thing: (<xref
       target="IANA.AS_Numbers"/>). And this is a link to an ID:<xref
@@ -240,18 +239,17 @@ A: |                             EXTRA-TEXT                        |
       is extensible via the IANA registry to allow additional error and
       information codes to be defined in the future.</t>
 
-      <t>The R (Retry) flag provides a hint (or suggestion) as to what
-      the receiver may want to do with this annotated error. The
-      mechanism is specifically designed to be extensible, and so
-      implementations may receive EDE codes that it does not
-      understand. The R flag allows implementations to make a decision
-      as to what to do if it receives a response with an unknown code
-      - retry or drop the query. Note that this flag is only a
-      suggestion or hint.  Unless a protective transport mechanism
-      (like TSIG <xref target="RFC2845"/> or TLS <xref
-      target="RFC8094" />) is used, the bit's value could have have
-      been altered by a person-in-the-middle. Receivers can choose to
-      ignore this hint.</t>
+      <t>The R (Retry) flag provides a hint (or suggestion) as to what the
+      receiver may want to do with this annotated error. The mechanism is
+      specifically designed to be extensible, and so implementations may
+      receive EDE codes that it does not understand. The R flag allows
+      implementations to make a decision as to what to do if it receives a
+      response with an unknown code - retry or drop the query. Note that this
+      flag is only a suggestion or hint. Unless a protective transport
+      mechanism (like TSIG <xref target="RFC2845"/> or TLS <xref
+      target="RFC8094"/>) is used, the bit's value could have have been
+      altered by a person-in-the-middle. Receivers can choose to ignore this
+      hint.</t>
 
       <t>The EXTRA-INFO textual field may be zero-length, or may hold
       additional information useful to network operators.</t>
@@ -416,17 +414,6 @@ A: |                             EXTRA-TEXT                        |
       </section>
     </section>
 
-    <section title="Open questions">
-      <t><list style="hanging">
-          <t hangText="1">Can this be included in *any* response or only
-          responses to requests that included an EDNS option? Resolvers are
-          supposed to ignore additional. EDNS capable ones are supposed to
-          simply ignore unknown options. I know the spec says you can only
-          include EDNS0 in a response if in a request -- it is time to
-          reevaluate this?</t>
-        </list></t>
-    </section>
-
     <section anchor="security" title="Security Considerations">
       <t>DNSSEC is being deployed - unfortunately a significant number of
       clients (~11% according to <xref target="GeoffValidation"/>), when
@@ -437,18 +424,29 @@ A: |                             EXTRA-TEXT                        |
       cookie. When the mother says "No, it will ruin your dinner!", going off
       and asking his (more permissive) father and getting a "Yes, sure,
       cookie!".</t>
-      <t>The R (or Retry) flag SHOULD NOT be trusted unless received
-      over a properly secured transport.</t>
+
+      <t>This information is unauthenticated information, and an attacker (e.g
+      MITM or malicious recursive server) could insert an extended error
+      response into already untrusted data &mdash; ideally clients and
+      resolvers would not trust any unauthenticated information, but until we
+      live in an era where all DNS answers are authenticated via DNSSEC or
+      other mechanisms, there are some tradeoffs. As an example, an attacker
+      who is able to insert the DNSSEC Bogus Extended Error into a packet
+      could instead simply reply with a fictitious address (A or AAAA) record.
+      The R bit hint and extended error information are informational -
+      implementations can choose how much to trust this information and
+      validating resolvers / stubs may choose to put a different weight on
+      it.</t>
     </section>
 
     <section title="Acknowledgements">
-      <t>The authors wish to thank Geoff Huston and Bob Harold, Carlos
-      M.  Martinez, Peter DeVries, George Michelson, Mark Andrews,
-      Ondrej Sury, Edward Lewis, Paul Vixie, Shane Kerr, Loganaden
-      Velvindron, Evan Hunt. They also vaguely remember discussing
-      this with a number of people over the years, but have forgotten
-      who all they were -- if you were one of them, and are not
-      listed, please let us know and we'll acknowledge you.</t>
+      <t>The authors wish to thank Geoff Huston and Bob Harold, Carlos M.
+      Martinez, Peter DeVries, George Michelson, Mark Andrews, Ondrej Sury,
+      Edward Lewis, Paul Vixie, Shane Kerr, Loganaden Velvindron, Evan Hunt.
+      They also vaguely remember discussing this with a number of people over
+      the years, but have forgotten who all they were -- if you were one of
+      them, and are not listed, please let us know and we'll acknowledge
+      you.</t>
 
       <t>I also want to thank the band "Infected Mushroom" for providing a
       good background soundtrack (and to see if I can get away with this!)
@@ -482,7 +480,9 @@ A: |                             EXTRA-TEXT                        |
     <references title="Informative References">
       <?rfc include='reference.I-D.draft-ietf-sidr-iana-objects-03.xml'
 ?>
+
       <?rfc include='reference.RFC.2845' ?>
+
       <?rfc include='reference.RFC.8094' ?>
 
       <reference anchor="GeoffValidation"

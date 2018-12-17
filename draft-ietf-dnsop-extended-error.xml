@@ -150,10 +150,6 @@
       resolver to make a decision regarding whether or not to retry or it can
       be used or by technical users attempting to debug issues.</t>
 
-      <t>Here is a reference to an "external" (non-RFC / draft) thing: (<xref
-      target="IANA.AS_Numbers"/>). And this is a link to an ID:<xref
-      target="I-D.ietf-sidr-iana-objects"/>.</t>
-
       <section title="Requirements notation">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
         "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this

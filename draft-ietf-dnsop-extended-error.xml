@@ -189,9 +189,10 @@ A: |                             EXTRA-TEXT                        |
           <t>OPTION-CODE, 2 octets (defined in [RFC6891]), for ExtError is
           TBD.</t>
 
-          <t>OPTION-LENGTH, 2 octets ((defined in [RFC6891]) contains the
-          length of the payload (everything after OPTION-LENGTH) in octets and
-          should be 4.</t>
+          <t>OPTION-LENGTH, 2 octets ((defined in [RFC6891]) contains
+          the length of the payload (everything after OPTION-LENGTH)
+          in octets and should be 6 plus the length of the EXTRA-TEXT
+          section (which may be a zero-length string).</t>
 
           <t>RESERVED, 2 octets; the first bit (R) indicates a flag defined in
           this specification. The remaining bits are reserved for future use,

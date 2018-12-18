@@ -81,6 +81,17 @@
       (and the authors won't be able to use the 🍄 emoji that they
       clearly want).
 
+      + Resolution: we're proposing ASCII to keep the protocol simple
+        and to match TXT records.  These are not intended to be end
+        user messages but rather administrative hints for operators.
+
+      + resulting text:
+
+          A variable length, ASCII encoded, EXTRA-TEXT field
+          holding additional textual information. It may be zero
+          length when no additional textual information is
+          included.
+
 *** TODO I am not sure I agree with these recommendations:
 
       4.1.5.  Extended DNS Error Code 5 - Unsupported DNSKEY Algorithm
@@ -98,6 +109,7 @@
       full-service resolver that may support more algorithms, so perhaps the
       text "The R flag should not be set" should be removed.
 
+      + Resolution: agree
 
 *** TODO How to add multiple EDE
 
@@ -115,6 +127,9 @@
       we also need some text describing how a client behaves when presented
       with multiple EDE.
 
+      + implementation specific
+      + create a new section for multiple responses
+
 *** TODO Implementation required
 
       Finally, do we have any implementations of this draft? It seems pretty
@@ -123,9 +138,7 @@
       vaguely recall that we wanted running code going forward to try to
       starve the DNS camel...
 
-      Cheers,
 
-*** 
 * Peter Spacek
   I believe the document is not ready for multiple reasons:
 
@@ -140,7 +153,7 @@
 
 * Joe Abley
 
-*** Fix IANA registry template
+*** TODO Fix IANA registry template
 
     >> With IANA registry requests, I may be wrong here, but I thought we had
     >> some (boilerplate?) language about how IANA is asked to operate the
@@ -193,3 +206,8 @@ EDNS, there is still enough room in the previous 16-bit word which has
 word.
 
 
++ merge response and info
+  + 12 bits for info
+  + makes the double table now look like a single
+  + still requires a double IANA table
+  + but implementations can implement it either as a single or a double

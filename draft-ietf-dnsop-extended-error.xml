@@ -174,59 +174,43 @@
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 4: | R |                          RESERVED                         |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-6: |                           RESPONSE-CODE                       |
+6: | RESPONSE-CODE |             INFO-CODE                         |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-8: |                             INFO-CODE                         |
-   +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-A: |                             EXTRA-TEXT                        |
+8: |                             EXTRA-TEXT                        |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 ]]></artwork>
       </figure>
 
       <t/>
 
+      <t>Field definition details:</t>
+
       <t><list style="symbols">
           <t>OPTION-CODE, 2 octets (defined in [RFC6891]), for ExtError is
-          TBD.</t>
+          TBD. [RFC Editor: change TBD to the proper code once
+          assigned by IANA.]</t>
 
           <t>OPTION-LENGTH, 2 octets ((defined in [RFC6891]) contains
           the length of the payload (everything after OPTION-LENGTH)
           in octets and should be 6 plus the length of the EXTRA-TEXT
           section (which may be a zero-length string).</t>
 
-          <t>RESERVED, 2 octets; the first bit (R) indicates a flag defined in
-          this specification. The remaining bits are reserved for future use,
-          potentially as additional flags.</t>
+          <t>The RETRY flag, 1 bit; the first bit (R) indicates a flag defined in
+          this specification.</t>
 
-          <t>RESPONSE-CODE, 2 octets: this SHOULD be a copy of the RCODE from
-          the primary DNS packet. When including multiple extended error EDNS0
-          records in a response in order to provide additional error
-          information, the RESPONSE-CODE MAY be a different RCODE.</t>
+          <t>The RESERVED bits, 15 bits: these bits are reserved for
+          future use, potentially as additional flags.  The RESERVED
+          bits MUST be set to 0 by the sender and SHOULD be ignored by
+          the receiver.</t>
 
-          <t>INFO-CODE, 2 octets.</t>
+          <t>RESPONSE-CODE, 4 bits.</t>
 
-          <t>A variable length, ASCII encoded, EXTRA-TEXT field
-          holding additional textual information. It may be zero
-          length when no additional textual information is
-          included.</t>
+          <t>INFO-CODE, 12-bits.</t>
+
+          <t>EXTRA-TEXT, a variable length, ASCII encoded, EXTRA-TEXT field
+          holding additional textual information.</t>
         </list></t>
 
-      <t>Currently the only defined flag is the R flag. <list style="hanging">
-          <t hangText="R - Retry">The R (or Retry) flag provides a
-          hint to the receiver that it should retry the query to
-          another server. If the R bit is set (1), the
-          sender believes that retrying the query may provide a
-          successful answer next time; if the R bit is clear (0), the
-          sender believes that it should not ask another server.</t>
-        </list></t>
-
-      <t>The remaining bits in the RESERVED field are reserved for future use
-      and MUST be set to 0 by the sender and SHOULD be ignored by the
-      receiver.</t>
-
-      <t>INFO-CODE: A code point that, when combined with the RCODE from the
-      DNS packet, serve as a joint-index into the IANA "Extended DNS Errors"
-      registry.</t>
     </section>
 
     <section title="Use of the Extended DNS Error option">
@@ -237,28 +221,61 @@ A: |                             EXTRA-TEXT                        |
       is extensible via the IANA registry to allow additional error and
       information codes to be defined in the future.</t>
 
-      <t>The R (Retry) flag provides a hint (or suggestion) as to what the
-      receiver may want to do with this annotated error. The mechanism is
-      specifically designed to be extensible, and so implementations may
-      receive EDE codes that it does not understand. The R flag allows
-      implementations to make a decision as to what to do if it receives a
-      response with an unknown code - retry or drop the query. Note that this
-      flag is only a suggestion or hint. Unless a protective transport
-      mechanism (like TSIG <xref target="RFC2845"/> or TLS <xref
-      target="RFC8094"/>) is used, the bit's value could have have been
-      altered by a person-in-the-middle. Receivers can choose to ignore this
-      hint.</t>
+      <t>The components of the Extended DNS Error option are defined
+      further in the following sub-sections.</t>
 
-      <t>The EXTRA-TEXT textual field may be zero-length, or may hold
-      additional information useful to network operators.</t>
+      <section title="The R (Retry) flag">
+          <t>The R (Retry) flag provides a hint (or suggestion) as to
+          what the receiver may want to do with this annotated
+          error. The R (or Retry) flag provides a hint to the receiver
+          that it should retry the query to another server. If the R
+          bit is set (1), the sender believes that retrying the query
+          may provide a successful answer next time; if the R bit is
+          clear (0), the sender believes that it should not ask
+          another server. The mechanism is specifically designed to be
+          extensible, and so implementations may receive EDE codes
+          that it does not understand. The R flag allows
+          implementations to make a decision as to what to do if it
+          receives a response with an unknown code - retry or drop the
+          query. Note that this flag is only a suggestion or
+          hint. Unless a protective transport mechanism (like TSIG
+          <xref target="RFC2845"/> or TLS <xref target="RFC8094"/>) is
+          used, the bit's value could have have been altered by a
+          person-in-the-middle. Receivers can choose to ignore this
+          hint.  See the security considerations for additional
+          considerations.</t>
+      </section>
+
+      <section title="The RESPONSE-CODE value">
+	  <t>This 4-bit value SHOULD be a copy of the RCODE from the
+	  primary DNS packet. Multiple EDNS0/ExtError records may be
+	  included in the response.  When including multiple extended
+	  error EDNS0 records in a response in order to provide
+	  additional error information, other RESPONSE-CODEs MAY be a
+	  different RCODE.</t>
+      </section>
+
+      <section title="The INFO-CODE value">
+          <t>This 12-bit value provides the additional context for the
+          RESPONSE-CODE value. This is combined with the RESPONSE-CODE
+          to serve as a joint-index into the IANA "Extended DNS
+          Errors" registry.</t>
+      </section>
+
+      <section title="The EXTRA-TEXT field">
+          <t>The EXTRA-TEXT ASCII-encoded, textual field may be
+          zero-length, or may hold additional information useful to
+          network operators.</t>
+      </section>
+
     </section>
 
     <section title="Defined Extended DNS Errors">
-      <t>This document defines some initial EDE codes. The mechanism is
-      intended to be extensible, and additional codepoints will be registered
-      in the "Extended DNS Errors" registry. This document provides
-      suggestions for the R flag, but the originating server may ignore these
-      recommendations if it knows better.</t>
+      <t>This document defines some initial EDE codes. The mechanism
+      is intended to be extensible, and additional code-points can be
+      registered in the "Extended DNS Errors" registry. This document
+      provides suggestions for the R flag, but the originating server
+      may ignore these recommendations if it knows better.</t>
 
       <t>The RESPONSE-CODE and the INFO-CODE from the EDE EDNS option is used
       to serve as a double index into the "Extended DNS Error codes" IANA

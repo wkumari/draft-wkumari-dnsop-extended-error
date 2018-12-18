@@ -248,7 +248,7 @@ A: |                             EXTRA-TEXT                        |
       altered by a person-in-the-middle. Receivers can choose to ignore this
       hint.</t>
 
-      <t>The EXTRA-INFO textual field may be zero-length, or may hold
+      <t>The EXTRA-TEXT textual field may be zero-length, or may hold
       additional information useful to network operators.</t>
     </section>
 

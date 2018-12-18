@@ -371,7 +371,7 @@ A: |                             EXTRA-TEXT                        |
           </figure></t>
       </section>
 
-      <section title="new Extended Error Code EDNS Option">
+      <section title="New Extended Error Code EDNS Option">
         <t>This document defines a new double-index IANA registry table, where
         the first index value is the RCODE value and the second index value is
         the INFO-CODE from the Extended DNS Error EDNS option defined in this

@@ -211,12 +211,12 @@ A: |                             EXTRA-TEXT                        |
         </list></t>
 
       <t>Currently the only defined flag is the R flag. <list style="hanging">
-          <t hangText="R - Retry">The R (or Retry) flag provides a hint to the
-          receiver that it should retry the query, probably by querying
-          another server. If the R bit is set (1), the sender believes that
-          retrying the query may provide a successful answer next time; if the
-          R bit is clear (0), the sender believes that it should not ask
-          another server.</t>
+          <t hangText="R - Retry">The R (or Retry) flag provides a
+          hint to the receiver that it should retry the query to
+          another server. If the R bit is set (1), the
+          sender believes that retrying the query may provide a
+          successful answer next time; if the R bit is clear (0), the
+          sender believes that it should not ask another server.</t>
         </list></t>
 
       <t>The remaining bits in the RESERVED field are reserved for future use

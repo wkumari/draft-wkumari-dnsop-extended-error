@@ -205,9 +205,10 @@ A: |                             EXTRA-TEXT                        |
 
           <t>INFO-CODE, 2 octets.</t>
 
-          <t>A variable length EXTRA-TEXT field holding additional textual
-          information. It may be zero length when no additional textual
-          information is included.</t>
+          <t>A variable length, ASCII encoded, EXTRA-TEXT field
+          holding additional textual information. It may be zero
+          length when no additional textual information is
+          included.</t>
         </list></t>
 
       <t>Currently the only defined flag is the R flag. <list style="hanging">

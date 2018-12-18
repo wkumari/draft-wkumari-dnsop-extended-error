@@ -195,7 +195,10 @@ I like the Extended Error Code using EDNS idea. This was effectively
 what was done with TSIG and TKEY that have an expanded Error field
 inside the RR. However:
 
-*** TODO two dimensional table is unneeded 
+*** DONE two dimensional table is unneeded 
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-18 Tue 11:36]
+    :END:      
 
      >> I don't see any reason for the complex two-dimensional table to
     new error codes. Given that 16 bits is available for "INFO-CODE"
@@ -211,17 +214,26 @@ inside the RR. However:
 
     + response: this was discussed multiple times in previous working
       group meetings and on the mailing list, and the general
-      consensus was to use a multiple-lookup table.
+      consensus was to use a multiple-lookup table.  Continue reading
+      into the next issue for further information on a decent compromise:
 
 *** TODO rcodes are only 4 bits
 
- >> Since RCODEs are 4 bits, I don't see why a 16-bit RESPONSE-CODE
-field is required. Even if you want to be able to provide additional
-information for the 12-bit error codes of RCODE as extended by base
-EDNS, there is still enough room in the previous 16-bit word which has
-15 unused bits in it. Just move the RESPONSE-CODE up into the previous
-word.
+     >> Since RCODEs are 4 bits, I don't see why a 16-bit
+     RESPONSE-CODE field is required. Even if you want to be able to
+     provide additional information for the 12-bit error codes of
+     RCODE as extended by base EDNS, there is still enough room in the
+     previous 16-bit word which has 15 unused bits in it. Just move
+     the RESPONSE-CODE up into the previous word
 
+     + Response: you're right about the 4 bits of course.  Somehow our
+       initial remembrance of this got lost in the double table
+       issue.  So to simplify both this issue, and the previous, we've
+       decided to merge the two codes into a 4-bit RCODE value and a
+       12-bit INFO-CODE value.  This actually allows implementers to
+       treat it easily as two codes, if they'd prefer, or a single
+       16b-bit code if they'd rather handle it that way while
+       preserving interoperability between everything.
 
 + merge response and info
   + 12 bits for info

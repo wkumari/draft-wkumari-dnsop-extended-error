@@ -460,26 +460,9 @@ A: |                             EXTRA-TEXT                        |
   <back>
     <references title="Normative References">
       <?rfc include='reference.RFC.2119'?>
-
-      <reference anchor="IANA.AS_Numbers"
-                 target="http://www.iana.org/assignments/as-numbers">
-        <front>
-          <title abbrev="Autonomous System (AS) Numbers">Autonomous System
-          (AS) Numbers</title>
-
-          <author>
-            <organization>IANA</organization>
-          </author>
-
-          <date/>
-        </front>
-      </reference>
     </references>
 
     <references title="Informative References">
-      <?rfc include='reference.I-D.draft-ietf-sidr-iana-objects-03.xml'
-?>
-
       <?rfc include='reference.RFC.2845' ?>
 
       <?rfc include='reference.RFC.8094' ?>

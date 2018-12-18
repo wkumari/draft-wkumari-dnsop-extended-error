@@ -1,5 +1,7 @@
 * Multiple people
-*** Implementations required
+*** TODO Implementations required
+    + Shane Kerr and Peter Spacek pointed out new dnsop convention is to
+      have implementations.
 
 * Shane Kerr's review
 
@@ -136,7 +138,7 @@
       + implementation specific
       + create a new section for multiple responses
 
-*** TODO Implementation required
+*** CANCELED Implementation required
 
       Finally, do we have any implementations of this draft? It seems pretty
       straightforward, but I don't actually think that it's possible to
@@ -144,18 +146,27 @@
       vaguely recall that we wanted running code going forward to try to
       starve the DNS camel...
 
+      + issue response moved to a generic multiple-people issue
 
 * Peter Spacek
   I believe the document is not ready for multiple reasons:
 
-*** TODO EDNS handling as mentioned elsewhere in this thread
+*** DONE EDNS handling as mentioned elsewhere in this thread
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-18 Tue 10:38]
+    :END:      
 
-*** TODO lack of implementation reports
+    + Response: we believe we have handled all other issues; please
+      let us know if you disagree.
+
+*** CANCELED lack of implementation reports
 
   With my implementer hat on, this might not be as easy to implement as we
   would like. An actual implementation might uncover various weird corner
   cases so I'm against advacing this document before there are
   implementations for *real* resolvers/DNSSEC validators.
+
+      + issue response moved to a generic multiple-people issue
 
 * Joe Abley
 

@@ -45,7 +45,10 @@
         of the EXTRA-TEXT section (which may be a zero-length
         string)."
 
-*** TODO Also, this text seems a bit unclear:
+*** DONE Also, this text seems a bit unclear:
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-17 Mon 16:24]
+    :END:      
 
        	 R - Retry  The R (or Retry) flag provides a hint to the receiver that
             it should retry the query, probably by querying another server.
@@ -56,6 +59,9 @@
 
       The "probably by querying another server" is odd. In my mind it should
       explicitly apply to querying another server ONLY.
+
+      + Result: that's fair.  Changed it to " it should retry the
+        query to another server."
 
 *** DONE EXTRA-TEXT and EXTRA-INFO duplication
     :LOGBOOK:  

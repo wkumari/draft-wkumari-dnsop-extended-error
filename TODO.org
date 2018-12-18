@@ -1,0 +1,189 @@
+* Multiple people
+*** Implementations required
+
+* Shane Kerr's review
+
+    Dear DNS colleagues,
+
+    I definitely agree with George that last call seems a bit
+    premature. As he points out, section 6 is a large open question. We
+    need to either change EDNS behavior to allow an unsolicited EDNS
+    option in a response or change this draft to include an appropriate
+    EDNS option when it queries. Personally I think the draft should
+    specify that the query should include an empty version of this EDNS
+    option to indicate support (this is actually helpful, as it doesn't
+    make too much sense sending back extra information that clients will
+    ignore, decades of BIND adding useless ADDITIONAL section data
+    notwithstanding).
+
+*** DONE Plus there's also this odd bit of stray text laying around:
+    :LOGBOOK:  
+    - State "DONE"       from ""           [2018-12-17 Mon 16:09]
+    :END:      
+
+     Here is a reference to an "external" (non-RFC / draft) thing:
+     ([IANA.AS_Numbers]).  And this is a link to an
+     ID:[I-D.ietf-sidr-iana-objects].
+
+     + Result: removed
+
+*** DONE Also is this correct:
+    :LOGBOOK:  
+    - State "DONE"       from ""           [2018-12-17 Mon 16:09]
+    :END:      
+
+       	 o  OPTION-LENGTH, 2 octets ((defined in [RFC6891]) contains the
+            length of the payload (everything after OPTION-LENGTH) in octets
+            and should be 4.
+
+      If I am correct there are at least 6 octets after the OPTION-LENGTH
+      and possibly more if EXTRA-TEXT is present.
+
+      + Result: fixed text to say "OPTION-LENGTH, 2 octets ((defined
+        in [RFC6891]) contains the length of the payload (everything
+        after OPTION-LENGTH) in octets and should be 6 plus the length
+        of the EXTRA-TEXT section (which may be a zero-length
+        string)."
+
+*** TODO Also, this text seems a bit unclear:
+
+       	 R - Retry  The R (or Retry) flag provides a hint to the receiver that
+            it should retry the query, probably by querying another server.
+            If the R bit is set (1), the sender believes that retrying the
+            query may provide a successful answer next time; if the R bit is
+            clear (0), the sender believes that it should not ask another
+            server.
+
+      The "probably by querying another server" is odd. In my mind it should
+      explicitly apply to querying another server ONLY.
+
+*** DONE EXTRA-TEXT and EXTRA-INFO duplication
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-17 Mon 16:11]
+    :END:      
+
+      The draft refers to EXTRA-TEXT twice, and EXTRA-INFO once which is
+      presumably meant to be the same thing. 
+
+      + Result: switched to all EXTRA-TEXT
+
+*** TODO encoding of the EXTRA-TEXT field
+
+      In any case, I think the encoding of this field should be
+      specified as either ASCII or UTF-8. I prefer UTF-8, because
+      otherwise I won't be able to send back 🤯 emoji in error messages
+      (and the authors won't be able to use the 🍄 emoji that they
+      clearly want).
+
+*** TODO I am not sure I agree with these recommendations:
+
+      4.1.5.  Extended DNS Error Code 5 - Unsupported DNSKEY Algorithm
+
+       	 The resolver attempted to perform DNSSEC validation, but a DNSKEY
+       	 RRSET contained only unknown algorithms.  The R flag should not be
+       	 set.
+
+      4.1.6.  Extended DNS Error Code 6 - Unsupported DS Algorithm
+
+       	 The resolver attempted to perform DNSSEC validation, but a DS RRSET
+       	 contained only unknown algorithms.  The R flag should not be set.
+
+      This seems like a case where a stub resolver may want to try another
+      full-service resolver that may support more algorithms, so perhaps the
+      text "The R flag should not be set" should be removed.
+
+
+*** TODO How to add multiple EDE
+
+      While the draft suggests that it is possible to add multiple EDE to a
+      message:
+
+       	 o  RESPONSE-CODE, 2 octets: this SHOULD be a copy of the RCODE from
+            the primary DNS packet.  When including multiple extended error
+            EDNS0 records in a response in order to provide additional error
+            information, the RESPONSE-CODE MAY be a different RCODE.
+
+      It is not explicit about how this is done. If the intention is for a
+      resolver to forward this back to a stub resolver, then it needs to be
+      mentioned, probably in section 3, something like this. However, then
+      we also need some text describing how a client behaves when presented
+      with multiple EDE.
+
+*** TODO Implementation required
+
+      Finally, do we have any implementations of this draft? It seems pretty
+      straightforward, but I don't actually think that it's possible to
+      develop interoperable code with the draft as it stands today. I
+      vaguely recall that we wanted running code going forward to try to
+      starve the DNS camel...
+
+      Cheers,
+
+*** 
+* Peter Spacek
+  I believe the document is not ready for multiple reasons:
+
+*** TODO EDNS handling as mentioned elsewhere in this thread
+
+*** TODO lack of implementation reports
+
+  With my implementer hat on, this might not be as easy to implement as we
+  would like. An actual implementation might uncover various weird corner
+  cases so I'm against advacing this document before there are
+  implementations for *real* resolvers/DNSSEC validators.
+
+* Joe Abley
+
+*** Fix IANA registry template
+
+    >> With IANA registry requests, I may be wrong here, but I thought we had
+    >> some (boilerplate?) language about how IANA is asked to operate the
+    >> registry: what criteria judge acceptance. Is it like the OID and
+    >> basically open (hair oil) slather, or is it only at WG RFC documented
+    >> request?
+    > 
+    > If there is a better template, we'd certainly like to hear it.
+
+    RFC 8126 contains exactly the guidance you're looking for. When
+    creating a new registry you not only need to specify the schema and
+    the initial rows to populate the new table with (as you started in
+    section 5.2, although the formatting of the table is a bit
+    horrifying); you also need to specify the name of the registry,
+    required information for future additions and the registration policy.
+
+    Happy to contribute some text if that seems useful.
+
+* Donald Eastlake
+
+I like the Extended Error Code using EDNS idea. This was effectively
+what was done with TSIG and TKEY that have an expanded Error field
+inside the RR. However:
+
+*** TODO two dimensional table is unneeded 
+
+     >> I don't see any reason for the complex two-dimensional table to
+    new error codes. Given that 16 bits is available for "INFO-CODE"
+    (which I think, to follow the DNS nomenclature used in TSIG and TKEY,
+    should just be called "Error"), I don't see why these extended error
+    codes, which provide more detail beyond the top level Error code
+    value, can't be from the single unified DNS error code table. That
+    way, wherever you get a DNS Error code (from RCODE or the EDNS
+    extended error field or the TSIG or TKEY error fields or wherever,
+    there is just one table to look it up in. For example, you could
+    Reserve 4096 through 8191 for this purpose, which is probably enough
+    values :-)
+
+    + response: this was discussed multiple times in previous working
+      group meetings and on the mailing list, and the general
+      consensus was to use a multiple-lookup table.
+
+*** TODO rcodes are only 4 bits
+
+ >> Since RCODEs are 4 bits, I don't see why a 16-bit RESPONSE-CODE
+field is required. Even if you want to be able to provide additional
+information for the 12-bit error codes of RCODE as extended by base
+EDNS, there is still enough room in the previous 16-bit word which has
+15 unused bits in it. Just move the RESPONSE-CODE up into the previous
+word.
+
+

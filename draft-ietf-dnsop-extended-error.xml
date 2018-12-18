@@ -296,14 +296,14 @@ A: |                             EXTRA-TEXT                        |
         <section anchor="errbaddnskeyalg"
                  title="Extended DNS Error Code 5 - Unsupported                           DNSKEY Algorithm">
           <t>The resolver attempted to perform DNSSEC validation, but a DNSKEY
-          RRSET contained only unknown algorithms. The R flag should not be
+          RRSET contained only unknown algorithms. The R flag should be
           set.</t>
         </section>
 
         <section anchor="errbaddsalg"
                  title="Extended DNS Error Code 6 - Unsupported                           DS Algorithm">
           <t>The resolver attempted to perform DNSSEC validation, but a DS
-          RRSET contained only unknown algorithms. The R flag should not be
+          RRSET contained only unknown algorithms. The R flag should be
           set.</t>
         </section>
 

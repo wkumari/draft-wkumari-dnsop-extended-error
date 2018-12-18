@@ -73,7 +73,10 @@
 
       + Result: switched to all EXTRA-TEXT
 
-*** TODO encoding of the EXTRA-TEXT field
+*** DONE encoding of the EXTRA-TEXT field
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-18 Tue 10:32]
+    :END:      
 
       In any case, I think the encoding of this field should be
       specified as either ASCII or UTF-8. I prefer UTF-8, because
@@ -92,7 +95,10 @@
           length when no additional textual information is
           included.
 
-*** TODO I am not sure I agree with these recommendations:
+*** DONE I am not sure I agree with these recommendations:
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-18 Tue 10:33]
+    :END:      
 
       4.1.5.  Extended DNS Error Code 5 - Unsupported DNSKEY Algorithm
 
@@ -109,7 +115,7 @@
       full-service resolver that may support more algorithms, so perhaps the
       text "The R flag should not be set" should be removed.
 
-      + Resolution: agree
+      + Resolution: we agree; text changed
 
 *** TODO How to add multiple EDE
 

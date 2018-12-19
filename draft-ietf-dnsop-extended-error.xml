@@ -248,7 +248,7 @@
           considerations.</t>
       </section>
 
-      <section title="The RESPONSE-CODE value">
+      <section title="The RESPONSE-CODE field">
 	  <t>This 4-bit value SHOULD be a copy of the RCODE from the
 	  primary DNS packet. Multiple EDNS0/ExtError records may be
 	  included in the response.  When including multiple extended
@@ -257,7 +257,7 @@
 	  different RCODE.</t>
       </section>
 
-      <section title="The INFO-CODE value">
+      <section title="The INFO-CODE field">
           <t>This 12-bit value provides the additional context for the
           RESPONSE-CODE value. This is combined with the RESPONSE-CODE
           to serve as a joint-index into the IANA "Extended DNS

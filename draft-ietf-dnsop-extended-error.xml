@@ -287,75 +287,75 @@
 
       <section title="INFO-CODEs for use with RESPONSE-CODE: SERVFAIL(2)">
         <section anchor="errbogus"
-                 title="Extended DNS Error Code 1 - DNSSEC Bogus">
+                 title="SERVFAIL Extended DNS Error Code 1 - DNSSEC Bogus">
           <t>The resolver attempted to perform DNSSEC validation, but
           validation ended in the Bogus state. The R flag should not be
           set.</t>
         </section>
 
         <section anchor="errindeterminate"
-                 title="Extended DNS Error Code 2 - DNSSEC Indeterminate">
+                 title="SERVFAIL Extended DNS Error Code 2 - DNSSEC Indeterminate">
           <t>The resolver attempted to perform DNSSEC validation, but
           validation ended in the Indeterminate state. The R flag should not
           be set.</t>
         </section>
 
         <section anchor="errexpired"
-                 title="Extended DNS Error Code 3 - Signature Expired">
+                 title="SERVFAIL Extended DNS Error Code 3 - Signature Expired">
           <t>The resolver attempted to perform DNSSEC validation, but the
           signature was expired. The R flag should not be set.</t>
         </section>
 
         <section anchor="errprior"
-                 title="Extended DNS Error Code 4 - Signature Not Yet Valid">
+                 title="SERVFAIL Extended DNS Error Code 4 - Signature Not Yet Valid">
           <t>The resolver attempted to perform DNSSEC validation, but the
           signatures received were not yet valid. The R flag should not be
           set.</t>
         </section>
 
         <section anchor="errbaddnskeyalg"
-                 title="Extended DNS Error Code 5 - Unsupported                           DNSKEY Algorithm">
+                 title="SERVFAIL Extended DNS Error Code 5 - Unsupported                           DNSKEY Algorithm">
           <t>The resolver attempted to perform DNSSEC validation, but a DNSKEY
           RRSET contained only unknown algorithms. The R flag should be
           set.</t>
         </section>
 
         <section anchor="errbaddsalg"
-                 title="Extended DNS Error Code 6 - Unsupported                           DS Algorithm">
+                 title="SERVFAIL Extended DNS Error Code 6 - Unsupported                           DS Algorithm">
           <t>The resolver attempted to perform DNSSEC validation, but a DS
           RRSET contained only unknown algorithms. The R flag should be
           set.</t>
         </section>
 
         <section anchor="errnodnskey"
-                 title="Extended DNS Error Code 7 - DNSKEY missing">
+                 title="SERVFAIL Extended DNS Error Code 7 - DNSKEY missing">
           <t>A DS record existed at a parent, but no DNSKEY record could be
           found for the child. The R flag should not be set.</t>
         </section>
 
         <section anchor="errnorrsig"
-                 title="Extended DNS Error Code 8 - RRSIGs missing">
+                 title="SERVFAIL Extended DNS Error Code 8 - RRSIGs missing">
           <t>The resolver attempted to perform DNSSEC validation, but no
           RRSIGs could be found for at least one RRset where RRSIGs were
           expected.</t>
         </section>
 
         <section anchor="errnozonekey"
-                 title="Extended DNS Error Code 9 - No Zone Key Bit Set">
+                 title="SERVFAIL Extended DNS Error Code 9 - No Zone Key Bit Set">
           <t>The resolver attempted to perform DNSSEC validation, but no Zone
           Key Bit was set in a DNSKEY.</t>
         </section>
       </section>
 
       <section title="INFO-CODEs for use with RESPONSE-CODE: REFUSED(5)">
-        <section title="Extended DNS Error Code 1 - Lame">
+        <section title="REFUSED Extended DNS Error Code 1 - Lame">
           <t>An authoritative resolver that receives a query (with the RD bit
           clear) for a domain for which it is not authoritative SHOULD include
           this EDE code in the REFUSED response. Implementations should set
           the R flag in this case (another nameserver might not be lame).</t>
         </section>
 
-        <section title="Extended DNS Error Code 2 - Prohibited">
+        <section title="REFUSED Extended DNS Error Code 2 - Prohibited">
           <t>An authoritative or recursive resolver that receives a query from
           an "unauthorized" client can annotate its REFUSED message with this
           code. Examples of "unauthorized" clients are recursive queries from
@@ -368,7 +368,7 @@
       </section>
 
       <section title="INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)">
-        <section title="Extended DNS Error Code 1 - Blocked">
+        <section title="NXDOMAIN Extended DNS Error Code 1 - Blocked">
           <t>The resolver attempted to perfom a DNS query but the domain is
           blacklisted due to a security policy. The R flag should not be
           set.</t>
@@ -433,14 +433,16 @@
     </section>
 
     <section anchor="security" title="Security Considerations">
-      <t>DNSSEC is being deployed - unfortunately a significant number of
-      clients (~11% according to <xref target="GeoffValidation"/>), when
-      receiving a SERVFAIL from a validating resolver because of a DNSSEC
-      validaion issue simply ask the next (non-validating) resolver in their
-      list, and don't get any of the protections which DNSSEC should provide.
-      This is very similar to a kid asking his mother if he can have another
-      cookie. When the mother says "No, it will ruin your dinner!", going off
-      and asking his (more permissive) father and getting a "Yes, sure,
+      <t>Though DNSSEC continues to be deployed, unfortunately a
+      significant number of clients (~11% according to <xref
+      target="GeoffValidation"/>) that receive a SERVFAIL from a
+      validating resolver because of a DNSSEC validaion issue will
+      simply ask the next (potentially non-validating) resolver in
+      their list, and thus don't get any of the protections which
+      DNSSEC should provide.  This is very similar to a kid asking his
+      mother if he can have another cookie. When the mother says "No,
+      it will ruin your dinner!", going off and asking his (more
+      permissive) father and getting a "Yes, sure, have a
       cookie!".</t>
 
       <t>This information is unauthenticated information, and an attacker (e.g

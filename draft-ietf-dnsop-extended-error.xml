@@ -217,7 +217,7 @@
 
     <section title="Use of the Extended DNS Error option">
       <t>The Extended DNS Error (EDE) is an EDNS option. It can be included in
-      any error response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query that
+      any response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query that
       includes an EDNS option. This document includes a set of initial
       codepoints (and requests to the IANA to add them to the registry), but
       is extensible via the IANA registry to allow additional error and

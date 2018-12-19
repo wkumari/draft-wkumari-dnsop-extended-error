@@ -23,9 +23,11 @@ Expires: March 25, 2019                                              ISC
 Abstract
 
    This document defines an extensible method to return additional
-   information about the cause of DNS errors.  The primary use case is
+   information about the cause of DNS errors.  Though created primarily
    to extend SERVFAIL to provide additional information about the cause
-   of DNS and DNSSEC failures.
+   of DNS and DNSSEC failures, the Extended DNS Errors option defined in
+   this document allows all response types to contain extended error
+   information.
 
 Status of This Memo
 
@@ -35,7 +37,7 @@ Status of This Memo
    Internet-Drafts are working documents of the Internet Engineering
    Task Force (IETF).  Note that other groups may also distribute
    working documents as Internet-Drafts.  The list of current Internet-
-   Drafts is at https://datatracker.ietf.org/drafts/current/.
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
 
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
@@ -49,9 +51,7 @@ Copyright Notice
    Copyright (c) 2018 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
-   This document is subject to BCP 78 and the IETF Trust's Legal
-   Provisions Relating to IETF Documents
-   (https://trustee.ietf.org/license-info) in effect on the date of
+
 
 
 
@@ -60,6 +60,9 @@ Kumari, et al.           Expires March 25, 2019                 [Page 1]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
@@ -69,34 +72,50 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 Table of Contents
 
-   1.  Introduction and background . . . . . . . . . . . . . . . . .   2
+   1.  Introduction and background . . . . . . . . . . . . . . . . .   3
      1.1.  Requirements notation . . . . . . . . . . . . . . . . . .   3
    2.  Extended Error EDNS0 option format  . . . . . . . . . . . . .   3
-   3.  Use of the Extended DNS Error option  . . . . . . . . . . . .   5
+   3.  Use of the Extended DNS Error option  . . . . . . . . . . . .   4
+     3.1.  The R (Retry) flag  . . . . . . . . . . . . . . . . . . .   5
+     3.2.  The RESPONSE-CODE field . . . . . . . . . . . . . . . . .   5
+     3.3.  The INFO-CODE field . . . . . . . . . . . . . . . . . . .   5
+     3.4.  The EXTRA-TEXT field  . . . . . . . . . . . . . . . . . .   5
    4.  Defined Extended DNS Errors . . . . . . . . . . . . . . . . .   5
-     4.1.  SERVFAIL(2) extended information codes  . . . . . . . . .   6
-       4.1.1.  Extended DNS Error Code 1 - DNSSEC Bogus  . . . . . .   6
-       4.1.2.  Extended DNS Error Code 2 - DNSSEC Indeterminate  . .   6
-       4.1.3.  Extended DNS Error Code 3 - Signature Expired . . . .   6
-       4.1.4.  Extended DNS Error Code 4 - Signature Not Yet Valid .   6
-       4.1.5.  Extended DNS Error Code 5 - Unsupported
+     4.1.  INFO-CODEs for use with RESPONSE-CODE: SERVFAIL(2)  . . .   6
+       4.1.1.  SERVFAIL Extended DNS Error Code 1 - DNSSEC Bogus . .   6
+       4.1.2.  SERVFAIL Extended DNS Error Code 2 - DNSSEC
+               Indeterminate . . . . . . . . . . . . . . . . . . . .   6
+       4.1.3.  SERVFAIL Extended DNS Error Code 3 - Signature
+               Expired . . . . . . . . . . . . . . . . . . . . . . .   6
+       4.1.4.  SERVFAIL Extended DNS Error Code 4 - Signature Not
+               Yet Valid . . . . . . . . . . . . . . . . . . . . . .   6
+       4.1.5.  SERVFAIL Extended DNS Error Code 5 - Unsupported
                DNSKEY Algorithm  . . . . . . . . . . . . . . . . . .   6
-       4.1.6.  Extended DNS Error Code 6 - Unsupported
+       4.1.6.  SERVFAIL Extended DNS Error Code 6 - Unsupported
                DS Algorithm  . . . . . . . . . . . . . . . . . . . .   6
-       4.1.7.  Extended DNS Error Code 7 - DNSKEY missing  . . . . .   6
-       4.1.8.  Extended DNS Error Code 8 - RRSIGs missing  . . . . .   6
-       4.1.9.  Extended DNS Error Code 9 - No Zone Key Bit Set . . .   7
-     4.2.  REFUSED(5) extended information codes . . . . . . . . . .   7
-       4.2.1.  Extended DNS Error Code 1 - Lame  . . . . . . . . . .   7
-       4.2.2.  Extended DNS Error Code 2 - Prohibited  . . . . . . .   7
-     4.3.  NXDOMAIN(3) extended information codes  . . . . . . . . .   7
-       4.3.1.  Extended DNS Error Code 1 - Blocked . . . . . . . . .   7
+       4.1.7.  SERVFAIL Extended DNS Error Code 7 - DNSKEY missing .   6
+       4.1.8.  SERVFAIL Extended DNS Error Code 8 - RRSIGs missing .   7
+       4.1.9.  SERVFAIL Extended DNS Error Code 9 - No Zone Key Bit
+               Set . . . . . . . . . . . . . . . . . . . . . . . . .   7
+     4.2.  INFO-CODEs for use with RESPONSE-CODE: REFUSED(5) . . . .   7
+       4.2.1.  REFUSED Extended DNS Error Code 1 - Lame  . . . . . .   7
+       4.2.2.  REFUSED Extended DNS Error Code 2 - Prohibited  . . .   7
+     4.3.  INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)  . . .   7
+       4.3.1.  NXDOMAIN Extended DNS Error Code 1 - Blocked  . . . .   7
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
      5.1.  new Extended Error Code EDNS Option . . . . . . . . . . .   7
      5.2.  New Extended Error Code EDNS Option . . . . . . . . . . .   8
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   9
    8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
+
+
+
+Kumari, et al.           Expires March 25, 2019                 [Page 2]
+
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
+
+
      8.1.  Normative References  . . . . . . . . . . . . . . . . . .   9
      8.2.  Informative References  . . . . . . . . . . . . . . . . .   9
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  10
@@ -108,23 +127,15 @@ Table of Contents
    transient, some permanent; some can be resolved by querying another
    server, some are likely best handled by stopping resolution.
    Unfortunately, the error signals that a DNS server can return are
-
-
-
-Kumari, et al.           Expires March 25, 2019                 [Page 2]
-
-Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
-
-
    very limited, and are not very expressive.  This means that
    applications and resolvers often have to "guess" at what the issue is
-   - e.g the answer was marked REFUSED because of a lame delegation, or
-   because of a lame delegation or because the nameserver is still
-   starting up and loading zones?  Is a SERVFAIL a DNSSEC validation
-   issue, or is the nameserver experiencing a bad hair day?
+   - e.g. was the answer marked REFUSED because of a lame delegation, or
+   because the nameserver is still starting up and loading zones?  Is a
+   SERVFAIL a DNSSEC validation issue, or is the nameserver experiencing
+   a bad hair day?
 
    A good example of issues that would benefit by additional error
-   information is an error caused by a DNSSEC validation issue.  When a
+   information are errors caused by DNSSEC validation issues.  When a
    stub resolver queries a DNSSEC bogus name (using a validating
    resolver), the stub resolver receives only a SERVFAIL in response.
    Unfortunately, SERVFAIL is used to signal many sorts of DNS errors,
@@ -141,10 +152,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    the resolver to make a decision regarding whether or not to retry or
    it can be used or by technical users attempting to debug issues.
 
-   Here is a reference to an "external" (non-RFC / draft) thing:
-   ([IANA.AS_Numbers]).  And this is a link to an
-   ID:[I-D.ietf-sidr-iana-objects].
-
 1.1.  Requirements notation
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -153,16 +160,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 2.  Extended Error EDNS0 option format
 
-   This draft uses an EDNS0 ([RFC2671]) option to include extended error
-   (ExtError) information in DNS messages.  The option is structured as
+   This draft uses an EDNS0 ([RFC2671]) option to include Extended DNS
+   Error (EDE) information in DNS messages.  The option is structured as
    follows:
-
-
-
-
-
-
-
 
 
 
@@ -181,43 +181,43 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
    4: | R |                          RESERVED                         |
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-   6: |                           RESPONSE-CODE                       |
+   6: | RESPONSE-CODE |             INFO-CODE                         |
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-   8: |                             INFO-CODE                         |
-      +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-   A: |                             EXTRA-TEXT                        |
+   8: |                             EXTRA-TEXT                        |
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
-   o  OPTION-CODE, 2 octets (defined in [RFC6891]), for ExtError is TBD.
+   Field definition details:
+
+   o  OPTION-CODE, 2 octets (defined in [RFC6891]), for EDE is TBD.
+      [RFC Editor: change TBD to the proper code once assigned by IANA.]
 
    o  OPTION-LENGTH, 2 octets ((defined in [RFC6891]) contains the
       length of the payload (everything after OPTION-LENGTH) in octets
-      and should be 4.
+      and should be 4 plus the length of the EXTRA-TEXT section (which
+      may be a zero-length string).
 
-   o  RESERVED, 2 octets; the first bit (R) indicates a flag defined in
-      this specification.  The remaining bits are reserved for future
-      use, potentially as additional flags.
+   o  The RETRY flag, 1 bit; the RETRY bit (R) indicates a flag defined
+      for use in this specification.
 
-   o  RESPONSE-CODE, 2 octets: this SHOULD be a copy of the RCODE from
-      the primary DNS packet.  When including multiple extended error
-      EDNS0 records in a response in order to provide additional error
-      information, the RESPONSE-CODE MAY be a different RCODE.
+   o  The RESERVED bits, 15 bits: these bits are reserved for future
+      use, potentially as additional flags.  The RESERVED bits MUST be
+      set to 0 by the sender and SHOULD be ignored by the receiver.
 
-   o  INFO-CODE, 2 octets.
+   o  RESPONSE-CODE, 4 bits.
 
-   o  A variable length EXTRA-TEXT field holding additional textual
-      information.  It may be zero length when no additional textual
-      information is included.
+   o  INFO-CODE, 12-bits.
 
-   Currently the only defined flag is the R flag.
+   o  EXTRA-TEXT, a variable length, ASCII encoded, text field that may
+      hold additional textual information.
 
-   R - Retry  The R (or Retry) flag provides a hint to the receiver that
-      it should retry the query, probably by querying another server.
-      If the R bit is set (1), the sender believes that retrying the
-      query may provide a successful answer next time; if the R bit is
-      clear (0), the sender believes that it should not ask another
-      server.
+3.  Use of the Extended DNS Error option
 
+   The Extended DNS Error (EDE) is an EDNS option.  It can be included
+   in any response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query that
+   includes an EDNS option.  This document includes a set of initial
+   codepoints (and requests to the IANA to add them to the registry),
+   but is extensible via the IANA registry to allow additional error and
+   information codes to be defined in the future.
 
 
 
@@ -228,53 +228,53 @@ Kumari, et al.           Expires March 25, 2019                 [Page 4]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
-   The remaining bits in the RESERVED field are reserved for future use
-   and MUST be set to 0 by the sender and SHOULD be ignored by the
-   receiver.
+   The fields of the Extended DNS Error option are defined further in
+   the following sub-sections.
 
-   INFO-CODE: A code point that, when combined with the RCODE from the
-   DNS packet, serve as a joint-index into the IANA "Extended DNS
-   Errors" registry.
+3.1.  The R (Retry) flag
 
-3.  Use of the Extended DNS Error option
+   The R (Retry) flag provides a hint as to what the receiver may want
+   to do with this annotated error.  Specifically, the R (or Retry) flag
+   provides a hint to the receiver that it should retry the query to
+   another server.  If the R bit is set (1), the sender believes that
+   retrying the query may provide a successful answer next time; if the
+   R bit is clear (0), the sender believes that the resolver should not
+   ask another server.
 
-   The Extended DNS Error (EDE) is an EDNS option.  It can be included
-   in any error response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query
-   that includes an EDNS option.  This document includes a set of
-   initial codepoints (and requests to the IANA to add them to the
-   registry), but is extensible via the IANA registry to allow
-   additional error and information codes to be defined in the future.
+   The mechanism is specifically designed to be extensible, and so
+   implementations may receive EDE codes that it does not understand.
+   The R flag allows implementations to make a decision as to what to do
+   if it receives a response with an unknown code - retry or drop the
+   query.  Note that this flag is only a suggestion.  Unless a
+   protective transport mechanism (like TSIG [RFC2845] or TLS [RFC8094])
+   is used, the bit's value could have have been altered by a person-in-
+   the-middle.  Receivers can choose to ignore this hint.  See the
+   security considerations for additional considerations.
 
-   The R (Retry) flag provides a hint (or suggestion) as to what the
-   receiver may want to do with this annotated error.  The mechanism is
-   specifically designed to be extensible, and so implementations may
-   receive EDE codes that it does not understand.  The R flag allows
-   implementations to make a decision as to what to do if it receives a
-   response with an unknown code - retry or drop the query.  Note that
-   this flag is only a suggestion or hint.  Unless a protective
-   transport mechanism (like TSIG [RFC2845] or TLS [RFC8094]) is used,
-   the bit's value could have have been altered by a person-in-the-
-   middle.  Receivers can choose to ignore this hint.
+3.2.  The RESPONSE-CODE field
 
-   The EXTRA-INFO textual field may be zero-length, or may hold
+   This 4-bit value SHOULD be a copy of the RCODE from the primary DNS
+   packet.  Multiple EDNS0/EDE records may be included in the response.
+   When including multiple EDNS0/EDE records in a response in order to
+   provide additional error information, other RESPONSE-CODEs MAY use a
+   different RCODE.
+
+3.3.  The INFO-CODE field
+
+   This 12-bit value provides the additional context for the RESPONSE-
+   CODE value.  This combination of the RESPONSE-CODE and the INFO-CODE
+   serve as a joint-index into the IANA "Extended DNS Errors" registry.
+
+3.4.  The EXTRA-TEXT field
+
+   The ASCII-encoded, EXTRA-TEXT field may be zero-length, or may hold
    additional information useful to network operators.
 
 4.  Defined Extended DNS Errors
 
    This document defines some initial EDE codes.  The mechanism is
-   intended to be extensible, and additional codepoints will be
+   intended to be extensible, and additional code-points can be
    registered in the "Extended DNS Errors" registry.  This document
-   provides suggestions for the R flag, but the originating server may
-   ignore these recommendations if it knows better.
-
-   The RESPONSE-CODE and the INFO-CODE from the EDE EDNS option is used
-   to serve as a double index into the "Extended DNS Error codes" IANA
-   registry, the initial values for which are defined in the following
-   sub-sections.
-
-
-
-
 
 
 
@@ -284,52 +284,52 @@ Kumari, et al.           Expires March 25, 2019                 [Page 5]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
-4.1.  SERVFAIL(2) extended information codes
+   provides suggestions for the R flag, but the originating server may
+   ignore these recommendations if it knows better.
 
-4.1.1.  Extended DNS Error Code 1 - DNSSEC Bogus
+   The RESPONSE-CODE and the INFO-CODE from the EDE EDNS option is used
+   to serve as a double index into the "Extended DNS Error codes" IANA
+   registry, the initial values for which are defined in the following
+   sub-sections.
+
+4.1.  INFO-CODEs for use with RESPONSE-CODE: SERVFAIL(2)
+
+4.1.1.  SERVFAIL Extended DNS Error Code 1 - DNSSEC Bogus
 
    The resolver attempted to perform DNSSEC validation, but validation
    ended in the Bogus state.  The R flag should not be set.
 
-4.1.2.  Extended DNS Error Code 2 - DNSSEC Indeterminate
+4.1.2.  SERVFAIL Extended DNS Error Code 2 - DNSSEC Indeterminate
 
    The resolver attempted to perform DNSSEC validation, but validation
    ended in the Indeterminate state.  The R flag should not be set.
 
-4.1.3.  Extended DNS Error Code 3 - Signature Expired
+4.1.3.  SERVFAIL Extended DNS Error Code 3 - Signature Expired
 
    The resolver attempted to perform DNSSEC validation, but the
    signature was expired.  The R flag should not be set.
 
-4.1.4.  Extended DNS Error Code 4 - Signature Not Yet Valid
+4.1.4.  SERVFAIL Extended DNS Error Code 4 - Signature Not Yet Valid
 
    The resolver attempted to perform DNSSEC validation, but the
    signatures received were not yet valid.  The R flag should not be
    set.
 
-4.1.5.  Extended DNS Error Code 5 - Unsupported DNSKEY Algorithm
+4.1.5.  SERVFAIL Extended DNS Error Code 5 - Unsupported DNSKEY
+        Algorithm
 
    The resolver attempted to perform DNSSEC validation, but a DNSKEY
-   RRSET contained only unknown algorithms.  The R flag should not be
-   set.
+   RRSET contained only unknown algorithms.  The R flag should be set.
 
-4.1.6.  Extended DNS Error Code 6 - Unsupported DS Algorithm
+4.1.6.  SERVFAIL Extended DNS Error Code 6 - Unsupported DS Algorithm
 
    The resolver attempted to perform DNSSEC validation, but a DS RRSET
-   contained only unknown algorithms.  The R flag should not be set.
+   contained only unknown algorithms.  The R flag should be set.
 
-4.1.7.  Extended DNS Error Code 7 - DNSKEY missing
+4.1.7.  SERVFAIL Extended DNS Error Code 7 - DNSKEY missing
 
    A DS record existed at a parent, but no DNSKEY record could be found
    for the child.  The R flag should not be set.
-
-4.1.8.  Extended DNS Error Code 8 - RRSIGs missing
-
-   The resolver attempted to perform DNSSEC validation, but no RRSIGs
-   could be found for at least one RRset where RRSIGs were expected.
-
-
-
 
 
 
@@ -340,21 +340,26 @@ Kumari, et al.           Expires March 25, 2019                 [Page 6]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
-4.1.9.  Extended DNS Error Code 9 - No Zone Key Bit Set
+4.1.8.  SERVFAIL Extended DNS Error Code 8 - RRSIGs missing
+
+   The resolver attempted to perform DNSSEC validation, but no RRSIGs
+   could be found for at least one RRset where RRSIGs were expected.
+
+4.1.9.  SERVFAIL Extended DNS Error Code 9 - No Zone Key Bit Set
 
    The resolver attempted to perform DNSSEC validation, but no Zone Key
    Bit was set in a DNSKEY.
 
-4.2.  REFUSED(5) extended information codes
+4.2.  INFO-CODEs for use with RESPONSE-CODE: REFUSED(5)
 
-4.2.1.  Extended DNS Error Code 1 - Lame
+4.2.1.  REFUSED Extended DNS Error Code 1 - Lame
 
    An authoritative resolver that receives a query (with the RD bit
    clear) for a domain for which it is not authoritative SHOULD include
    this EDE code in the REFUSED response.  Implementations should set
    the R flag in this case (another nameserver might not be lame).
 
-4.2.2.  Extended DNS Error Code 2 - Prohibited
+4.2.2.  REFUSED Extended DNS Error Code 2 - Prohibited
 
    An authoritative or recursive resolver that receives a query from an
    "unauthorized" client can annotate its REFUSED message with this
@@ -365,9 +370,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    Implementations SHOULD allow operators to define what to set the R
    flag to in this case.
 
-4.3.  NXDOMAIN(3) extended information codes
+4.3.  INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)
 
-4.3.1.  Extended DNS Error Code 1 - Blocked
+4.3.1.  NXDOMAIN Extended DNS Error Code 1 - Blocked
 
    The resolver attempted to perfom a DNS query but the domain is
    blacklisted due to a security policy.  The R flag should not be set.
@@ -384,17 +389,16 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    [http://www.iana.org/assignments/dns-parameters/dns-
    parameters.xhtml#dns-parameters-11]
 
-   Value  Name                 Status    Reference
-   -----  ----------------     ------    ------------------
-    TBD   Extended DNS Error    TBD       [ This document ]
-
-
 
 
 Kumari, et al.           Expires March 25, 2019                 [Page 7]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
+
+   Value  Name                 Status    Reference
+   -----  ----------------     ------    ------------------
+    TBD   Extended DNS Error    TBD       [ This document ]
 
 5.2.  New Extended Error Code EDNS Option
 
@@ -428,22 +432,18 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 6.  Security Considerations
 
-   DNSSEC is being deployed - unfortunately a significant number of
-   clients (~11% according to [GeoffValidation]), when receiving a
-   SERVFAIL from a validating resolver because of a DNSSEC validaion
-   issue simply ask the next (non-validating) resolver in their list,
-   and don't get any of the protections which DNSSEC should provide.
-   This is very similar to a kid asking his mother if he can have
-   another cookie.  When the mother says "No, it will ruin your
-   dinner!", going off and asking his (more permissive) father and
-   getting a "Yes, sure, cookie!".
+   Though DNSSEC continues to be deployed, unfortunately a significant
+   number of clients (~11% according to [GeoffValidation]) that receive
+   a SERVFAIL from a validating resolver because of a DNSSEC validaion
+   issue will simply ask the next (potentially non-validating) resolver
+   in their list, and thus don't get any of the protections which DNSSEC
+   should provide.  This is very similar to a kid asking his mother if
+   he can have another cookie.  When the mother says "No, it will ruin
+   your dinner!", going off and asking his (more permissive) father and
+   getting a "Yes, sure, have a cookie!".
 
    This information is unauthenticated information, and an attacker (e.g
    MITM or malicious recursive server) could insert an extended error
-   response into already untrusted data -- ideally clients and resolvers
-   would not trust any unauthenticated information, but until we live in
-   an era where all DNS answers are authenticated via DNSSEC or other
-   mechanisms, there are some tradeoffs.  As an example, an attacker who
 
 
 
@@ -452,6 +452,10 @@ Kumari, et al.           Expires March 25, 2019                 [Page 8]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
+   response into already untrusted data -- ideally clients and resolvers
+   would not trust any unauthenticated information, but until we live in
+   an era where all DNS answers are authenticated via DNSSEC or other
+   mechanisms, there are some tradeoffs.  As an example, an attacker who
    is able to insert the DNSSEC Bogus Extended Error into a packet could
    instead simply reply with a fictitious address (A or AAAA) record.
    The R bit hint and extended error information are informational -
@@ -461,34 +465,27 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 7.  Acknowledgements
 
-   The authors wish to thank Geoff Huston and Bob Harold, Carlos M.
-   Martinez, Peter DeVries, George Michelson, Mark Andrews, Ondrej Sury,
-   Edward Lewis, Paul Vixie, Shane Kerr, Loganaden Velvindron, Evan
-   Hunt.  They also vaguely remember discussing this with a number of
-   people over the years, but have forgotten who all they were -- if you
-   were one of them, and are not listed, please let us know and we'll
-   acknowledge you.
+   The authors wish to thank Joe Abley, Mark Andrews, Peter DeVries,
+   Peter van Dijk, Bob Harold, Evan Hunt, Geoff Huston, Shane Kerr,
+   Edward Lewis, Carlos M.  Martinez, George Michelson, Petr Spacek,
+   Ondrej Sury, Loganaden Velvindron, and Paul Vixie.  They also vaguely
+   remember discussing this with a number of people over the years, but
+   have forgotten who all they were -- if you were one of them, and are
+   not listed, please let us know and we'll acknowledge you.
 
    I also want to thank the band "Infected Mushroom" for providing a
    good background soundtrack (and to see if I can get away with this!)
    Another author would like to thank the band "Mushroom Infectors".
    This was funny at the time we wrote it, but I cannot remember why...
 
-   We would like to especially thank Peter van Dijk, who sent GitHub
-   pull requests.
-
 8.  References
 
 8.1.  Normative References
 
-   [IANA.AS_Numbers]
-              IANA, "Autonomous System (AS) Numbers",
-              <http://www.iana.org/assignments/as-numbers>.
-
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
+              DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
+              editor.org/info/rfc2119>.
 
 8.2.  Informative References
 
@@ -497,7 +494,10 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
               Internet", June 2016, <http://www.potaroo.net/
               presentations/2016-06-27-dnssec.pdf>.
 
-
+   [RFC2845]  Vixie, P., Gudmundsson, O., Eastlake 3rd, D., and B.
+              Wellington, "Secret Key Transaction Authentication for DNS
+              (TSIG)", RFC 2845, DOI 10.17487/RFC2845, May 2000,
+              <https://www.rfc-editor.org/info/rfc2845>.
 
 
 
@@ -508,20 +508,10 @@ Kumari, et al.           Expires March 25, 2019                 [Page 9]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
-   [I-D.ietf-sidr-iana-objects]
-              Manderson, T., Vegoda, L., and S. Kent, "RPKI Objects
-              issued by IANA", draft-ietf-sidr-iana-objects-03 (work in
-              progress), May 2011.
-
-   [RFC2845]  Vixie, P., Gudmundsson, O., Eastlake 3rd, D., and B.
-              Wellington, "Secret Key Transaction Authentication for DNS
-              (TSIG)", RFC 2845, DOI 10.17487/RFC2845, May 2000,
-              <https://www.rfc-editor.org/info/rfc2845>.
-
    [RFC8094]  Reddy, T., Wing, D., and P. Patil, "DNS over Datagram
               Transport Layer Security (DTLS)", RFC 8094,
-              DOI 10.17487/RFC8094, February 2017,
-              <https://www.rfc-editor.org/info/rfc8094>.
+              DOI 10.17487/RFC8094, February 2017, <https://www.rfc-
+              editor.org/info/rfc8094>.
 
 Appendix A.  Changes / Author Notes.
 
@@ -553,6 +543,16 @@ Appendix A.  Changes / Author Notes.
 
 Authors' Addresses
 
+   Warren Kumari
+   Google
+   1600 Amphitheatre Parkway
+   Mountain View, CA  94043
+   US
+
+   Email: warren@kumari.net
+
+
+
 
 
 
@@ -562,15 +562,6 @@ Authors' Addresses
 Kumari, et al.           Expires March 25, 2019                [Page 10]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
-
-
-   Warren Kumari
-   Google
-   1600 Amphitheatre Parkway
-   Mountain View, CA  94043
-   US
-
-   Email: warren@kumari.net
 
 
    Evan Hunt
@@ -604,6 +595,15 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    US
 
    Email: tale@dd.org
+
+
+
+
+
+
+
+
+
 
 
 

@@ -223,29 +223,30 @@
       is extensible via the IANA registry to allow additional error and
       information codes to be defined in the future.</t>
 
-      <t>The components of the Extended DNS Error option are defined
+      <t>The fields of the Extended DNS Error option are defined
       further in the following sub-sections.</t>
 
       <section title="The R (Retry) flag">
-          <t>The R (Retry) flag provides a hint (or suggestion) as to
-          what the receiver may want to do with this annotated
-          error. The R (or Retry) flag provides a hint to the receiver
-          that it should retry the query to another server. If the R
-          bit is set (1), the sender believes that retrying the query
-          may provide a successful answer next time; if the R bit is
-          clear (0), the sender believes that it should not ask
-          another server. The mechanism is specifically designed to be
-          extensible, and so implementations may receive EDE codes
-          that it does not understand. The R flag allows
-          implementations to make a decision as to what to do if it
-          receives a response with an unknown code - retry or drop the
-          query. Note that this flag is only a suggestion or
-          hint. Unless a protective transport mechanism (like TSIG
-          <xref target="RFC2845"/> or TLS <xref target="RFC8094"/>) is
-          used, the bit's value could have have been altered by a
-          person-in-the-middle. Receivers can choose to ignore this
-          hint.  See the security considerations for additional
-          considerations.</t>
+          <t>The R (Retry) flag provides a hint as to what the
+          receiver may want to do with this annotated
+          error. Specifically, the R (or Retry) flag provides a hint
+          to the receiver that it should retry the query to another
+          server. If the R bit is set (1), the sender believes that
+          retrying the query may provide a successful answer next
+          time; if the R bit is clear (0), the sender believes that
+          the resolver should not ask another server.</t>
+
+          <t>The mechanism is specifically designed to be extensible,
+          and so implementations may receive EDE codes that it does
+          not understand. The R flag allows implementations to make a
+          decision as to what to do if it receives a response with an
+          unknown code - retry or drop the query. Note that this flag
+          is only a suggestion. Unless a protective transport
+          mechanism (like TSIG <xref target="RFC2845"/> or TLS <xref
+          target="RFC8094"/>) is used, the bit's value could have have
+          been altered by a person-in-the-middle. Receivers can choose
+          to ignore this hint.  See the security considerations for
+          additional considerations.</t>
       </section>
 
       <section title="The RESPONSE-CODE field">
@@ -253,21 +254,21 @@
 	  primary DNS packet. Multiple EDNS0/EDE records may be
 	  included in the response.  When including multiple EDNS0/EDE
 	  records in a response in order to provide additional error
-	  information, other RESPONSE-CODEs MAY be a different
+	  information, other RESPONSE-CODEs MAY use a different
 	  RCODE.</t>
       </section>
 
       <section title="The INFO-CODE field">
           <t>This 12-bit value provides the additional context for the
-          RESPONSE-CODE value. This is combined with the RESPONSE-CODE
-          to serve as a joint-index into the IANA "Extended DNS
-          Errors" registry.</t>
+          RESPONSE-CODE value. This combination of the RESPONSE-CODE
+          and the INFO-CODE serve as a joint-index into the IANA
+          "Extended DNS Errors" registry.</t>
       </section>
 
       <section title="The EXTRA-TEXT field">
-          <t>The EXTRA-TEXT ASCII-encoded, textual field may be
-          zero-length, or may hold additional information useful to
-          network operators.</t>
+          <t>The ASCII-encoded, EXTRA-TEXT field may be zero-length,
+          or may hold additional information useful to network
+          operators.</t>
       </section>
 
     </section>

@@ -285,7 +285,7 @@
       registry, the initial values for which are defined in the following
       sub-sections.</t>
 
-      <section title="SERVFAIL(2) extended information codes">
+      <section title="INFO-CODEs for use with RESPONSE-CODE: SERVFAIL(2)">
         <section anchor="errbogus"
                  title="Extended DNS Error Code 1 - DNSSEC Bogus">
           <t>The resolver attempted to perform DNSSEC validation, but
@@ -347,7 +347,7 @@
         </section>
       </section>
 
-      <section title="REFUSED(5) extended information codes">
+      <section title="INFO-CODEs for use with RESPONSE-CODE: REFUSED(5)">
         <section title="Extended DNS Error Code 1 - Lame">
           <t>An authoritative resolver that receives a query (with the RD bit
           clear) for a domain for which it is not authoritative SHOULD include
@@ -367,7 +367,7 @@
         </section>
       </section>
 
-      <section title="NXDOMAIN(3) extended information codes">
+      <section title="INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)">
         <section title="Extended DNS Error Code 1 - Blocked">
           <t>The resolver attempted to perfom a DNS query but the domain is
           blacklisted due to a security policy. The R flag should not be

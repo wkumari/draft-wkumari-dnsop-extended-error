@@ -123,19 +123,19 @@
 
   <middle>
     <section title="Introduction and background">
-      <t>There are many reasons that a DNS query may fail, some of them
-      transient, some permanent; some can be resolved by querying another
-      server, some are likely best handled by stopping resolution.
-      Unfortunately, the error signals that a DNS server can return are very
-      limited, and are not very expressive. This means that applications and
-      resolvers often have to "guess" at what the issue is - e.g the answer
-      was marked REFUSED because of a lame delegation, or because of a lame
-      delegation or because the nameserver is still starting up and loading
-      zones? Is a SERVFAIL a DNSSEC validation issue, or is the nameserver
-      experiencing a bad hair day?</t>
+      <t>There are many reasons that a DNS query may fail, some of
+      them transient, some permanent; some can be resolved by querying
+      another server, some are likely best handled by stopping
+      resolution.  Unfortunately, the error signals that a DNS server
+      can return are very limited, and are not very expressive. This
+      means that applications and resolvers often have to "guess" at
+      what the issue is - e.g. was the answer marked REFUSED because
+      of a lame delegation, or because the nameserver is still
+      starting up and loading zones? Is a SERVFAIL a DNSSEC validation
+      issue, or is the nameserver experiencing a bad hair day?</t>
 
       <t>A good example of issues that would benefit by additional error
-      information is an error caused by a DNSSEC validation issue. When a stub
+      information are errors caused by DNSSEC validation issues. When a stub
       resolver queries a DNSSEC bogus name (using a validating resolver), the
       stub resolver receives only a SERVFAIL in response. Unfortunately,
       SERVFAIL is used to signal many sorts of DNS errors, and so the stub
@@ -161,9 +161,9 @@
     </section>
 
     <section title="Extended Error EDNS0 option format">
-      <t>This draft uses an EDNS0 ([RFC2671]) option to include extended error
-      (ExtError) information in DNS messages. The option is structured as
-      follows:</t>
+      <t>This draft uses an EDNS0 ([RFC2671]) option to include
+      Extended DNS Error (EDE) information in DNS messages. The option
+      is structured as follows:</t>
 
       <figure>
         <artwork align="left"><![CDATA[
@@ -188,17 +188,17 @@
       <t>Field definition details:</t>
 
       <t><list style="symbols">
-          <t>OPTION-CODE, 2 octets (defined in [RFC6891]), for ExtError is
+          <t>OPTION-CODE, 2 octets (defined in [RFC6891]), for EDE is
           TBD. [RFC Editor: change TBD to the proper code once
           assigned by IANA.]</t>
 
           <t>OPTION-LENGTH, 2 octets ((defined in [RFC6891]) contains
           the length of the payload (everything after OPTION-LENGTH)
-          in octets and should be 6 plus the length of the EXTRA-TEXT
+          in octets and should be 4 plus the length of the EXTRA-TEXT
           section (which may be a zero-length string).</t>
 
-          <t>The RETRY flag, 1 bit; the first bit (R) indicates a flag defined in
-          this specification.</t>
+          <t>The RETRY flag, 1 bit; the RETRY bit (R) indicates a flag
+          defined for use in this specification.</t>
 
           <t>The RESERVED bits, 15 bits: these bits are reserved for
           future use, potentially as additional flags.  The RESERVED
@@ -209,8 +209,8 @@
 
           <t>INFO-CODE, 12-bits.</t>
 
-          <t>EXTRA-TEXT, a variable length, ASCII encoded, EXTRA-TEXT field
-          holding additional textual information.</t>
+          <t>EXTRA-TEXT, a variable length, ASCII encoded, text field
+          that may hold additional textual information.</t>
         </list></t>
 
     </section>
@@ -250,11 +250,11 @@
 
       <section title="The RESPONSE-CODE field">
 	  <t>This 4-bit value SHOULD be a copy of the RCODE from the
-	  primary DNS packet. Multiple EDNS0/ExtError records may be
-	  included in the response.  When including multiple extended
-	  error EDNS0 records in a response in order to provide
-	  additional error information, other RESPONSE-CODEs MAY be a
-	  different RCODE.</t>
+	  primary DNS packet. Multiple EDNS0/EDE records may be
+	  included in the response.  When including multiple EDNS0/EDE
+	  records in a response in order to provide additional error
+	  information, other RESPONSE-CODEs MAY be a different
+	  RCODE.</t>
       </section>
 
       <section title="The INFO-CODE field">

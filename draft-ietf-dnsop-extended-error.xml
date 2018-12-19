@@ -112,10 +112,12 @@
     <date day="21" month="September" year="2018"/>
 
     <abstract>
-      <t>This document defines an extensible method to return additional
-      information about the cause of DNS errors. The primary use case is to
-      extend SERVFAIL to provide additional information about the cause of DNS
-      and DNSSEC failures.</t>
+      <t>This document defines an extensible method to return
+      additional information about the cause of DNS errors. Though
+      created primarily to extend SERVFAIL to provide additional
+      information about the cause of DNS and DNSSEC failures, the
+      Extended DNS Errors option defined in this document allows all
+      response types to contain extended error information.</t>
     </abstract>
   </front>
 

@@ -105,9 +105,9 @@ Table of Contents
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
      5.1.  new Extended Error Code EDNS Option . . . . . . . . . . .   7
      5.2.  New Extended Error Code EDNS Option . . . . . . . . . . .   8
-   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
-   7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   9
-   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
+   7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  10
+   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  10
 
 
 
@@ -116,10 +116,10 @@ Kumari, et al.           Expires March 25, 2019                 [Page 2]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
-     8.1.  Normative References  . . . . . . . . . . . . . . . . . .   9
-     8.2.  Informative References  . . . . . . . . . . . . . . . . .   9
-   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  10
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
+     8.1.  Normative References  . . . . . . . . . . . . . . . . . .  10
+     8.2.  Informative References  . . . . . . . . . . . . . . . . .  10
+   Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  11
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  11
 
 1.  Introduction and background
 
@@ -190,23 +190,17 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
    o  OPTION-CODE, 2 octets (defined in [RFC6891]), for EDE is TBD.
       [RFC Editor: change TBD to the proper code once assigned by IANA.]
-
    o  OPTION-LENGTH, 2 octets ((defined in [RFC6891]) contains the
       length of the payload (everything after OPTION-LENGTH) in octets
       and should be 4 plus the length of the EXTRA-TEXT section (which
       may be a zero-length string).
-
    o  The RETRY flag, 1 bit; the RETRY bit (R) indicates a flag defined
       for use in this specification.
-
    o  The RESERVED bits, 15 bits: these bits are reserved for future
       use, potentially as additional flags.  The RESERVED bits MUST be
       set to 0 by the sender and SHOULD be ignored by the receiver.
-
    o  RESPONSE-CODE, 4 bits.
-
    o  INFO-CODE, 12-bits.
-
    o  EXTRA-TEXT, a variable length, ASCII encoded, text field that may
       hold additional textual information.
 
@@ -219,6 +213,12 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    but is extensible via the IANA registry to allow additional error and
    information codes to be defined in the future.
 
+   The fields of the Extended DNS Error option are defined further in
+   the following sub-sections.
+
+
+
+
 
 
 
@@ -227,9 +227,6 @@ Kumari, et al.           Expires March 25, 2019                 [Page 4]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
-
-   The fields of the Extended DNS Error option are defined further in
-   the following sub-sections.
 
 3.1.  The R (Retry) flag
 
@@ -275,6 +272,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    This document defines some initial EDE codes.  The mechanism is
    intended to be extensible, and additional code-points can be
    registered in the "Extended DNS Errors" registry.  This document
+   provides suggestions for the R flag, but the originating server may
+   ignore these recommendations if it knows better.
+
 
 
 
@@ -283,9 +283,6 @@ Kumari, et al.           Expires March 25, 2019                 [Page 5]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
-
-   provides suggestions for the R flag, but the originating server may
-   ignore these recommendations if it knows better.
 
    The RESPONSE-CODE and the INFO-CODE from the EDE EDNS option is used
    to serve as a double index into the "Extended DNS Error codes" IANA
@@ -335,6 +332,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
 
+
+
+
 Kumari, et al.           Expires March 25, 2019                 [Page 6]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
@@ -379,8 +379,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 5.  IANA Considerations
 
-   [This section under construction, beware. ]
-
 5.1.  new Extended Error Code EDNS Option
 
    This document defines a new EDNS(0) option, entitled "Extended DNS
@@ -388,6 +386,8 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    (OPT)" registry [to be removed upon publication:
    [http://www.iana.org/assignments/dns-parameters/dns-
    parameters.xhtml#dns-parameters-11]
+
+
 
 
 
@@ -407,28 +407,82 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    is the INFO-CODE from the Extended DNS Error EDNS option defined in
    this document.  The IANA is requested to create and maintain this
    "Extended DNS Error codes" registry.  The codepoint space for each
-   RCODE index is to be broken into 3 ranges:
+   INFO-CODE index is to be broken into 3 ranges:
 
-   o  1 - 16384: Specification required.
+   o  0 - 3583: Specification required.
+   o  3584 - 3839: First Come First Served.
+   o  3840 - 4095: Experimental / Private use
 
-   o  16385 - 65000: First Come First Served
+   A starting set of entries, based on the contents of this document, is
+   as follows:
 
-   o  65000 - 65534: Experimental / Private use
+   RESPONSE-CODE:  2 (SERVFAIL)
+   INFO-CODE:  1
+   Purpose:  DNSSEC Bogus
+   Reference:  Section 4.1.1
 
-   The codepoints 0, 65535 are reserved.
+   RESPONSE-CODE:  2 (SERVFAIL)
+   INFO-CODE:  2
+   Purpose:  DNSSEC Indeterminate
+   Reference:  Section 4.1.2
 
-   A starting table, based on the contents of this document, is as
-   follows:
+   RESPONSE-CODE:  2 (SERVFAIL)
+   INFO-CODE:  3
+   Purpose:  Signature Expired
+   Reference:  Section 4.1.3
+
+   RESPONSE-CODE:  2 (SERVFAIL)
+   INFO-CODE:  4
+   Purpose:  Signature Not Yet Valid
+   Reference:  Section 4.1.4
+
+   RESPONSE-CODE:  2 (SERVFAIL)
+   INFO-CODE:  5
+   Purpose:  Unsupported DNSKEY
+   Reference:  Section 4.1.5
+
+   RESPONSE-CODE:  2 (SERVFAIL)
+   INFO-CODE:  6
+   Purpose:  Unsupported DS Algorithm
 
 
 
-| RCODE       | EDE-INFO-CODE           | Meaning                                     | Ref                                      |
-|-------------+-------------------------+---------------------------------------------+------------------------------------------|
-| SERVFAIL(2) | DNSSEC_BOGUS(1)         | DNSSEC Validation resulted in Bogus         | section <xref target="errbogus" />         |
-| SERVFAIL(2) | DNSSEC_INDETERMINATE(2) | DNSSEC Validation resulted in Indeterminate | section <xref target="errindeterminate" /> |
+Kumari, et al.           Expires March 25, 2019                 [Page 8]
+
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
-[incomplete]
 
+   Reference:  Section 4.1.6
+
+   RESPONSE-CODE:  2 (SERVFAIL)
+   INFO-CODE:  7
+   Purpose:  DNSKEY missing
+   Reference:  Section 4.1.7
+
+   RESPONSE-CODE:  2 (SERVFAIL)
+   INFO-CODE:  8
+   Purpose:  RRSIGs missing
+   Reference:  Section 4.1.8
+
+   RESPONSE-CODE:  2 (SERVFAIL)
+   INFO-CODE:  9
+   Purpose:  No Zone Key Bit Set
+   Reference:  Section 4.1.9
+
+   RESPONSE-CODE:  3 (NXDOMAIN)
+   INFO-CODE:  1
+   Purpose:  Blocked
+   Reference:  Section 4.3.1
+
+   RESPONSE-CODE:  5 (REFUSED)
+   INFO-CODE:  1
+   Purpose:  Lame
+   Reference:  Section 4.2.1
+
+   RESPONSE-CODE:  5 (REFUSED)
+   INFO-CODE:  2
+   Purpose:  Prohibited
+   Reference:  Section 4.2.2
 
 6.  Security Considerations
 
@@ -444,16 +498,16 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
    This information is unauthenticated information, and an attacker (e.g
    MITM or malicious recursive server) could insert an extended error
+   response into already untrusted data -- ideally clients and resolvers
+   would not trust any unauthenticated information, but until we live in
 
 
 
-Kumari, et al.           Expires March 25, 2019                 [Page 8]
+Kumari, et al.           Expires March 25, 2019                 [Page 9]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
-   response into already untrusted data -- ideally clients and resolvers
-   would not trust any unauthenticated information, but until we live in
    an era where all DNS answers are authenticated via DNSSEC or other
    mechanisms, there are some tradeoffs.  As an example, an attacker who
    is able to insert the DNSSEC Bogus Extended Error into a packet could
@@ -503,7 +557,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
 
-Kumari, et al.           Expires March 25, 2019                 [Page 9]
+
+
+Kumari, et al.           Expires March 25, 2019                [Page 10]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
@@ -520,13 +576,9 @@ Appendix A.  Changes / Author Notes.
    From -00 to -01:
 
    o  Address comments from IETF meeting.
-
    o  document copying the response code
-
    o  mention zero length fields are ok
-
    o  clarify lookup procedure
-
    o  mention that table isn't done
 
    From -03 to -IETF 00:
@@ -552,18 +604,6 @@ Authors' Addresses
    Email: warren@kumari.net
 
 
-
-
-
-
-
-
-
-Kumari, et al.           Expires March 25, 2019                [Page 10]
-
-Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
-
-
    Evan Hunt
    ISC
    950 Charter St
@@ -571,6 +611,13 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
    US
 
    Email: each@isc.org
+
+
+
+
+Kumari, et al.           Expires March 25, 2019                [Page 11]
+
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
    Roy Arends
@@ -615,5 +662,14 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2018
 
 
 
-Kumari, et al.           Expires March 25, 2019                [Page 11]
+
+
+
+
+
+
+
+
+
+Kumari, et al.           Expires March 25, 2019                [Page 12]
 ```

@@ -119,7 +119,10 @@
 
       + Resolution: we agree; text changed
 
-*** TODO How to add multiple EDE
+*** DONE How to add multiple EDE
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-20 Thu 14:53]
+    :END:      
 
       While the draft suggests that it is possible to add multiple EDE to a
       message:
@@ -135,8 +138,8 @@
       we also need some text describing how a client behaves when presented
       with multiple EDE.
 
-      + implementation specific
-      + create a new section for multiple responses
+      + Tried to clean this up with new text about multiple inserts.
+        Please see what you think!
 
 *** CANCELED Implementation required
 
@@ -170,7 +173,10 @@
 
 * Joe Abley
 
-*** TODO Fix IANA registry template
+*** DONE Fix IANA registry template
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-20 Thu 14:52]
+    :END:      
 
     >> With IANA registry requests, I may be wrong here, but I thought we had
     >> some (boilerplate?) language about how IANA is asked to operate the
@@ -188,6 +194,8 @@
     required information for future additions and the registration policy.
 
     Happy to contribute some text if that seems useful.
+
+    + Response: cleaned up and tried to make it pretty
 
 * Donald Eastlake
 
@@ -217,7 +225,10 @@ inside the RR. However:
       consensus was to use a multiple-lookup table.  Continue reading
       into the next issue for further information on a decent compromise:
 
-*** TODO rcodes are only 4 bits
+*** DONE rcodes are only 4 bits
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-20 Thu 14:53]
+    :END:      
 
      >> Since RCODEs are 4 bits, I don't see why a 16-bit
      RESPONSE-CODE field is required. Even if you want to be able to

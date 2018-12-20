@@ -405,7 +405,9 @@
         is to be broken into 3 ranges:</t>
 
         <t><list style="symbols">
-            <t>0 - 3839: Specification required.</t>
+            <t>0 - 3583: Specification required.</t>
+
+            <t>3584 - 3839: First Come First Served.</t>
 
             <t>3840 - 4095: Experimental / Private use</t>
         </list></t>

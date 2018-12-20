@@ -18,6 +18,7 @@
   <?rfc strict="yes"?>
 
   <?rfc compact="yes" ?>
+  <?rfc subcompact="yes" ?>
 
   <front>
     <!-- WK: Set long title. -->
@@ -412,71 +413,91 @@
         <t>A starting set of entries, based on the contents of this
         document, is as follows:</t>
 
-        <t><figure>
-            <artwork><![CDATA[
 
-    RESPONSE-CODE: 2 (SERVFAIL)
-    INFO-CODE:     1
-    Purpose:       DNSSEC Bogus
-    Reference:     <xref target="errbogus" />
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
+    <t hangText="INFO-CODE:">1</t>
+    <t hangText="Purpose:">DNSSEC Bogus</t>
+    <t hangText="Reference:"><xref target="errbogus" /></t>
+    </list></t>
 
-    RESPONSE-CODE: 2 (SERVFAIL)
-    INFO-CODE:     2
-    Purpose:       DNSSEC Indeterminate
-    Reference:     <xref target="errindeterminate">
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
+    <t hangText="INFO-CODE:">2</t>
+    <t hangText="Purpose:">DNSSEC Indeterminate</t>
+    <t hangText="Reference:"><xref target="errindeterminate" /></t>
+    </list></t>
 
-    RESPONSE-CODE: 2 (SERVFAIL)
-    INFO-CODE:     3
-    Purpose:       Signature Expired
-    Reference:     <xref target="errexpired">
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
+    <t hangText="INFO-CODE:">3</t>
+    <t hangText="Purpose:">Signature Expired</t>
+    <t hangText="Reference:"><xref target="errexpired" /></t>
+    </list></t>
 
-    RESPONSE-CODE: 2 (SERVFAIL)
-    INFO-CODE:     4
-    Purpose:       Signature Not Yet Valid
-    Reference:     <xref target="errprior">
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
+    <t hangText="INFO-CODE:">4</t>
+    <t hangText="Purpose:">Signature Not Yet Valid</t>
+    <t hangText="Reference:"><xref target="errprior" /></t>
+    </list></t>
 
-    RESPONSE-CODE: 2 (SERVFAIL)
-    INFO-CODE:     5
-    Purpose:       Unsupported DNSKEY
-    Reference:     <xref target="errbaddnskeyalg">
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
+    <t hangText="INFO-CODE:">5</t>
+    <t hangText="Purpose:">Unsupported DNSKEY</t>
+    <t hangText="Reference:"><xref target="errbaddnskeyalg" /></t>
+    </list></t>
 
-    RESPONSE-CODE: 2 (SERVFAIL)
-    INFO-CODE:     6
-    Purpose:       Unsupported DS Algorithm
-    Reference:     <xref target="errbaddsalg">
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
+    <t hangText="INFO-CODE:">6</t>
+    <t hangText="Purpose:">Unsupported DS Algorithm</t>
+    <t hangText="Reference:"><xref target="errbaddsalg" /></t>
+    </list></t>
 
-    RESPONSE-CODE: 2 (SERVFAIL)
-    INFO-CODE:     7
-    Purpose:       DNSKEY missing
-    Reference:     <xref target="errnodnskey">
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
+    <t hangText="INFO-CODE:">7</t>
+    <t hangText="Purpose:">DNSKEY missing</t>
+    <t hangText="Reference:"> <xref target="errnodnskey" /></t>
+    </list></t>
 
-    RESPONSE-CODE: 2 (SERVFAIL)
-    INFO-CODE:     8
-    Purpose:       RRSIGs missing
-    Reference:     <xref target="errnorrsig">
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
+    <t hangText="INFO-CODE:">8</t>
+    <t hangText="Purpose:">RRSIGs missing</t>
+    <t hangText="Reference:"><xref target="errnorrsig" /></t>
+    </list></t>
 
-    RESPONSE-CODE: 2 (SERVFAIL)
-    INFO-CODE:     9
-    Purpose:       No Zone Key Bit Set
-    Reference:     <xref target="errnozonekey">
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
+    <t hangText="INFO-CODE:">9</t>
+    <t hangText="Purpose:">No Zone Key Bit Set</t>
+    <t hangText="Reference:"><xref target="errnozonekey" /></t>
+    </list></t>
 
-    RESPONSE-CODE: 3 (NXDOMAIN)
-    INFO-CODE:     1
-    Purpose:       Blocked
-    Reference:     <xref target="errblocked">
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 3 (NXDOMAIN)</t>
+    <t hangText="INFO-CODE:">1</t>
+    <t hangText="Purpose:">Blocked</t>
+    <t hangText="Reference:"><xref target="errblocked" /></t>
+    </list></t>
 
-    RESPONSE-CODE: 5 (REFUSED)
-    INFO-CODE:     1
-    Purpose:       Lame
-    Reference:     <xref target="errlame">
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 5 (REFUSED)</t>
+    <t hangText="INFO-CODE:">1</t>
+    <t hangText="Purpose:">Lame</t>
+    <t hangText="Reference:"><xref target="errlame" /></t>
+    </list></t>
 
-    RESPONSE-CODE: 5 (REFUSED)
-    INFO-CODE:     2
-    Purpose:       Prohibited
-    Reference:     <xref target="errprohibted">
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 5 (REFUSED)</t>
+    <t hangText="INFO-CODE:">2</t>
+    <t hangText="Purpose:">Prohibited</t>
+    <t hangText="Reference:"><xref target="errprohibted" /></t>
+    </list></t>
     
-]]></artwork>
-          </figure></t>
       </section>
     </section>
 

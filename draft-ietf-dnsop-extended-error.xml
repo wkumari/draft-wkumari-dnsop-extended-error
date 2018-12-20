@@ -532,13 +532,13 @@
 
     <section title="Acknowledgements">
       <t>The authors wish to thank Joe Abley, Mark Andrews, Peter
-      DeVries, Peter van Dijk, Bob Harold, Evan Hunt, Geoff Huston,
-      Shane Kerr, Edward Lewis, Carlos M.  Martinez, George Michelson,
-      Petr Spacek, Ondrej Sury, Loganaden Velvindron, and Paul Vixie.
-      They also vaguely remember discussing this with a number of
-      people over the years, but have forgotten who all they were --
-      if you were one of them, and are not listed, please let us know
-      and we'll acknowledge you.</t>
+      DeVries, Peter van Dijk, Donald Eastlake, Bob Harold, Evan Hunt,
+      Geoff Huston, Shane Kerr, Edward Lewis, Carlos M.  Martinez,
+      George Michelson, Petr Spacek, Ondrej Sury, Loganaden
+      Velvindron, and Paul Vixie.  They also vaguely remember
+      discussing this with a number of people over the years, but have
+      forgotten who all they were -- if you were one of them, and are
+      not listed, please let us know and we'll acknowledge you.</t>
 
       <t>I also want to thank the band "Infected Mushroom" for providing a
       good background soundtrack (and to see if I can get away with this!)

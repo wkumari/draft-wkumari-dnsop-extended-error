@@ -1,4 +1,4 @@
-* Multiple people
+* Multiple people                                                  :noexport:
 *** TODO Implementations required
     + Shane Kerr and Peter Spacek pointed out new dnsop convention is to
       have implementations.
@@ -246,8 +246,3 @@ inside the RR. However:
        16b-bit code if they'd rather handle it that way while
        preserving interoperability between everything.
 
-+ merge response and info
-  + 12 bits for info
-  + makes the double table now look like a single
-  + still requires a double IANA table
-  + but implementations can implement it either as a single or a double

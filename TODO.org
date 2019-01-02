@@ -246,3 +246,11 @@ inside the RR. However:
        16b-bit code if they'd rather handle it that way while
        preserving interoperability between everything.
 
+*** DONE 
+    :LOGBOOK:  
+    - State "DONE"       from ""           [2019-01-02 Wed 14:19]
+    :END:      
+    His response to the above:
+
+    + While it is not exactly what I would want, I am satisfied with the
+    changes below and consider my comments resolved.

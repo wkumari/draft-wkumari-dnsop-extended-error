@@ -89,6 +89,8 @@
       + Resolution: we're proposing ASCII to keep the protocol simple
         and to match TXT records.  These are not intended to be end
         user messages but rather administrative hints for operators.
+        + Update <2019-01-02 Wed>: later in the mailing list, people
+          agreed on UTF-8.  -- document updated
 
       + resulting text:
 
@@ -96,6 +98,7 @@
           holding additional textual information. It may be zero
           length when no additional textual information is
           included.
+
 
 *** DONE I am not sure I agree with these recommendations:
     :LOGBOOK:  

@@ -210,7 +210,7 @@
 
           <t>INFO-CODE, 12-bits.</t>
 
-          <t>EXTRA-TEXT, a variable length, ASCII encoded, text field
+          <t>EXTRA-TEXT, a variable length, UTF-8 encoded, text field
           that may hold additional textual information.</t>
         </list></t>
 
@@ -267,7 +267,7 @@
       </section>
 
       <section title="The EXTRA-TEXT field">
-          <t>The ASCII-encoded, EXTRA-TEXT field may be zero-length,
+          <t>The UTF-8-encoded, EXTRA-TEXT field may be zero-length,
           or may hold additional information useful to network
           operators.</t>
       </section>

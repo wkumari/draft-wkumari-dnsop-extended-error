@@ -257,3 +257,20 @@ inside the RR. However:
 
     + While it is not exactly what I would want, I am satisfied with the
     changes below and consider my comments resolved.
+* Vladimir Cunat
+
+*** DONE unsupported algorithm issues
+    :LOGBOOK:
+    - State "DONE"       from              [2019-01-07 Mon 12:31]
+    :END:
+    Hello!
+
+    Unsupported algorithms (4.1.5 + 4.1.6):
+    I'm a bit confused why these conditions are meant for SERVFAIL.  Has
+    something changed?
+    https://tools.ietf.org/html/rfc4035#section-5.2 (paragraph "If the
+    validator does not support...")
+
+    --Vladimir (knot-resolver)
+
+    + Response: that's correct...  and now fixed by moving to NOERROR

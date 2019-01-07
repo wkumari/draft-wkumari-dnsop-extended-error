@@ -286,6 +286,24 @@
       registry, the initial values for which are defined in the following
       sub-sections.</t>
 
+      <section title="INFO-CODEs for use with RESPONSE-CODE: NOERROR(0)">
+        <section anchor="errbaddnskeyalg"
+                 title="NOERROR Extended DNS Error Code 1 - Unsupported                           DNSKEY Algorithm">
+          <t>The resolver attempted to perform DNSSEC validation, but a DNSKEY
+          RRSET contained only unknown algorithms. The R flag should be
+          set.</t>
+        </section>
+
+        <section anchor="errbaddsalg"
+                 title="NOERROR Extended DNS Error Code 2 - Unsupported                           DS Algorithm">
+          <t>The resolver attempted to perform DNSSEC validation, but a DS
+          RRSET contained only unknown algorithms. The R flag should be
+          set.</t>
+        </section>
+      </section>
+
+
+
       <section title="INFO-CODEs for use with RESPONSE-CODE: SERVFAIL(2)">
         <section anchor="errbogus"
                  title="SERVFAIL Extended DNS Error Code 1 - DNSSEC Bogus">
@@ -314,35 +332,21 @@
           set.</t>
         </section>
 
-        <section anchor="errbaddnskeyalg"
-                 title="SERVFAIL Extended DNS Error Code 5 - Unsupported                           DNSKEY Algorithm">
-          <t>The resolver attempted to perform DNSSEC validation, but a DNSKEY
-          RRSET contained only unknown algorithms. The R flag should be
-          set.</t>
-        </section>
-
-        <section anchor="errbaddsalg"
-                 title="SERVFAIL Extended DNS Error Code 6 - Unsupported                           DS Algorithm">
-          <t>The resolver attempted to perform DNSSEC validation, but a DS
-          RRSET contained only unknown algorithms. The R flag should be
-          set.</t>
-        </section>
-
         <section anchor="errnodnskey"
-                 title="SERVFAIL Extended DNS Error Code 7 - DNSKEY missing">
+                 title="SERVFAIL Extended DNS Error Code 5 - DNSKEY missing">
           <t>A DS record existed at a parent, but no DNSKEY record could be
           found for the child. The R flag should not be set.</t>
         </section>
 
         <section anchor="errnorrsig"
-                 title="SERVFAIL Extended DNS Error Code 8 - RRSIGs missing">
+                 title="SERVFAIL Extended DNS Error Code 6 - RRSIGs missing">
           <t>The resolver attempted to perform DNSSEC validation, but no
           RRSIGs could be found for at least one RRset where RRSIGs were
           expected.</t>
         </section>
 
         <section anchor="errnozonekey"
-                 title="SERVFAIL Extended DNS Error Code 9 - No Zone Key Bit Set">
+                 title="SERVFAIL Extended DNS Error Code 7 - No Zone Key Bit Set">
           <t>The resolver attempted to perform DNSSEC validation, but no Zone
           Key Bit was set in a DNSKEY.</t>
         </section>
@@ -417,6 +421,20 @@
 
 
     <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 0 (NOERROR)</t>
+    <t hangText="INFO-CODE:">1</t>
+    <t hangText="Purpose:">Unsupported DNSKEY</t>
+    <t hangText="Reference:"><xref target="errbaddnskeyalg" /></t>
+    </list></t>
+
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 0 (NOERROR)</t>
+    <t hangText="INFO-CODE:">2</t>
+    <t hangText="Purpose:">Unsupported DS Algorithm</t>
+    <t hangText="Reference:"><xref target="errbaddsalg" /></t>
+    </list></t>
+
+    <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
     <t hangText="INFO-CODE:">1</t>
     <t hangText="Purpose:">DNSSEC Bogus</t>
@@ -447,34 +465,20 @@
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
     <t hangText="INFO-CODE:">5</t>
-    <t hangText="Purpose:">Unsupported DNSKEY</t>
-    <t hangText="Reference:"><xref target="errbaddnskeyalg" /></t>
-    </list></t>
-
-    <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
-    <t hangText="INFO-CODE:">6</t>
-    <t hangText="Purpose:">Unsupported DS Algorithm</t>
-    <t hangText="Reference:"><xref target="errbaddsalg" /></t>
-    </list></t>
-
-    <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
-    <t hangText="INFO-CODE:">7</t>
     <t hangText="Purpose:">DNSKEY missing</t>
     <t hangText="Reference:"> <xref target="errnodnskey" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
-    <t hangText="INFO-CODE:">8</t>
+    <t hangText="INFO-CODE:">6</t>
     <t hangText="Purpose:">RRSIGs missing</t>
     <t hangText="Reference:"><xref target="errnorrsig" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
-    <t hangText="INFO-CODE:">9</t>
+    <t hangText="INFO-CODE:">7</t>
     <t hangText="Purpose:">No Zone Key Bit Set</t>
     <t hangText="Reference:"><xref target="errnozonekey" /></t>
     </list></t>

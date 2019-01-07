@@ -81,33 +81,33 @@ Table of Contents
      3.3.  The INFO-CODE field . . . . . . . . . . . . . . . . . . .   5
      3.4.  The EXTRA-TEXT field  . . . . . . . . . . . . . . . . . .   5
    4.  Defined Extended DNS Errors . . . . . . . . . . . . . . . . .   5
-     4.1.  INFO-CODEs for use with RESPONSE-CODE: SERVFAIL(2)  . . .   6
-       4.1.1.  SERVFAIL Extended DNS Error Code 1 - DNSSEC Bogus . .   6
-       4.1.2.  SERVFAIL Extended DNS Error Code 2 - DNSSEC
-               Indeterminate . . . . . . . . . . . . . . . . . . . .   6
-       4.1.3.  SERVFAIL Extended DNS Error Code 3 - Signature
-               Expired . . . . . . . . . . . . . . . . . . . . . . .   6
-       4.1.4.  SERVFAIL Extended DNS Error Code 4 - Signature Not
-               Yet Valid . . . . . . . . . . . . . . . . . . . . . .   6
-       4.1.5.  SERVFAIL Extended DNS Error Code 5 - Unsupported
+     4.1.  INFO-CODEs for use with RESPONSE-CODE: NOERROR(0) . . . .   6
+       4.1.1.  NOERROR Extended DNS Error Code 1 - Unsupported
                DNSKEY Algorithm  . . . . . . . . . . . . . . . . . .   6
-       4.1.6.  SERVFAIL Extended DNS Error Code 6 - Unsupported
+       4.1.2.  NOERROR Extended DNS Error Code 2 - Unsupported
                DS Algorithm  . . . . . . . . . . . . . . . . . . . .   6
-       4.1.7.  SERVFAIL Extended DNS Error Code 7 - DNSKEY missing .   6
-       4.1.8.  SERVFAIL Extended DNS Error Code 8 - RRSIGs missing .   7
-       4.1.9.  SERVFAIL Extended DNS Error Code 9 - No Zone Key Bit
+     4.2.  INFO-CODEs for use with RESPONSE-CODE: SERVFAIL(2)  . . .   6
+       4.2.1.  SERVFAIL Extended DNS Error Code 1 - DNSSEC Bogus . .   6
+       4.2.2.  SERVFAIL Extended DNS Error Code 2 - DNSSEC
+               Indeterminate . . . . . . . . . . . . . . . . . . . .   6
+       4.2.3.  SERVFAIL Extended DNS Error Code 3 - Signature
+               Expired . . . . . . . . . . . . . . . . . . . . . . .   6
+       4.2.4.  SERVFAIL Extended DNS Error Code 4 - Signature Not
+               Yet Valid . . . . . . . . . . . . . . . . . . . . . .   6
+       4.2.5.  SERVFAIL Extended DNS Error Code 5 - DNSKEY missing .   6
+       4.2.6.  SERVFAIL Extended DNS Error Code 6 - RRSIGs missing .   7
+       4.2.7.  SERVFAIL Extended DNS Error Code 7 - No Zone Key Bit
                Set . . . . . . . . . . . . . . . . . . . . . . . . .   7
-     4.2.  INFO-CODEs for use with RESPONSE-CODE: REFUSED(5) . . . .   7
-       4.2.1.  REFUSED Extended DNS Error Code 1 - Lame  . . . . . .   7
-       4.2.2.  REFUSED Extended DNS Error Code 2 - Prohibited  . . .   7
-     4.3.  INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)  . . .   7
-       4.3.1.  NXDOMAIN Extended DNS Error Code 1 - Blocked  . . . .   7
+     4.3.  INFO-CODEs for use with RESPONSE-CODE: REFUSED(5) . . . .   7
+       4.3.1.  REFUSED Extended DNS Error Code 1 - Lame  . . . . . .   7
+       4.3.2.  REFUSED Extended DNS Error Code 2 - Prohibited  . . .   7
+     4.4.  INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)  . . .   7
+       4.4.1.  NXDOMAIN Extended DNS Error Code 1 - Blocked  . . . .   7
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
      5.1.  new Extended Error Code EDNS Option . . . . . . . . . . .   7
      5.2.  New Extended Error Code EDNS Option . . . . . . . . . . .   8
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  10
-   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  10
 
 
 
@@ -116,6 +116,7 @@ Kumari, et al.            Expires June 23, 2019                 [Page 2]
 Internet-Draft       draft-ietf-dnsop-extended-error       December 2018
 
 
+   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  10
      8.1.  Normative References  . . . . . . . . . . . . . . . . . .  10
      8.2.  Informative References  . . . . . . . . . . . . . . . . .  10
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  11
@@ -166,7 +167,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2018
 
 
 
-
 Kumari, et al.            Expires June 23, 2019                 [Page 3]
 
 Internet-Draft       draft-ietf-dnsop-extended-error       December 2018
@@ -201,7 +201,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2018
       set to 0 by the sender and SHOULD be ignored by the receiver.
    o  RESPONSE-CODE, 4 bits.
    o  INFO-CODE, 12-bits.
-   o  EXTRA-TEXT, a variable length, ASCII encoded, text field that may
+   o  EXTRA-TEXT, a variable length, UTF-8 encoded, text field that may
       hold additional textual information.
 
 3.  Use of the Extended DNS Error option
@@ -264,7 +264,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2018
 
 3.4.  The EXTRA-TEXT field
 
-   The ASCII-encoded, EXTRA-TEXT field may be zero-length, or may hold
+   The UTF-8-encoded, EXTRA-TEXT field may be zero-length, or may hold
    additional information useful to network operators.
 
 4.  Defined Extended DNS Errors
@@ -289,45 +289,45 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2018
    registry, the initial values for which are defined in the following
    sub-sections.
 
-4.1.  INFO-CODEs for use with RESPONSE-CODE: SERVFAIL(2)
+4.1.  INFO-CODEs for use with RESPONSE-CODE: NOERROR(0)
 
-4.1.1.  SERVFAIL Extended DNS Error Code 1 - DNSSEC Bogus
+4.1.1.  NOERROR Extended DNS Error Code 1 - Unsupported DNSKEY Algorithm
+
+   The resolver attempted to perform DNSSEC validation, but a DNSKEY
+   RRSET contained only unknown algorithms.  The R flag should be set.
+
+4.1.2.  NOERROR Extended DNS Error Code 2 - Unsupported DS Algorithm
+
+   The resolver attempted to perform DNSSEC validation, but a DS RRSET
+   contained only unknown algorithms.  The R flag should be set.
+
+4.2.  INFO-CODEs for use with RESPONSE-CODE: SERVFAIL(2)
+
+4.2.1.  SERVFAIL Extended DNS Error Code 1 - DNSSEC Bogus
 
    The resolver attempted to perform DNSSEC validation, but validation
    ended in the Bogus state.  The R flag should not be set.
 
-4.1.2.  SERVFAIL Extended DNS Error Code 2 - DNSSEC Indeterminate
+4.2.2.  SERVFAIL Extended DNS Error Code 2 - DNSSEC Indeterminate
 
    The resolver attempted to perform DNSSEC validation, but validation
    ended in the Indeterminate state.  The R flag should not be set.
 
-4.1.3.  SERVFAIL Extended DNS Error Code 3 - Signature Expired
+4.2.3.  SERVFAIL Extended DNS Error Code 3 - Signature Expired
 
    The resolver attempted to perform DNSSEC validation, but the
    signature was expired.  The R flag should not be set.
 
-4.1.4.  SERVFAIL Extended DNS Error Code 4 - Signature Not Yet Valid
+4.2.4.  SERVFAIL Extended DNS Error Code 4 - Signature Not Yet Valid
 
    The resolver attempted to perform DNSSEC validation, but the
    signatures received were not yet valid.  The R flag should not be
    set.
 
-4.1.5.  SERVFAIL Extended DNS Error Code 5 - Unsupported DNSKEY
-        Algorithm
-
-   The resolver attempted to perform DNSSEC validation, but a DNSKEY
-   RRSET contained only unknown algorithms.  The R flag should be set.
-
-4.1.6.  SERVFAIL Extended DNS Error Code 6 - Unsupported DS Algorithm
-
-   The resolver attempted to perform DNSSEC validation, but a DS RRSET
-   contained only unknown algorithms.  The R flag should be set.
-
-4.1.7.  SERVFAIL Extended DNS Error Code 7 - DNSKEY missing
+4.2.5.  SERVFAIL Extended DNS Error Code 5 - DNSKEY missing
 
    A DS record existed at a parent, but no DNSKEY record could be found
    for the child.  The R flag should not be set.
-
 
 
 
@@ -340,26 +340,26 @@ Kumari, et al.            Expires June 23, 2019                 [Page 6]
 Internet-Draft       draft-ietf-dnsop-extended-error       December 2018
 
 
-4.1.8.  SERVFAIL Extended DNS Error Code 8 - RRSIGs missing
+4.2.6.  SERVFAIL Extended DNS Error Code 6 - RRSIGs missing
 
    The resolver attempted to perform DNSSEC validation, but no RRSIGs
    could be found for at least one RRset where RRSIGs were expected.
 
-4.1.9.  SERVFAIL Extended DNS Error Code 9 - No Zone Key Bit Set
+4.2.7.  SERVFAIL Extended DNS Error Code 7 - No Zone Key Bit Set
 
    The resolver attempted to perform DNSSEC validation, but no Zone Key
    Bit was set in a DNSKEY.
 
-4.2.  INFO-CODEs for use with RESPONSE-CODE: REFUSED(5)
+4.3.  INFO-CODEs for use with RESPONSE-CODE: REFUSED(5)
 
-4.2.1.  REFUSED Extended DNS Error Code 1 - Lame
+4.3.1.  REFUSED Extended DNS Error Code 1 - Lame
 
    An authoritative resolver that receives a query (with the RD bit
    clear) for a domain for which it is not authoritative SHOULD include
    this EDE code in the REFUSED response.  Implementations should set
    the R flag in this case (another nameserver might not be lame).
 
-4.2.2.  REFUSED Extended DNS Error Code 2 - Prohibited
+4.3.2.  REFUSED Extended DNS Error Code 2 - Prohibited
 
    An authoritative or recursive resolver that receives a query from an
    "unauthorized" client can annotate its REFUSED message with this
@@ -370,9 +370,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2018
    Implementations SHOULD allow operators to define what to set the R
    flag to in this case.
 
-4.3.  INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)
+4.4.  INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)
 
-4.3.1.  NXDOMAIN Extended DNS Error Code 1 - Blocked
+4.4.1.  NXDOMAIN Extended DNS Error Code 1 - Blocked
 
    The resolver attempted to perfom a DNS query but the domain is
    blacklisted due to a security policy.  The R flag should not be set.
@@ -416,34 +416,34 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2018
    A starting set of entries, based on the contents of this document, is
    as follows:
 
+   RESPONSE-CODE:  0 (NOERROR)
+   INFO-CODE:  1
+   Purpose:  Unsupported DNSKEY
+   Reference:  Section 4.1.1
+
+   RESPONSE-CODE:  0 (NOERROR)
+   INFO-CODE:  2
+   Purpose:  Unsupported DS Algorithm
+   Reference:  Section 4.1.2
+
    RESPONSE-CODE:  2 (SERVFAIL)
    INFO-CODE:  1
    Purpose:  DNSSEC Bogus
-   Reference:  Section 4.1.1
+   Reference:  Section 4.2.1
 
    RESPONSE-CODE:  2 (SERVFAIL)
    INFO-CODE:  2
    Purpose:  DNSSEC Indeterminate
-   Reference:  Section 4.1.2
+   Reference:  Section 4.2.2
 
    RESPONSE-CODE:  2 (SERVFAIL)
    INFO-CODE:  3
    Purpose:  Signature Expired
-   Reference:  Section 4.1.3
+   Reference:  Section 4.2.3
 
    RESPONSE-CODE:  2 (SERVFAIL)
    INFO-CODE:  4
    Purpose:  Signature Not Yet Valid
-   Reference:  Section 4.1.4
-
-   RESPONSE-CODE:  2 (SERVFAIL)
-   INFO-CODE:  5
-   Purpose:  Unsupported DNSKEY
-   Reference:  Section 4.1.5
-
-   RESPONSE-CODE:  2 (SERVFAIL)
-   INFO-CODE:  6
-   Purpose:  Unsupported DS Algorithm
 
 
 
@@ -452,37 +452,37 @@ Kumari, et al.            Expires June 23, 2019                 [Page 8]
 Internet-Draft       draft-ietf-dnsop-extended-error       December 2018
 
 
-   Reference:  Section 4.1.6
+   Reference:  Section 4.2.4
+
+   RESPONSE-CODE:  2 (SERVFAIL)
+   INFO-CODE:  5
+   Purpose:  DNSKEY missing
+   Reference:  Section 4.2.5
+
+   RESPONSE-CODE:  2 (SERVFAIL)
+   INFO-CODE:  6
+   Purpose:  RRSIGs missing
+   Reference:  Section 4.2.6
 
    RESPONSE-CODE:  2 (SERVFAIL)
    INFO-CODE:  7
-   Purpose:  DNSKEY missing
-   Reference:  Section 4.1.7
-
-   RESPONSE-CODE:  2 (SERVFAIL)
-   INFO-CODE:  8
-   Purpose:  RRSIGs missing
-   Reference:  Section 4.1.8
-
-   RESPONSE-CODE:  2 (SERVFAIL)
-   INFO-CODE:  9
    Purpose:  No Zone Key Bit Set
-   Reference:  Section 4.1.9
+   Reference:  Section 4.2.7
 
    RESPONSE-CODE:  3 (NXDOMAIN)
    INFO-CODE:  1
    Purpose:  Blocked
-   Reference:  Section 4.3.1
+   Reference:  Section 4.4.1
 
    RESPONSE-CODE:  5 (REFUSED)
    INFO-CODE:  1
    Purpose:  Lame
-   Reference:  Section 4.2.1
+   Reference:  Section 4.3.1
 
    RESPONSE-CODE:  5 (REFUSED)
    INFO-CODE:  2
    Purpose:  Prohibited
-   Reference:  Section 4.2.2
+   Reference:  Section 4.3.2
 
 6.  Security Considerations
 

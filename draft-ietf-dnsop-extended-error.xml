@@ -388,7 +388,7 @@
     </section>
 
     <section title="IANA Considerations">
-      <section title="new Extended Error Code EDNS Option">
+      <section title="A New Extended Error Code EDNS Option">
 
         <t>This document defines a new EDNS(0) option, entitled "Extended DNS
         Error", assigned a value of TBD1 from the "DNS EDNS0 Option Codes
@@ -402,7 +402,7 @@
           </figure></t>
       </section>
 
-      <section title="New Extended Error Code EDNS Option">
+      <section title="New Double-Index Registry Table for Extended Error Codes">
         <t>This document defines a new double-index IANA registry
         table, where the first index value is the RCODE value and the
         second index value is the INFO-CODE from the Extended DNS

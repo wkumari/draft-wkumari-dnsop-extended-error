@@ -104,8 +104,8 @@ Table of Contents
      4.4.  INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)  . . .   7
        4.4.1.  NXDOMAIN Extended DNS Error Code 1 - Blocked  . . . .   7
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
-     5.1.  new Extended Error Code EDNS Option . . . . . . . . . . .   7
-     5.2.  New Extended Error Code EDNS Option . . . . . . . . . . .   8
+     5.1.  A New Extended Error Code EDNS Option . . . . . . . . . .   7
+     5.2.  New Double-Index Registry Table for Extended Error Codes    8
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  10
 
@@ -354,10 +354,12 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2019
 
 4.3.1.  REFUSED Extended DNS Error Code 1 - Lame
 
-   An authoritative resolver that receives a query (with the RD bit
-   clear) for a domain for which it is not authoritative SHOULD include
-   this EDE code in the REFUSED response.  Implementations should set
-   the R flag in this case (another nameserver might not be lame).
+   An authoritative server that receives a query (with the RD bit clear)
+   for a domain for which it is not authoritative SHOULD include this
+   EDE code in the SERVFAIL response.  A resolver that receives a query
+   (with the RD bit clear) SHOULD include this EDE code in the REFUSED
+   response.  Implementations should set the R flag in this case
+   (another nameserver or resolver might not be lame).
 
 4.3.2.  REFUSED Extended DNS Error Code 2 - Prohibited
 
@@ -379,15 +381,13 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2019
 
 5.  IANA Considerations
 
-5.1.  new Extended Error Code EDNS Option
+5.1.  A New Extended Error Code EDNS Option
 
    This document defines a new EDNS(0) option, entitled "Extended DNS
    Error", assigned a value of TBD1 from the "DNS EDNS0 Option Codes
    (OPT)" registry [to be removed upon publication:
    [http://www.iana.org/assignments/dns-parameters/dns-
    parameters.xhtml#dns-parameters-11]
-
-
 
 
 
@@ -400,7 +400,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2019
    -----  ----------------     ------    ------------------
     TBD   Extended DNS Error    TBD       [ This document ]
 
-5.2.  New Extended Error Code EDNS Option
+5.2.  New Double-Index Registry Table for Extended Error Codes
 
    This document defines a new double-index IANA registry table, where
    the first index value is the RCODE value and the second index value

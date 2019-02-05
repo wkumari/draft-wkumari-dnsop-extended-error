@@ -355,10 +355,13 @@
       <section title="INFO-CODEs for use with RESPONSE-CODE: REFUSED(5)">
 	<section anchor="errlame"
 	         title="REFUSED Extended DNS Error Code 1 - Lame">
-          <t>An authoritative resolver that receives a query (with the RD bit
-          clear) for a domain for which it is not authoritative SHOULD include
-          this EDE code in the REFUSED response. Implementations should set
-          the R flag in this case (another nameserver might not be lame).</t>
+          <t>An authoritative server that receives a query (with the
+          RD bit clear) for a domain for which it is not authoritative
+          SHOULD include this EDE code in the SERVFAIL response.  A
+          resolver that receives a query (with the RD bit clear)
+          SHOULD include this EDE code in the REFUSED
+          response. Implementations should set the R flag in this case
+          (another nameserver or resolver might not be lame).</t>
         </section>
 
         <section anchor="errprohibted"

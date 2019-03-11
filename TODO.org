@@ -274,3 +274,187 @@ inside the RR. However:
     --Vladimir (knot-resolver)
 
     + Response: that's correct...  and now fixed by moving to NOERROR
+* Stephane Bortzmeyer
+
+Now, the problems:
+
+*** DONE It seems to me that this draft is mostly for resolvers, most planned
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 18:44]
+    :END:
+  extended codes are useless for authoritative servers (except may be
+  REFUSED/Lame?).
+
+  I suggest to make that clear in the introduction:
+
+  These extended error codes are specially useful for resolvers, to
+  return to stub resolvers or to downstream resolvers. Authoritative
+  servers MAY use them but most error codes would make no sense for
+  them.
+
+  + Warren agrees
+
+  + Results: added, but modified to distinguish that you're really
+    referring to receiving codes, not sending them (auth servers may
+    need to send them, eg the block/prohibited one)
+
+*** DONE ref issue
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 18:44]
+    :END:
+  > Unless a protective transport mechanism (like TSIG [RFC2845] or TLS
+  > [RFC8094])
+
+  Why 8094, which does not have even one implementation, instead of
+  7858?
+
+  + warren: oversight
+  + results: added 7858
+
+*** DONE sig expired
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 18:45]
+    :END:
+  > 4.2.3.  SERVFAIL Extended DNS Error Code 3 - Signature Expired
+  >
+  >   The resolver attempted to perform DNSSEC validation, but the
+  >   signature was expired.
+
+  I suggest to replace "the signature was expired" by "a signature in
+  the validation chain was expired".
+
+  Rationale: which signature? What if a DS at the parent is sign with an
+  expired signature?
+
+  + Warren: LTGM
+  + Results: done
+
+*** DONE dnskey missing text
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 18:46]
+    :END:
+  > 4.2.5.  SERVFAIL Extended DNS Error Code 5 - DNSKEY missing
+  >
+  >   A DS record existed at a parent, but no DNSKEY record could be found
+  >   for the child.
+
+  I suggest to replace "no DNSKEY record could be found for the child"
+  by "no DNSKEY record for this specific key could be found for the
+  child".
+
+  Rationale : the current text seems to imply this code is only when
+  there is no DNSKEY at all.
+
+  + Warren: LTGM
+
+  + Brian disagrees
+
+  + Michael Sheldon also disagrees and suggests "No supported matching
+    DNSKEY record could be found for the child"
+
+  + Result: took Michael's text
+
+*** DONE blocked
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 18:52]
+    :END:
+  > 4.4.1.  NXDOMAIN Extended DNS Error Code 1 - Blocked
+  >
+  >   The resolver attempted to perfom a DNS query but the domain is
+  >   blacklisted due to a security policy.  The R flag should not be set.
+
+  The last sentence is touchy. If a stub is configured with two
+  resolvers, and one is fast but known for lying in some cases that you
+  disagree with, you may ask a cookie from the other parent (no, resolver).
+
+  + Warren agrees the bit should be flipped.
+  + Result: flipped
+
+*** DONE blocked 2
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 18:59]
+    :END:
+  > 4.4.1.  NXDOMAIN Extended DNS Error Code 1 - Blocked
+  >
+  >   The resolver attempted to perfom a DNS query but the domain is
+  >   blacklisted due to a security policy.
+
+  I tend to think it would be a good idea to separate the case where the
+  policy was decided by the resolver and the case where the policy came
+  from outside, typically from the local law (see RFC 7725 for a similar
+  case with HTTP).
+
+  Rationale: in the first case (local policy of the resolver), the user
+  may be interested in talking with the resolver admin if he or she
+  disagrees with the blocking. In the second case, this would be useless.
+
+  + Stephane adds:
+
+    I really think it is important to make the difference between:
+
+    * I blocked your request because that's _my_ policy
+    * I blocked your request because I'm compelled to do so, don't
+      complain, it would be useless.
+
+  + Jim Reed: why?  from the client's perspective no diff
+
+  + Stephane: cause it indicates if you should call someone or you
+    can't affect change
+
+  + Result: Seems like rough concensus to add, so i did.
+
+*** DONE forged answer
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 19:17]
+    :END:
+  Otherwise, I suggest to add an error code:
+
+  NOERROR Extended DNS Error Code 3 - Forged answer
+
+     For policy reasons (legal obligation, or malware filtering, for
+     instance), an answer was forged.  The R flag should not be set.
+
+  Rationale: there is "NXDOMAIN Extended DNS Error Code 1 - Blocked" but
+  policy-aware resolvers (lying resolvers, in plain english) do not
+  always forge NXDOMAIN, they can also forge A or AAAA answers.
+
+  See also the issue just before, about the need to differentiate
+  resolver policy from "upper" policy, law, for instance.
+
+  + Warren doesn't like forgged and wants a better word
+
+  + Stephane: "substituded answer" maybe?
+
+  + Result: took forged as I don't like any suggested replacement yet
+
+*** DONE new code for no reachable authorities
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 19:19]
+    :END:
+
+    Ooops, I forgot one:
+
+    SERVFAIL Extended DNS Error Code 8 - No reachable authority 
+
+       The resolver could not reach any of the authoritative name servers
+       (or they refused to reply).  The R flag should be set.
+
+    Rationale: in draft -04, all SERVFAIL extended error codes are for
+    DNSSEC issues. In my experience, SERVFAIL happens also (and quite
+    often) for routing issues (most zones have all their authoritative
+    name servers in only one AS, sometimes even one prefix or, worse, one
+    rack).
+
+    We set the R flag because another resolver may not have the same
+    routing issues, BGP not being consistent between all sites.
+
+    True, an extended error code could be added after the RFC is
+    published, through "Specification required" but 1) it is easier to do
+    it now 2) it gives to the people who will implement the RFC a wider
+    view of the possible uses.
+
+    + Result: added
+
+* Other stuff
+
+*** TODO SHOULD all r flag suggestions

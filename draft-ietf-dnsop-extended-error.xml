@@ -259,11 +259,12 @@
 
       <section title="The RESPONSE-CODE field">
 	  <t>This 4-bit value SHOULD be a copy of the RCODE from the
-	  primary DNS packet. Multiple EDNS0/EDE records may be
-	  included in the response.  When including multiple EDNS0/EDE
-	  records in a response in order to provide additional error
-	  information, other RESPONSE-CODEs MAY use a different
-	  RCODE.</t>
+	  primary DNS packet. RESPONSE-CODEs MAY use a different RCODE
+	  to provide additional or better information.  For example,
+	  multiple EDNS0/EDE records may be included in the response
+	  and the supplemental EDNS0/EDE records may wish to include
+	  other RESPONSE-CODE values based on communication results with
+	  other DNS servers.</t>
       </section>
 
       <section title="The INFO-CODE field">
@@ -271,6 +272,13 @@
           RESPONSE-CODE value. This combination of the RESPONSE-CODE
           and the INFO-CODE serve as a joint-index into the IANA
           "Extended DNS Errors" registry.</t>
+
+          <t>Note to implementers: the combination of the
+          RESPONSE-CODE and INFO-CODE fits within a 16-bit field,
+          allowing implementers the choice of treating the combination
+          as either two separate values, as defined in this document,
+          or as a single 16-bit integer as long as the results are
+          deterministic.</t>
       </section>
 
       <section title="The EXTRA-TEXT field">

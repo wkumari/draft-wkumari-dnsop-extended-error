@@ -506,7 +506,10 @@ Now, the problems:
 
      + Results: accepted; thanks for the text.
 
-*** TODO wording issues
+*** DONE wording issues with the response-code field text
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-11 Mon 14:59]
+    :END:
      > 3.2.  The RESPONSE-CODE field
      >    This 4-bit value SHOULD be a copy of the RCODE from the primary DNS
      >    packet.  Multiple EDNS0/EDE records may be included in the response.
@@ -515,11 +518,11 @@ Now, the problems:
      >    different RCODE.
      This paragraph worries me for multiple reasons:
 
-***** 0) Terminology: EDE is an EDNS option, not record!
-***** a) If I am an implementer, in what cases I might want to go against
+      0) Terminology: EDE is an EDNS option, not record!
+      a) If I am an implementer, in what cases I might want to go against
               "4-bit value SHOULD be a copy of the RCODE"?
-***** b) Terminology: Where is a definition of "primary DNS packet"?
-***** c) When I read this now, many months after the initial draft, I have
+      b) Terminology: Where is a definition of "primary DNS packet"?
+      c) When I read this now, many months after the initial draft, I have
               trouble understanding logic why we are duplicating RCODE here. There
               might be a good reasons but we need to state them explicitly otherwise
               it will get ignored (or misunderstood).
@@ -527,10 +530,10 @@ Now, the problems:
               Unfortunatelly I have trouble understanding intent behind this
               description so I'm not able to draft a better text.
 
-***** Response: 
+      + Response: 
 
-      Will work on the wording, and I can hopefully address your issue
-      with the lack of clarity with the text and I thank you for
+      We'll work on the wording, and I can hopefully address your
+      issue with the lack of clarity with the text and I thank you for
       pointing out that it's not clear.
 
       In the past, the WG has discussed (more than once) whether to
@@ -560,6 +563,10 @@ Now, the problems:
       Hopefully that makes sense?  I've added your new proposed stale
       codes, as mentioned below.
 
+      I've changed the text for RESPONSE-CODE and INFO-CODE in order
+      to hopefully help.  I'd love your thoughts and suggestions for
+      improvements though.
+
 *** NOCHANGE why an R flag in unsupported key/ds
 
      > 4.1.1.  NOERROR Extended DNS Error Code 1 - Unsupported DNSKEY Algorithm
@@ -575,6 +582,8 @@ Now, the problems:
      Why R flag? This is not an error, resolution suceeded, and there is
      nothing to retry. I propose change both cases to
      "The R flag should not be set."
+
+     + Stephane answered on list with this same answer as mentioned below
 
      + Answer: Because other resolvers may understand DS and DNSKEY
        algorithms.  So the client (stub resolver) should keep trying.

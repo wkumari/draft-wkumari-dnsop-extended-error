@@ -334,7 +334,7 @@
       </section>
 
         <section anchor="forgedanswer"
-                 title="NOERROR Extended DNS Error Code 4 - Forged answer">
+                 title="NOERROR Extended DNS Error Code 4 - Forged Answer">
           <t>For policy reasons (legal obligation, or malware
           filtering, for instance), an answer was forged.  The R flag
           should not be set.</t>
@@ -374,14 +374,14 @@
         </section>
 
         <section anchor="errnodnskey"
-                 title="SERVFAIL Extended DNS Error Code 4 - DNSKEY missing">
+                 title="SERVFAIL Extended DNS Error Code 4 - DNSKEY Missing">
           <t>A DS record existed at a parent, but no supported
           matching DNSKEY record could be found for the child. The R
           flag should not be set.</t>
         </section>
 
         <section anchor="errnorrsig"
-                 title="SERVFAIL Extended DNS Error Code 5 - RRSIGs missing">
+                 title="SERVFAIL Extended DNS Error Code 5 - RRSIGs Missing">
           <t>The resolver attempted to perform DNSSEC validation, but no
           RRSIGs could be found for at least one RRset where RRSIGs were
           expected.</t>
@@ -558,7 +558,7 @@
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 0 (NOERROR)</t>
     <t hangText="INFO-CODE:">4</t>
-    <t hangText="Purpose:">Forged answer</t>
+    <t hangText="Purpose:">Forged Answer</t>
     <t hangText="Reference:"><xref target="forgedanswer" /></t>
     </list></t>
 
@@ -593,14 +593,14 @@
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
     <t hangText="INFO-CODE:">4</t>
-    <t hangText="Purpose:">DNSKEY missing</t>
+    <t hangText="Purpose:">DNSKEY Missing</t>
     <t hangText="Reference:"> <xref target="errnodnskey" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
     <t hangText="INFO-CODE:">5</t>
-    <t hangText="Purpose:">RRSIGs missing</t>
+    <t hangText="Purpose:">RRSIGs Missing</t>
     <t hangText="Reference:"><xref target="errnorrsig" /></t>
     </list></t>
 

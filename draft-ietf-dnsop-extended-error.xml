@@ -212,9 +212,12 @@
           bits MUST be set to 0 by the sender and MUST be ignored by
           the receiver.</t>
 
-          <t>RESPONSE-CODE, 4 bits.</t>
+	  <t>RESPONSE-CODE, 4 bits. (Note: RESPONSE-CODE and INFO-CODE
+	  together comprise a 2-octet field in network byte order, of which
+	  RESPONSE-CODE is the most significant 4 bits.)</t>
 
-          <t>INFO-CODE, 12-bits.</t>
+	  <t>INFO-CODE, 12 bits. (The least significant 12 bits of the
+	  combined 2-octet field described above.)</t>
 
           <t>EXTRA-TEXT, a variable length, UTF-8 encoded, text field
           that may hold additional textual information.</t>
@@ -224,11 +227,16 @@
 
     <section title="Use of the Extended DNS Error option">
       <t>The Extended DNS Error (EDE) is an EDNS option. It can be included
-        in any response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query that
-        includes OPT Pseudo-RR <xref target="RFC6891" />. This document includes a set of initial
-      codepoints (and requests to the IANA to add them to the registry), but
-      is extensible via the IANA registry to allow additional error and
-      information codes to be defined in the future.</t>
+      in any response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query that
+      includes OPT Pseudo-RR <xref target="RFC6891" />. A sender MUST NOT
+      include more than one Extended DNS Error option per message;
+      additional Extended DNS Error options after the first one MUST be
+      ignored by the receiver.</t>
+
+      <t>This document includes a set of initial codepoints (and requests
+      to the IANA to add them to the registry), but is extensible via the
+      IANA registry to allow additional error and information codes to be
+      defined in the future.</t>
 
       <t>The fields of the Extended DNS Error option are defined
       further in the following sub-sections.</t>
@@ -260,11 +268,7 @@
       <section title="The RESPONSE-CODE field">
 	  <t>This 4-bit value SHOULD be a copy of the RCODE from the
 	  primary DNS packet. RESPONSE-CODEs MAY use a different RCODE
-	  to provide additional or better information.  For example,
-	  multiple EDNS0/EDE records may be included in the response
-	  and the supplemental EDNS0/EDE records may wish to include
-	  other RESPONSE-CODE values based on communication results with
-	  other DNS servers.</t>
+	  to provide additional or better information.</t>
       </section>
 
       <section title="The INFO-CODE field">

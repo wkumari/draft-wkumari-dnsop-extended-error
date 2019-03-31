@@ -541,7 +541,7 @@
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 3 (NOERROR)</t>
+    <t hangText="RESPONSE-CODE:"> 0 (NOERROR)</t>
     <t hangText="INFO-CODE:">3</t>
     <t hangText="Purpose:">Answering with stale/cached data</t>
     <t hangText="Reference:"><xref target="stalenoerror" /></t>
@@ -606,7 +606,14 @@
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
     <t hangText="INFO-CODE:">7</t>
-    <t hangText="Purpose:">No NSEC records could be obtained</t>
+    <t hangText="Purpose:">No Reachable Authority</t>
+    <t hangText="Reference:"><xref target="noauth" /></t>
+    </list></t>
+
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
+    <t hangText="INFO-CODE:">9</t>
+    <t hangText="Purpose:">NSEC Missing</t>
     <t hangText="Reference:"><xref target="nonsec" /></t>
     </list></t>
 
@@ -623,7 +630,14 @@
     <t hangText="Purpose:">Not Ready.</t>
     <t hangText="Reference:"><xref target="notready" /></t>
     </list></t>
-    
+
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
+    <t hangText="INFO-CODE:">11</t>
+    <t hangText="Purpose:">Not Specified.</t>
+    <t hangText="Reference:"><xref target="notspecified" /></t>
+    </list></t>
+
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 3 (NXDOMAIN)</t>
     <t hangText="INFO-CODE:">1</t>
@@ -648,10 +662,10 @@
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 4 (NOTIMP)</t>
     <t hangText="INFO-CODE:">1</t>
-    <t hangText="Purpose:"></t>
+    <t hangText="Purpose:">Deprecated</t>
     <t hangText="Reference:"><xref target="errprohibted" /></t>
     </list></t>
-    
+
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 5 (REFUSED)</t>
     <t hangText="INFO-CODE:">1</t>

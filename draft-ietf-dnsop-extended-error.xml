@@ -403,8 +403,8 @@
         <section anchor="nonsec"
                  title="SERVFAIL Extended DNS Error Code 8 - NSEC Missing">
           <t>The resolver attempted to perform DNSSEC validation, but the
-          requested data was missing and a covering NSEC or NSEC3 was not provided.
-          The R flag should be set.</t>
+          requested data was missing and a covering NSEC or NSEC3 was not
+          provided. The R flag should be set.</t>
         </section>
 
         <section anchor="cachederror"
@@ -417,6 +417,13 @@
                  title="SERVFAIL Extended DNS Error Code 10 - Not Ready">
           <t>The server is unable to answer the query as it is not
           fully up and functional yet.</t>
+        </section>
+
+        <section anchor="notspecified"
+                 title="SERVFAIL Extended DNS Error Code 11 - Not Specified">
+	  <t>A generic code which may be used when a SERVFAIL response does
+	  not fall into any of the other categories. The R flag should not be
+	  set.</t>
         </section>
       </section>
 

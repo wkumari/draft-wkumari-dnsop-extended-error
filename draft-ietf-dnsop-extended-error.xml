@@ -212,9 +212,12 @@
           bits MUST be set to 0 by the sender and MUST be ignored by
           the receiver.</t>
 
-          <t>RESPONSE-CODE, 4 bits.</t>
+	  <t>RESPONSE-CODE, 4 bits. (Note: RESPONSE-CODE and INFO-CODE
+	  together comprise a 2-octet field in network byte order, of which
+	  RESPONSE-CODE is the most significant 4 bits.)</t>
 
-          <t>INFO-CODE, 12-bits.</t>
+	  <t>INFO-CODE, 12 bits. (The least significant 12 bits of the
+	  combined 2-octet field described above.)</t>
 
           <t>EXTRA-TEXT, a variable length, UTF-8 encoded, text field
           that may hold additional textual information.</t>
@@ -224,11 +227,16 @@
 
     <section title="Use of the Extended DNS Error option">
       <t>The Extended DNS Error (EDE) is an EDNS option. It can be included
-        in any response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query that
-        includes OPT Pseudo-RR <xref target="RFC6891" />. This document includes a set of initial
-      codepoints (and requests to the IANA to add them to the registry), but
-      is extensible via the IANA registry to allow additional error and
-      information codes to be defined in the future.</t>
+      in any response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query that
+      includes OPT Pseudo-RR <xref target="RFC6891" />. A sender MUST NOT
+      include more than one Extended DNS Error option per message;
+      additional Extended DNS Error options after the first one MUST be
+      ignored by the receiver.</t>
+
+      <t>This document includes a set of initial codepoints (and requests
+      to the IANA to add them to the registry), but is extensible via the
+      IANA registry to allow additional error and information codes to be
+      defined in the future.</t>
 
       <t>The fields of the Extended DNS Error option are defined
       further in the following sub-sections.</t>
@@ -260,11 +268,7 @@
       <section title="The RESPONSE-CODE field">
 	  <t>This 4-bit value SHOULD be a copy of the RCODE from the
 	  primary DNS packet. RESPONSE-CODEs MAY use a different RCODE
-	  to provide additional or better information.  For example,
-	  multiple EDNS0/EDE records may be included in the response
-	  and the supplemental EDNS0/EDE records may wish to include
-	  other RESPONSE-CODE values based on communication results with
-	  other DNS servers.</t>
+	  to provide additional or better information.</t>
       </section>
 
       <section title="The INFO-CODE field">
@@ -315,6 +319,7 @@
           RRSET contained only unknown algorithms. The R flag should be
           set.</t>
         </section>
+      </section>
 
       <section title="INFO-CODEs for use with RESPONSE-CODE: NOERROR(3)">
         <section anchor="stalenoerror"
@@ -327,10 +332,9 @@
           retrying is likely to create additional load without
           yielding a more fresh answer.</t>
         </section>
-      </section>
 
         <section anchor="forgedanswer"
-                 title="NOERROR Extended DNS Error Code 4 - Forged answer">
+                 title="NOERROR Extended DNS Error Code 4 - Forged Answer">
           <t>For policy reasons (legal obligation, or malware
           filtering, for instance), an answer was forged.  The R flag
           should not be set.</t>
@@ -342,10 +346,7 @@
           validation ended in the Indeterminate state. The R flag should not
           be set.</t>
         </section>
-
       </section>
-
-
 
       <section title="INFO-CODEs for use with RESPONSE-CODE: SERVFAIL(2)">
         <section anchor="errbogus"
@@ -370,14 +371,14 @@
         </section>
 
         <section anchor="errnodnskey"
-                 title="SERVFAIL Extended DNS Error Code 4 - DNSKEY missing">
+                 title="SERVFAIL Extended DNS Error Code 4 - DNSKEY Missing">
           <t>A DS record existed at a parent, but no supported
           matching DNSKEY record could be found for the child. The R
           flag should not be set.</t>
         </section>
 
         <section anchor="errnorrsig"
-                 title="SERVFAIL Extended DNS Error Code 5 - RRSIGs missing">
+                 title="SERVFAIL Extended DNS Error Code 5 - RRSIGs Missing">
           <t>The resolver attempted to perform DNSSEC validation, but no
           RRSIGs could be found for at least one RRset where RRSIGs were
           expected.</t>
@@ -399,8 +400,8 @@
         <section anchor="nonsec"
                  title="SERVFAIL Extended DNS Error Code 8 - NSEC Missing">
           <t>The resolver attempted to perform DNSSEC validation, but the
-          requested data was missing and a covering NSEC or NSEC3 was not provided.
-          The R flag should be set.</t>
+          requested data was missing and a covering NSEC or NSEC3 was not
+          provided. The R flag should be set.</t>
         </section>
 
         <section anchor="cachederror"
@@ -414,6 +415,43 @@
           <t>The server is unable to answer the query as it is not
           fully up and functional yet.</t>
         </section>
+
+        <section anchor="notspecified"
+                 title="SERVFAIL Extended DNS Error Code 11 - Not Specified">
+	  <t>A generic code which may be used when a SERVFAIL response does
+	  not fall into any of the other categories. The R flag should not be
+	  set.</t>
+        </section>
+      </section>
+
+      <section title="INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)">
+        <section anchor="errblocked"
+	         title="NXDOMAIN Extended DNS Error Code 1 - Blocked">
+          <t>The resolver attempted to perfom a DNS query but the
+          domain is blacklisted due to a security policy implemented
+          on the server being directly talked to. The R flag should be
+          set.</t>
+        </section>
+
+        <section anchor="errcensored"
+	         title="NXDOMAIN Extended DNS Error Code 2 - Censored">
+          <t>The resolver attempted to perfom a DNS query but the
+          domain was blacklisted by a security policy imposed upon the
+          server being talked to. Note that how the imposed policy is
+          applied is irrelevant (in-band DNS somehow, court order,
+          etc). The R flag should be set.</t>
+        </section>
+
+        <section anchor="stalenx"
+	         title="NXDOMAIN Extended DNS Error Code 3 - Stale Answer">
+          <t>The resolver was unable to resolve answer within its time
+          limits and decided to answer with a previously cached
+          NXDOMAIN answer instead of answering with an error.  This is
+          typically caused by problems on authoritative side, possibly
+          as result of a DoS attack. The R flag should not be set,
+          since retrying is likely to create additional load without
+          yielding a more fresh answer.</t>
+        </section>
       </section>
 
       <section title="INFO-CODEs for use with RESPONSE-CODE: NOTIMP(4)">
@@ -424,7 +462,6 @@
           R flag. (Retrying request elsewhere is unlikely to yield any
           other results.)</t>
         </section>
-
       </section>
 
       <section title="INFO-CODEs for use with RESPONSE-CODE: REFUSED(5)">
@@ -449,40 +486,6 @@
 
           <t>Implementations SHOULD allow operators to define what to set the
           R flag to in this case.</t>
-        </section>
-      </section>
-
-      <section title="INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)">
-        <section anchor="errblocked"
-	         title="NXDOMAIN Extended DNS Error Code 1 - Blocked">
-          <t>The resolver attempted to perfom a DNS query but the
-          domain is blacklisted due to a security policy implemented
-          on the server being directly talked to. The R flag should be
-          set.</t>
-        </section>
-      </section>
-
-      <section title="INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)">
-        <section anchor="errcensored"
-	         title="NXDOMAIN Extended DNS Error Code 2 - Censored">
-          <t>The resolver attempted to perfom a DNS query but the
-          domain was blacklisted by a security policy imposed upon the
-          server being talked to. Note that how the imposed policy is
-          applied is irrelevant (in-band DNS somehow, court order,
-          etc). The R flag should be set.</t>
-        </section>
-      </section>
-
-      <section title="INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)">
-        <section anchor="stalenx"
-	         title="NXDOMAIN Extended DNS Error Code 3 - Stale Answer">
-          <t>The resolver was unable to resolve answer within its time
-          limits and decided to answer with a previously cached
-          NXDOMAIN answer instead of answering with an error.  This is
-          typically caused by problems on authoritative side, possibly
-          as result of a DoS attack. The R flag should not be set,
-          since retrying is likely to create additional load without
-          yielding a more fresh answer.</t>
         </section>
       </section>
     </section>
@@ -538,7 +541,7 @@
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 3 (NOERROR)</t>
+    <t hangText="RESPONSE-CODE:"> 0 (NOERROR)</t>
     <t hangText="INFO-CODE:">3</t>
     <t hangText="Purpose:">Answering with stale/cached data</t>
     <t hangText="Reference:"><xref target="stalenoerror" /></t>
@@ -547,7 +550,7 @@
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 0 (NOERROR)</t>
     <t hangText="INFO-CODE:">4</t>
-    <t hangText="Purpose:">Forged answer</t>
+    <t hangText="Purpose:">Forged Answer</t>
     <t hangText="Reference:"><xref target="forgedanswer" /></t>
     </list></t>
 
@@ -582,14 +585,14 @@
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
     <t hangText="INFO-CODE:">4</t>
-    <t hangText="Purpose:">DNSKEY missing</t>
+    <t hangText="Purpose:">DNSKEY Missing</t>
     <t hangText="Reference:"> <xref target="errnodnskey" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
     <t hangText="INFO-CODE:">5</t>
-    <t hangText="Purpose:">RRSIGs missing</t>
+    <t hangText="Purpose:">RRSIGs Missing</t>
     <t hangText="Reference:"><xref target="errnorrsig" /></t>
     </list></t>
 
@@ -603,7 +606,14 @@
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
     <t hangText="INFO-CODE:">7</t>
-    <t hangText="Purpose:">No NSEC records could be obtained</t>
+    <t hangText="Purpose:">No Reachable Authority</t>
+    <t hangText="Reference:"><xref target="noauth" /></t>
+    </list></t>
+
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
+    <t hangText="INFO-CODE:">9</t>
+    <t hangText="Purpose:">NSEC Missing</t>
     <t hangText="Reference:"><xref target="nonsec" /></t>
     </list></t>
 
@@ -620,7 +630,14 @@
     <t hangText="Purpose:">Not Ready.</t>
     <t hangText="Reference:"><xref target="notready" /></t>
     </list></t>
-    
+
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
+    <t hangText="INFO-CODE:">11</t>
+    <t hangText="Purpose:">Not Specified.</t>
+    <t hangText="Reference:"><xref target="notspecified" /></t>
+    </list></t>
+
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 3 (NXDOMAIN)</t>
     <t hangText="INFO-CODE:">1</t>
@@ -645,10 +662,10 @@
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 4 (NOTIMP)</t>
     <t hangText="INFO-CODE:">1</t>
-    <t hangText="Purpose:"></t>
+    <t hangText="Purpose:">Deprecated</t>
     <t hangText="Reference:"><xref target="errprohibted" /></t>
     </list></t>
-    
+
     <t><list style="hanging" hangIndent="10">
     <t hangText="RESPONSE-CODE:"> 5 (REFUSED)</t>
     <t hangText="INFO-CODE:">1</t>
@@ -696,7 +713,7 @@
     <section title="Acknowledgements">
       <t>The authors wish to thank Joe Abley, Mark Andrews, Stephane
       Bortzmeyer, Vladimir Cunat, Peter DeVries, Peter van Dijk,
-      Donald Eastlake, Bob Harold, Evan Hunt, Geoff Huston, Shane
+      Donald Eastlake, Bob Harold, Geoff Huston, Shane
       Kerr, Edward Lewis, Carlos M.  Martinez, George Michelson,
       Michael Sheldon, Petr Spacek, Ondrej Sury, Loganaden Velvindron,
       and Paul Vixie.  They also vaguely remember discussing this with

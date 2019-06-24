@@ -183,7 +183,7 @@
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 4: | RCODE                                         | R | Res       |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-6: | INFO-CODE                     / EXTRA-TEXT ...                /
+6: | INFO-CODE                                                     |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 6: / EXTRA-TEXT ...                                                /
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
@@ -217,7 +217,7 @@
           resource record <xref target="RFC2671" />) and the 4 bits of
           the RCODE field of the DNS message.</t>
 
-          <t>INFO-CODE, 8-bits, which is the principal contribution of
+          <t>INFO-CODE, 16-bits, which is the principal contribution of
           this document.</t>
 
           <t>EXTRA-TEXT, a variable length, UTF-8 encoded, text field
@@ -277,16 +277,16 @@
       </section>
 
       <section title="The INFO-CODE field">
-          <t>This 8-bit value provides the additional context for the
+          <t>This 16-bit value provides the additional context for the
           RESPONSE-CODE value. This combination of the RESPONSE-CODE
           and the INFO-CODE serve as a joint-index into the IANA
           "Extended DNS Errors" registry.</t>
 
           <t>Note to implementers: the combination of the
-          RESPONSE-CODE and INFO-CODE fits within a 16-bit field,
+          RESPONSE-CODE and INFO-CODE fits within a 24-bit field,
           allowing implementers the choice of treating the combination
           as either two separate values, as defined in this document,
-          or as a single 16-bit integer as long as the results are
+          or as a single 24-bit integer as long as the results are
           deterministic.</t>
       </section>
 
@@ -519,12 +519,14 @@
         Error EDNS option defined in this document. The IANA is
         requested to create and maintain this "Extended DNS Error
         codes" registry. The codepoint space for each INFO-CODE index
-        is to be broken into 2 ranges:</t>
+        is to be broken into 3 ranges:</t>
 
         <t><list style="symbols">
-            <t>0 - 240: Specification required.</t>
+            <t>0 - 65023: Specification required.</t>
 
-            <t>241 - 255: Experimental / Private use</t>
+            <t>65023 - 65279: First come, first served.</t>
+
+            <t>65280 - 65536: Experimental / Private use</t>
         </list></t>
 
         <t>A starting set of entries, based on the contents of this

@@ -263,18 +263,21 @@
           additional considerations.</t>
       </section>
 
-      <section title="The RESPONSE-CODE field">
-	  <t>This 4-bit value SHOULD be a copy of the RCODE from the
-	  primary DNS packet. RESPONSE-CODEs MAY use a different RCODE
-	  to provide additional or better information.  For example,
-	  multiple EDNS0/EDE records may be included in the response
-	  and the supplemental EDNS0/EDE records may wish to include
-	  other RESPONSE-CODE values based on communication results with
-	  other DNS servers.</t>
+      <section title="The RESPONSE-CODE field" anchor="responsecode">
+	  <t>This 12-bit value SHOULD be a copy of the combined RCODE
+	  from the extended RCODE field defined in the EDNS0 optional
+	  resource record (stored in the TTL field of the EDNS0
+	  resource record <xref target="RFC2671" />) and the 4 bits of
+	  the RCODE field of the DNS message.  RESPONSE-CODEs MAY use
+	  a different RCODE to provide additional or better
+	  information.  For example, multiple EDNS0/EDE records may be
+	  included in the response and the supplemental EDNS0/EDE
+	  records may wish to include other RESPONSE-CODE values based
+	  on communication results with other DNS servers.</t>
       </section>
 
       <section title="The INFO-CODE field">
-          <t>This 12-bit value provides the additional context for the
+          <t>This 8-bit value provides the additional context for the
           RESPONSE-CODE value. This combination of the RESPONSE-CODE
           and the INFO-CODE serve as a joint-index into the IANA
           "Extended DNS Errors" registry.</t>
@@ -510,19 +513,18 @@
 
       <section title="New Double-Index Registry Table for Extended Error Codes">
         <t>This document defines a new double-index IANA registry
-        table, where the first index value is the RCODE value and the
+        table, where the first index value is the combined RCODE value
+        (see the <xref target="responsecode" /> section) and the
         second index value is the INFO-CODE from the Extended DNS
         Error EDNS option defined in this document. The IANA is
         requested to create and maintain this "Extended DNS Error
         codes" registry. The codepoint space for each INFO-CODE index
-        is to be broken into 3 ranges:</t>
+        is to be broken into 2 ranges:</t>
 
         <t><list style="symbols">
-            <t>0 - 3583: Specification required.</t>
+            <t>0 - 240: Specification required.</t>
 
-            <t>3584 - 3839: First Come First Served.</t>
-
-            <t>3840 - 4095: Experimental / Private use</t>
+            <t>241 - 255: Experimental / Private use</t>
         </list></t>
 
         <t>A starting set of entries, based on the contents of this

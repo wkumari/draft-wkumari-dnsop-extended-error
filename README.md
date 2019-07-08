@@ -86,7 +86,7 @@ Table of Contents
                DNSKEY Algorithm  . . . . . . . . . . . . . . . . . .   6
        4.1.2.  NOERROR Extended DNS Error Code 2 - Unsupported
                DS Algorithm  . . . . . . . . . . . . . . . . . . . .   6
-       4.1.3.  INFO-CODEs for use with RESPONSE-CODE: NOERROR(3) . .   6
+       4.1.3.  INFO-CODEs for use with RESPONSE-CODE: NOERROR(3) . .   7
        4.1.4.  NOERROR Extended DNS Error Code 4 - Forged answer . .   7
        4.1.5.  SERVFAIL Extended DNS Error Code 5 - DNSSEC
                Indeterminate . . . . . . . . . . . . . . . . . . . .   7
@@ -97,7 +97,7 @@ Table of Contents
        4.2.3.  SERVFAIL Extended DNS Error Code 3 - Signature Not
                Yet Valid . . . . . . . . . . . . . . . . . . . . . .   7
        4.2.4.  SERVFAIL Extended DNS Error Code 4 - DNSKEY missing .   7
-       4.2.5.  SERVFAIL Extended DNS Error Code 5 - RRSIGs missing .   7
+       4.2.5.  SERVFAIL Extended DNS Error Code 5 - RRSIGs missing .   8
        4.2.6.  SERVFAIL Extended DNS Error Code 6 - No Zone Key Bit
                Set . . . . . . . . . . . . . . . . . . . . . . . . .   8
        4.2.7.  SERVFAIL Extended DNS Error Code 7 - No
@@ -125,13 +125,13 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
      4.7.  INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)  . . .   9
        4.7.1.  NXDOMAIN Extended DNS Error Code 3 - Stale Answer . .   9
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
-     5.1.  A New Extended Error Code EDNS Option . . . . . . . . . .   9
+     5.1.  A New Extended Error Code EDNS Option . . . . . . . . . .  10
      5.2.  New Double-Index Registry Table for Extended Error Codes   10
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .  12
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  13
    8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  13
      8.1.  Normative References  . . . . . . . . . . . . . . . . . .  13
-     8.2.  Informative References  . . . . . . . . . . . . . . . . .  13
+     8.2.  Informative References  . . . . . . . . . . . . . . . . .  14
    Appendix A.  Changes / Author Notes.  . . . . . . . . . . . . . .  14
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  14
 
@@ -200,11 +200,11 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
    2: |                           OPTION-LENGTH                       |
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-   4: | R |                          RESERVED                         |
+   4: | RCODE                                         | R | Res       |
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-   6: | RESPONSE-CODE |             INFO-CODE                         |
+   6: | INFO-CODE                                                     |
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-   8: |                             EXTRA-TEXT                        |
+   6: / EXTRA-TEXT ...                                                /
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
    Field definition details:
@@ -217,9 +217,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
       may be a zero-length string).
    o  The RETRY flag, 1 bit; the RETRY bit (R) indicates a flag defined
       for use in this specification.
-   o  The RESERVED bits, 15 bits: these bits are reserved for future
-      use, potentially as additional flags.  The RESERVED bits MUST be
-      set to 0 by the sender and MUST be ignored by the receiver.
+   o  The RESERVED bits, 4 bits: these bits are reserved for future use,
+      potentially as additional flags.  The RESERVED bits MUST be set to
+      0 by the sender and MUST be ignored by the receiver.
 
 
 
@@ -228,10 +228,14 @@ Kumari, et al.         Expires September 12, 2019               [Page 4]
 Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
 
 
-   o  RESPONSE-CODE, 4 bits.
-   o  INFO-CODE, 12-bits.
+   o  RESPONSE-CODE, 12 bits: the concatenation of the upper 8-bits of
+      the RCODE (stored in the TTL field of the EDNS0 resource record
+      [RFC2671]) and the 4 bits of the RCODE field of the DNS message.
+   o  INFO-CODE, 16-bits, which is the principal contribution of this
+      document.
    o  EXTRA-TEXT, a variable length, UTF-8 encoded, text field that may
-      hold additional textual information.
+      hold additional textual information.  Note: EXTRA-TEXT may be zero
+      octets in length, indicating there is no EXTRA-TEXT included.
 
 3.  Use of the Extended DNS Error option
 
@@ -268,14 +272,10 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
 
 3.2.  The RESPONSE-CODE field
 
-   This 4-bit value SHOULD be a copy of the RCODE from the primary DNS
-   packet.  RESPONSE-CODEs MAY use a different RCODE to provide
-   additional or better information.  For example, multiple EDNS0/EDE
-   records may be included in the response and the supplemental EDNS0/
-   EDE records may wish to include other RESPONSE-CODE values based on
-   communication results with other DNS servers.
-
-
+   This 12-bit value SHOULD be a copy of the combined RCODE from the
+   extended RCODE field defined in the EDNS0 optional resource record
+   (stored in the TTL field of the EDNS0 resource record [RFC2671]) and
+   the 4 bits of the RCODE field of the DNS message.  RESPONSE-CODEs MAY
 
 
 
@@ -284,16 +284,22 @@ Kumari, et al.         Expires September 12, 2019               [Page 5]
 Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
 
 
+   use a different RCODE to provide additional or better information.
+   For example, multiple EDNS0/EDE records may be included in the
+   response and the supplemental EDNS0/EDE records may wish to include
+   other RESPONSE-CODE values based on communication results with other
+   DNS servers.
+
 3.3.  The INFO-CODE field
 
-   This 12-bit value provides the additional context for the RESPONSE-
+   This 16-bit value provides the additional context for the RESPONSE-
    CODE value.  This combination of the RESPONSE-CODE and the INFO-CODE
    serve as a joint-index into the IANA "Extended DNS Errors" registry.
 
    Note to implementers: the combination of the RESPONSE-CODE and INFO-
-   CODE fits within a 16-bit field, allowing implementers the choice of
+   CODE fits within a 24-bit field, allowing implementers the choice of
    treating the combination as either two separate values, as defined in
-   this document, or as a single 16-bit integer as long as the results
+   this document, or as a single 24-bit integer as long as the results
    are deterministic.
 
 3.4.  The EXTRA-TEXT field
@@ -326,12 +332,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
    The resolver attempted to perform DNSSEC validation, but a DS RRSET
    contained only unknown algorithms.  The R flag should be set.
 
-4.1.3.  INFO-CODEs for use with RESPONSE-CODE: NOERROR(3)
-
-
-
-
-
 
 
 
@@ -339,6 +339,8 @@ Kumari, et al.         Expires September 12, 2019               [Page 6]
 
 Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
 
+
+4.1.3.  INFO-CODEs for use with RESPONSE-CODE: NOERROR(3)
 
 4.1.3.1.  NOERROR Extended DNS Error Code 3 - Stale Answer
 
@@ -382,10 +384,8 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
    A DS record existed at a parent, but no supported matching DNSKEY
    record could be found for the child.  The R flag should not be set.
 
-4.2.5.  SERVFAIL Extended DNS Error Code 5 - RRSIGs missing
 
-   The resolver attempted to perform DNSSEC validation, but no RRSIGs
-   could be found for at least one RRset where RRSIGs were expected.
+
 
 
 
@@ -395,6 +395,11 @@ Kumari, et al.         Expires September 12, 2019               [Page 7]
 
 Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
 
+
+4.2.5.  SERVFAIL Extended DNS Error Code 5 - RRSIGs missing
+
+   The resolver attempted to perform DNSSEC validation, but no RRSIGs
+   could be found for at least one RRset where RRSIGs were expected.
 
 4.2.6.  SERVFAIL Extended DNS Error Code 6 - No Zone Key Bit Set
 
@@ -438,11 +443,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
    for a domain for which it is not authoritative SHOULD include this
    EDE code in the SERVFAIL response.  A resolver that receives a query
    (with the RD bit clear) SHOULD include this EDE code in the REFUSED
-   response.  Implementations should set the R flag in this case
-   (another nameserver or resolver might not be lame).
-
-
-
 
 
 
@@ -451,6 +451,9 @@ Kumari, et al.         Expires September 12, 2019               [Page 8]
 
 Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
 
+
+   response.  Implementations should set the R flag in this case
+   (another nameserver or resolver might not be lame).
 
 4.4.2.  REFUSED Extended DNS Error Code 2 - Prohibited
 
@@ -493,13 +496,10 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
 
 5.  IANA Considerations
 
-5.1.  A New Extended Error Code EDNS Option
 
-   This document defines a new EDNS(0) option, entitled "Extended DNS
-   Error", assigned a value of TBD1 from the "DNS EDNS0 Option Codes
-   (OPT)" registry [to be removed upon publication:
-   [http://www.iana.org/assignments/dns-parameters/dns-
-   parameters.xhtml#dns-parameters-11]
+
+
+
 
 
 
@@ -508,6 +508,14 @@ Kumari, et al.         Expires September 12, 2019               [Page 9]
 Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
 
 
+5.1.  A New Extended Error Code EDNS Option
+
+   This document defines a new EDNS(0) option, entitled "Extended DNS
+   Error", assigned a value of TBD1 from the "DNS EDNS0 Option Codes
+   (OPT)" registry [to be removed upon publication:
+   [http://www.iana.org/assignments/dns-parameters/dns-
+   parameters.xhtml#dns-parameters-11]
+
    Value  Name                 Status    Reference
    -----  ----------------     ------    ------------------
     TBD   Extended DNS Error    TBD       [ This document ]
@@ -515,15 +523,16 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
 5.2.  New Double-Index Registry Table for Extended Error Codes
 
    This document defines a new double-index IANA registry table, where
-   the first index value is the RCODE value and the second index value
-   is the INFO-CODE from the Extended DNS Error EDNS option defined in
-   this document.  The IANA is requested to create and maintain this
-   "Extended DNS Error codes" registry.  The codepoint space for each
-   INFO-CODE index is to be broken into 3 ranges:
+   the first index value is the combined RCODE value (see the
+   Section 3.2 section) and the second index value is the INFO-CODE from
+   the Extended DNS Error EDNS option defined in this document.  The
+   IANA is requested to create and maintain this "Extended DNS Error
+   codes" registry.  The codepoint space for each INFO-CODE index is to
+   be broken into 3 ranges:
 
-   o  0 - 3583: Specification required.
-   o  3584 - 3839: First Come First Served.
-   o  3840 - 4095: Experimental / Private use
+   o  0 - 65023: Specification required.
+   o  65023 - 65279: First come, first served.
+   o  65280 - 65536: Experimental / Private use
 
    A starting set of entries, based on the contents of this document, is
    as follows:
@@ -548,6 +557,13 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
    Purpose:  Forged answer
    Reference:  Section 4.1.4
 
+
+
+Kumari, et al.         Expires September 12, 2019              [Page 10]
+
+Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
+
+
    RESPONSE-CODE:  0 (NOERROR)
    INFO-CODE:  5
    Purpose:  DNSSEC Indeterminate
@@ -556,14 +572,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
    RESPONSE-CODE:  2 (SERVFAIL)
    INFO-CODE:  1
    Purpose:  DNSSEC Bogus
-
-
-
-Kumari, et al.         Expires September 12, 2019              [Page 10]
-
-Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
-
-
    Reference:  Section 4.2.1
 
    RESPONSE-CODE:  2 (SERVFAIL)
@@ -604,14 +612,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
    RESPONSE-CODE:  2 (SERVFAIL)
    INFO-CODE:  10
    Purpose:  Not Ready.
-   Reference:  Section 4.2.10
-
-   RESPONSE-CODE:  3 (NXDOMAIN)
-   INFO-CODE:  1
-   Purpose:  Blocked
-   Reference:  Section 4.5.1
-
-   RESPONSE-CODE:  3 (NXDOMAIN)
 
 
 
@@ -620,6 +620,14 @@ Kumari, et al.         Expires September 12, 2019              [Page 11]
 Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
 
 
+   Reference:  Section 4.2.10
+
+   RESPONSE-CODE:  3 (NXDOMAIN)
+   INFO-CODE:  1
+   Purpose:  Blocked
+   Reference:  Section 4.5.1
+
+   RESPONSE-CODE:  3 (NXDOMAIN)
    INFO-CODE:  2
    Purpose:  Censored
    Reference:  Section 4.6.1
@@ -660,6 +668,14 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
    MITM or malicious recursive server) could insert an extended error
    response into already untrusted data -- ideally clients and resolvers
    would not trust any unauthenticated information, but until we live in
+
+
+
+Kumari, et al.         Expires September 12, 2019              [Page 12]
+
+Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
+
+
    an era where all DNS answers are authenticated via DNSSEC or other
    mechanisms, there are some tradeoffs.  As an example, an attacker who
    is able to insert the DNSSEC Bogus Extended Error into a packet could
@@ -668,13 +684,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
    implementations can choose how much to trust this information and
    validating resolvers / stubs may choose to put a different weight on
    it.
-
-
-
-Kumari, et al.         Expires September 12, 2019              [Page 12]
-
-Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
-
 
 7.  Acknowledgements
 
@@ -702,10 +711,26 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
               DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
               editor.org/info/rfc2119>.
 
+   [RFC2671]  Vixie, P., "Extension Mechanisms for DNS (EDNS0)",
+              RFC 2671, DOI 10.17487/RFC2671, August 1999,
+              <https://www.rfc-editor.org/info/rfc2671>.
+
    [RFC6891]  Damas, J., Graff, M., and P. Vixie, "Extension Mechanisms
               for DNS (EDNS(0))", STD 75, RFC 6891,
               DOI 10.17487/RFC6891, April 2013, <https://www.rfc-
               editor.org/info/rfc6891>.
+
+
+
+
+
+
+
+
+Kumari, et al.         Expires September 12, 2019              [Page 13]
+
+Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
+
 
 8.2.  Informative References
 
@@ -723,14 +748,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
               Transport Layer Security (DTLS)", RFC 8094,
               DOI 10.17487/RFC8094, February 2017, <https://www.rfc-
               editor.org/info/rfc8094>.
-
-
-
-
-Kumari, et al.         Expires September 12, 2019              [Page 13]
-
-Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
-
 
 Appendix A.  Changes / Author Notes.
 
@@ -758,6 +775,19 @@ Appendix A.  Changes / Author Notes.
 
 Authors' Addresses
 
+
+
+
+
+
+
+
+
+Kumari, et al.         Expires September 12, 2019              [Page 14]
+
+Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
+
+
    Warren Kumari
    Google
    1600 Amphitheatre Parkway
@@ -782,12 +812,6 @@ Authors' Addresses
    Email: roy.arends@icann.org
 
 
-
-Kumari, et al.         Expires September 12, 2019              [Page 14]
-
-Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
-
-
    Wes Hardaker
    USC/ISI
    P.O. Box 382
@@ -804,30 +828,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error          March 2019
    US
 
    Email: tale@dd.org
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

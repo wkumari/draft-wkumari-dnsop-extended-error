@@ -724,6 +724,7 @@
   <back>
     <references title="Normative References">
       <?rfc include='reference.RFC.2119'?>
+      <?rfc include='reference.RFC.2671'?>
       <?rfc include='reference.RFC.6891'?>
     </references>
 

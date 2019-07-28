@@ -769,6 +769,349 @@ proposal
 
     + Result: Added two codes, one per RCODE, per discussion above.
 
+
+* March 2019 - July 2019
+
+*** Puneet Sood
+
+My comments on the latest version.
+
+General: Thanks for writing this - it provides useful information for
+our public DNS resolver implementation.
+
+> Section 1. Introduction and background
+> Para 4. "Authoritative servers MAY parse and use them ..."
+Comment: Why talk about auth servers parsing this since this field is
+only meant to be present in responses?
+
+> Section 3.1 The R (retry) flag
+> Para  2. "implementations may receive EDE codes that it does not understand.
+>   The R flag allows implementations to make a decision as to what to do
+>   if it receives a response with an unknown code - retry or drop the
+>   query."
+
+Comment: It is unclear what should be done if a response contains
+multiple EDE options and the R flag value is different across them.
+
+Comment: On a related note, what is the reasoning for allowing
+multiple instance of the EDE option in a response versus encoding all
+the (Response-CODE, INFO-CODE, EXTRA-TEXT) tuples in a single EDE
+option? A single EDE option would avoid having different values for
+the R flag and any new flag in the future. 16-bit length field means
+that total size of all EDE options should fit in a single option.
+
+> Section 4.1.3 and 4.1.3.1 NOERROR Extended DNS Error Code 3 - Stale Answer
+Comment: 4.1.3.1 should be 4.1.3?
+
+> Section 4.2 INFO-CODEs for use with RESPONSE-CODE: SERVFAIL(2)
+Comment: There are a number of INFO-CODEs here for DNSSEC failures.
+Over time it will be extra work for implementations to stay up to date
+with new INFO-CODEs added for DNSSEC failures. The R bit signals
+whether a resolution should be retried. Do we want also want a bit for
+signalling DNSSEC validation failures? Only needed if some DNSSEC
+related behavior needs to be different from the R bit value.
+
+> Section 6. Security Considerations
+> Para 2: "but until we live in
+>   an era where all DNS answers are authenticated via DNSSEC or other
+>   mechanisms, there are some tradeoffs."
+Comment: Not clear how DNSSEC would help here since the OPT RR is not
+protected by any DNSSEC mechanism.
+
+> Appendix A.
+Editorial: Missing diff summaries for new versions.
+
+-Puneet
+
+*** Stephane Bortzmeyer
+
+At the IETF 104 hackathon in Prague, Vladimír Čunát and myself
+implemented it in the Knot resolver
+<https://www.knot-resolver.cz/>. You can see the result in the git
+merge request
+<https://gitlab.labs.nic.cz/knot/knot-resolver/merge_requests/794>
+(branch extended_error
+<https://gitlab.labs.nic.cz/knot/knot-resolver/tree/extended_error>).
+
+> 4.1.5.  SERVFAIL Extended DNS Error Code 5 - DNSSEC Indeterminate
+>   The resolver attempted to perform DNSSEC validation, but validation
+>   ended in the Indeterminate state.  The R flag should not be set.
+
+Isn't there an error here? 4.1 is the section for NOERROR. What
+should be returned for DNSSEC Indeterminate? NOERROR or SERVFAIL? (In
+the first case, change the text, in the second, move this paragraph to
+4.2.)
+
+Now, implementation experience. We tested with Wireshark and dig (did
+not try to develop a client using the extended error code, just the server).
+
+As expected, producing extended error codes is quite simple and the
+draft is clear. The camel will be happy.
+
+The biggest issue is of course to find out what to put in the extended
+error code. On some resolvers (at least on Knot), the place where the
+error is noticed can be quite far from the place where the answer is
+built, with its EDNS options. In practice, we had to add data to the
+request object, for the extended error information to be carried to
+the module that emits the extended error code EDNS option. So, the
+real difficulty is not in the draft, but in knowing and understanding
+your resolver.
+
+Some details:
+
+    * no resolver will use all the response-code/info-codes because some
+    are never reached for this resolver, or are mixed with other
+    issues. Generic errors (such as "SERVFAIL Extended DNS Error Code 1 -
+    DNSSEC Bogus") are useful for when you cannot reliably find the problem.
+
+    * the draft is silent about the laying out of bits in info-code. Not
+    many IETF protocols have an integer field which is larger than a byte
+    but not byte-aligned.
+
+    * the draft has a passing mention that multiple extended error options
+    are allowed but I don't see how it could be used by the poor client
+    trying to figure out what happened. I suggest to disallow it.
+
+    * the draft has (rightly so) two info-codes for NXDOMAIN/Blocked and
+    NXDOMAIN/Censored but Knot cannot use it currently since the policy
+    module (written in Lua) has no way today to be configured to express
+    the difference. Not a problem in the draft but it will be probably a
+    common case that the resolver cannot make use of *all* codes.
+
+    Let's end with a few examples:
+
+    4.2.2.  SERVFAIL Extended DNS Error Code 2 - Signature Expired
+
+    % dig  @::1 -p 9053 A servfail.nl         
+    ...
+    ;; ->>HEADER<<- opcode: QUERY, status: SERVFAIL, id: 12100
+    ;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 1
+
+    ;; OPT PSEUDOSECTION:
+    ; EDNS: version: 0, flags: do; udp: 4096
+    ; OPT=65500: 00 00 20 02 44 4e 53 53 45 43 20 65 78 70 69 72 65 64 20
+    73 69 67 6e 61 74 75 72 65 73 (".. .DNSSEC expired signatures")
+    ...
+
+
+    4.2.7.  SERVFAIL Extended DNS Error Code 7 - No Reachable Authority
+
+    % dig  @::1 -p 9053 A brk.internautique.fr
+    ...
+    ;; ->>HEADER<<- opcode: QUERY, status: SERVFAIL, id: 38620
+    ;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 1
+
+    ;; OPT PSEUDOSECTION:
+    ; EDNS: version: 0, flags: do; udp: 4096
+    ; OPT=65500: 80 00 20 07 6e 6f 20 4e 53 20 77 69 74 68 20 61 6e 20 61
+    64 64 72 65 73 73 (".. .no NS with an address")
+    ...
+
+    (Not an ideal message but this is quite generic code in Knot.)
+
+
+    4.5.1.  NXDOMAIN Extended DNS Error Code 1 - Blocked
+
+    % dig  @::1 -p 9053 A googleanalytics.com 
+    ...
+    ;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 1189
+    ;; flags: qr aa rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 2
+
+    ;; OPT PSEUDOSECTION:
+    ; EDNS: version: 0, flags: do; udp: 4096
+    ; OPT=65500: 80 00 30 01 4e 6f 20 74 72 61 63 6b 69 6e 67 ("..0.No tracking")
+    ;; QUESTION SECTION:
+    ;googleanalytics.com.	IN A
+
+    ;; AUTHORITY SECTION:
+    googleanalytics.com.	10800 IN SOA googleanalytics.com. nobody.invalid. (
+    				1          ; serial
+    				3600       ; refresh (1 hour)
+    				1200       ; retry (20 minutes)
+    				604800     ; expire (1 week)
+    				10800      ; minimum (3 hours)
+    				)
+
+    ;; ADDITIONAL SECTION:
+    explanation.invalid.	10800 IN TXT "No tracking"
+
+    *** Shane Kerr
+
+    Several folks have worked on implementing the
+    draft-ietf-dnsop-extended-error at the IETF Hackthon yesterday and
+    today. This is my own feedback on the draft based on trying to get it
+    added to dnsdist.
+
+    ----------------
+
+    Stéphane Bortzmeyer pointed out that it wasn't clear how to encode the
+    INFO-CODE into the 12 bits allocated to it. I think that the idea is
+    that it should be represented in network (MSB) order, but probably it
+    should be specified.
+
+    ----------------
+
+    Minor suggestion: text for the descriptions should be consistent
+    regarding capitalization. So:
+
+    * Forged answer -> Forged Answer
+    * DNSKEY missing -> DNSKEY Missing
+    * RRSIGs missing -> RRSIGs Missing
+
+    ----------------
+
+    For some reason NXDOMAIN(3)-specific codes are listed after
+    NOTIMP(4)-specific and REFUSED(5)-specific codes in the draft. I think
+    it would make more sense to just include these in order.
+
+    ----------------
+
+    Numbering is a bit weird in section 4.1.3:
+
+    4.1.3.  INFO-CODEs for use with RESPONSE-CODE: NOERROR(3)
+    4.1.3.1.  NOERROR Extended DNS Error Code 3 - Stale Answer
+
+    Probably the idea is just to have:
+
+    4.1.3. NOERROR Extended DNS Error Code 3 - Stale Answer
+
+    ----------------
+
+       RESPONSE-CODE:  3 (NOERROR)
+       INFO-CODE:  3
+       Purpose:  Answering with stale/cached data
+       Reference:  Section 4.1.3.1
+    -> should be RESPONSE-CODE 0
+
+    ----------------
+
+       RESPONSE-CODE:  2 (SERVFAIL)
+       INFO-CODE:  7
+       Purpose:  No NSEC records could be obtained
+       Reference:  Section 4.2.8
+    -> should be "No Reachable Authority", 4.2.7
+
+    ----------------
+
+    This code is missing in the table:
+
+       RESPONSE-CODE:  2 (SERVFAIL)
+       INFO-CODE:  8
+       Purpose:  No NSEC records could be obtained
+       Reference:  Section 4.2.8
+
+    ----------------
+
+       RESPONSE-CODE:  4 (NOTIMP)
+       INFO-CODE:  1
+       Purpose:
+       Reference:  Section 4.4.2
+    -> should be "Deprecated"
+
+    ----------------
+
+    Finally, I note that the suggestion of requiring that the sender have
+    some signal indicating that it is interested in extended errors was
+    not adopted. I don't insist on it, but I think it would be useful to
+    avoid bloating packets unnecessarily. It's a bit like the useless
+    additional section data that lots of servers insist on appending to
+    answers... why send something that will not be seen?
+
+    OTOH I realize that having this information available may be useful
+    for humans debugging things, even if the sender does not ask for it.
+
+    On the gripping hand, adding unasked-for information may have privacy
+    implications. Possibly adding a "Privacy Considerations" section would
+    be useful?
+
+*** Ralph Dolmans
+
+    I made an Extended DNS Errors implementation in Unbound during the
+    IETF104 hackathon. Implementing the code that handles the errors was
+    rather straightforward, the difficult part is (as Stéphane already
+    pointed out) finding the right locations in the code for the individual
+    errors. Some remarks regarding the draft:
+
+    Since it is possible to have multiple extended error options, is it
+    expected to return all errors that match the result, or only the most
+    specific one? For example: if a DNSSEC signatures is expired should both
+    the "DNSSEC bogus" (SERVFAIL/Extended error 1) and the "Signature
+    expired" (SERVFAIL/Extended error 2) be returned?
+
+    I am not sure whether linking the info code to the rcode is a good idea.
+    Some info codes can happen for different rcodes. It is in Unbound for
+    example possible to block a domain by sending a REFUSED rcode, while the
+    document list blocking only for the NXDOMAIN rcode. If the
+    rcode/info-code coupling will remain then I would like to have the same
+    info code for a specific error under different rcodes, for example
+    always use info-code 1 for blocking.
+
+    Since EDNS is hop-by-hop, only error information from the resolver you
+    are talking to is returned. There are cases when the interesting
+    information is not in the first resolver. For example: if a resolver
+    forwards queries to another one and the last one does DNSSEC validation
+    then the resolver you are talking to does not generate the interesting
+    information. Is it maybe an idea to add some text stating that extended
+    error-aware resolvers should forward the received EDNS option?
+
+    I think having the extra information provided by this document is useful
+    for debugging, and only for that. This extra information should not be
+    used to make any DNS resolving decision, which makes the retry flag a
+    bad idea. At the moment I don't have to trust all my secondaries as long
+    as my zone is DNSSEC signed. The worst thing they can do is not return
+    my data or tamper with it, in which case the validating resolver will
+    ignore it and try another nameserver. Giving a nameserver the power to
+    instruct a resolver to not try at another nameserver gives them the
+    power to make my zone unavailable. This completely changes the current
+    trust model. Please remove the retry flag from the document.
+
+*** Evan Hunt 
+
+    Stephane Bortzmeyer worked on implementing EDE in Knot the hackathon in Prague,
+    and mentioned a few issues that came up:
+
+     1. INFO-CODE bit layout was a bit ambiguous as it's a 12-bit field and "byte
+        order" isn't meaningful. The packet layout diagram helps, but we could help
+        by specifing in the text that the combined response and info fields are two
+        octets in network byte order, and RESPONSE-CODE is the most significant
+        four bits and INFO-CODE is the least significant 12.
+       
+     2. He requested the addition of a generic error code for SERVFAIL responses
+        that don't fall into any defined category. For example, it's possible to
+        configure Knot to send SERVFAIL as a result of a policy decision, which
+        doesn't fall into any of the existing buckets, and it would seem silly to
+        add a specific bucket for that.
+       
+     3. Finally, he recommended removal of the suggestion in section 3.2 that
+        multiple EDE records could be included with a response, and instead forbid
+        it. It makes parsing harder, and it's unclear what to do if different codes
+        contradict one another.
+       
+     4. Incidental point that I noticed while checking the existing text: "The
+        authors wish to thank...Evan
+        Hunt" looks weird if I'm one of authors...
+       
+    -------------------------------------------------------------------------------
+
+    You can view, comment on, or merge this pull request online at:
+
+      https://github.com/wkumari/draft-wkumari-dnsop-extended-error/pull/5
+
+    Commit Summary
+
+      * address some feedback from the IETF hackathon in Prague
+      * remove me from the thank you's, since I'm a coauthor
+      * add a "Not Specified" SERVFAIL code
+
+    File Changes
+
+      * M draft-ietf-dnsop-extended-error.xml (41)
+
+    Patch Links:
+
+      * https://github.com/wkumari/draft-wkumari-dnsop-extended-error/pull/5.patch
+      * https://github.com/wkumari/draft-wkumari-dnsop-extended-error/pull/5.diff
+
 * Other stuff
 
 ODO SHOULD all r flag suggestions

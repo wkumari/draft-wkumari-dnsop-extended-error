@@ -181,9 +181,7 @@
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 2: |                           OPTION-LENGTH                       |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-4: | RCODE                                         | R | Res       |
-   +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-6: | INFO-CODE                                                     |
+4: | R | INFO_CODE                                                 |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 6: / EXTRA-TEXT ...                                                /
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
@@ -207,17 +205,7 @@
           <t>The RETRY flag, 1 bit; the RETRY bit (R) indicates a flag
           defined for use in this specification.</t>
 
-          <t>The RESERVED bits, 4 bits: these bits are reserved for
-          future use, potentially as additional flags.  The RESERVED
-          bits MUST be set to 0 by the sender and MUST be ignored by
-          the receiver.</t>
-
-          <t>RESPONSE-CODE, 12 bits: the concatenation of the upper
-          8-bits of the RCODE (stored in the TTL field of the EDNS0
-          resource record <xref target="RFC2671" />) and the 4 bits of
-          the RCODE field of the DNS message.</t>
-
-          <t>INFO-CODE, 16-bits, which is the principal contribution of
+          <t>INFO-CODE, 15-bits, which is the principal contribution of
           this document.</t>
 
           <t>EXTRA-TEXT, a variable length, UTF-8 encoded, text field

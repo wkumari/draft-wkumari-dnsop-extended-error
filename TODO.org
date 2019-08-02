@@ -1016,7 +1016,10 @@ our public DNS resolver implementation.
 
       ----------------
 
-***** TODO       Minor suggestion: text for the descriptions should be consistent
+***** DONE Minor suggestion: text for the descriptions should be consistent
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:38]
+      :END:
       regarding capitalization. So:
 
       * Forged answer -> Forged Answer
@@ -1025,13 +1028,21 @@ our public DNS resolver implementation.
 
       ----------------
 
-***** TODO       For some reason NXDOMAIN(3)-specific codes are listed after
+      + Response: Good point, thanks!  done.
+
+***** NOCHANGE For some reason NXDOMAIN(3)-specific codes are listed after
       NOTIMP(4)-specific and REFUSED(5)-specific codes in the draft. I think
       it would make more sense to just include these in order.
 
+      + Response: Good point...  though because we removed
+        rcode-binding this sort of is resolved
+
       ----------------
 
-***** TODO       Numbering is a bit weird in section 4.1.3:
+***** DONE Numbering is a bit weird in section 4.1.3:
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:41]
+      :END:
 
       4.1.3.  INFO-CODEs for use with RESPONSE-CODE: NOERROR(3)
       4.1.3.1.  NOERROR Extended DNS Error Code 3 - Stale Answer
@@ -1039,6 +1050,8 @@ our public DNS resolver implementation.
       Probably the idea is just to have:
 
       4.1.3. NOERROR Extended DNS Error Code 3 - Stale Answer
+
+      + Response: Yep.  Fixed in the latest version (and simplified)
 
       ----------------
 
@@ -1104,11 +1117,21 @@ our public DNS resolver implementation.
     pointed out) finding the right locations in the code for the individual
     errors. Some remarks regarding the draft:
 
-***** TODO     Since it is possible to have multiple extended error options, is it
+***** NOCHANGE Since it is possible to have multiple extended error options, is it
     expected to return all errors that match the result, or only the most
     specific one? For example: if a DNSSEC signatures is expired should both
     the "DNSSEC bogus" (SERVFAIL/Extended error 1) and the "Signature
     expired" (SERVFAIL/Extended error 2) be returned?
+
+      + Response: I'd return what seems to be the most appropriate
+        set, given the situation.  I think both of the above seem to
+        apply so the question is, would it be confusing to ever return
+        "too much".  I'm not sure we want to over-specify and
+        implementations should be free to pick what
+        debugging/info-codes they think is best to return.
+
+        IMHO, personally, I think sig expired is sufficient because it
+        implies the BOGUS code already.
 
 ***** DONE I am not sure whether linking the info code to the rcode is a good idea.
       :LOGBOOK:
@@ -1123,13 +1146,22 @@ our public DNS resolver implementation.
 
       + Response: Per discussion at IETF105, the linking is now dropped.
 
-***** TODO     Since EDNS is hop-by-hop, only error information from the resolver you
+***** NOCHANGE Since EDNS is hop-by-hop, only error information from the resolver you
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:46]
+      :END:
     are talking to is returned. There are cases when the interesting
     information is not in the first resolver. For example: if a resolver
     forwards queries to another one and the last one does DNSSEC validation
     then the resolver you are talking to does not generate the interesting
     information. Is it maybe an idea to add some text stating that extended
     error-aware resolvers should forward the received EDNS option?
+
+    + We sort of discussed this at one point in various venues (both
+      physical and electronic).  I think the resolution was "lets
+      leave that for an update once we get more experience".  I think
+      picking when to forward and when it's meant "just for you"
+      becomes complex and harder to specify.
 
 ***** TODO     I think having the extra information provided by this document is useful
     for debugging, and only for that. This extra information should not be
@@ -1142,16 +1174,25 @@ our public DNS resolver implementation.
     power to make my zone unavailable. This completely changes the current
     trust model. Please remove the retry flag from the document.
 
+    
+
 *** Evan Hunt 
 
     Stephane Bortzmeyer worked on implementing EDE in Knot the hackathon in Prague,
     and mentioned a few issues that came up:
 
-***** TODO      1. INFO-CODE bit layout was a bit ambiguous as it's a 12-bit field and "byte
+***** DONE 1. INFO-CODE bit layout was a bit ambiguous as it's a 12-bit field and "byte
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:51]
+      :END:
         order" isn't meaningful. The packet layout diagram helps, but we could help
         by specifing in the text that the combined response and info fields are two
         octets in network byte order, and RESPONSE-CODE is the most significant
         four bits and INFO-CODE is the least significant 12.
+
+      + Response: A few of us met in IETF105 and agree to drop the
+        RESPONSE-CODE.  And yes, network-byte order is critical and
+        has been specified in the most recent document.  Thanks!
        
 ***** TODO      2. He requested the addition of a generic error code for SERVFAIL responses
         that don't fall into any defined category. For example, it's possible to
@@ -1159,15 +1200,28 @@ our public DNS resolver implementation.
         doesn't fall into any of the existing buckets, and it would seem silly to
         add a specific bucket for that.
        
+      + Response: Since we've removed the RCODE copy/binding this
+        suggestion goes away right?
+
 ***** TODO      3. Finally, he recommended removal of the suggestion in section 3.2 that
         multiple EDE records could be included with a response, and instead forbid
         it. It makes parsing harder, and it's unclear what to do if different codes
         contradict one another.
-       
-***** TODO      4. Incidental point that I noticed while checking the existing text: "The
+
+***** DONE 4. Incidental point that I noticed while checking the existing text: "The
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:54]
+      :END:
         authors wish to thank...Evan
         Hunt" looks weird if I'm one of authors...
        
+
+      + Response: Ha.  Very true, thanks.  You've been removed!
+
+        (he laughs manically at the thought of Evan wondering
+        "wait.... from the acknowledgements or from the author
+        list???")
+
     -------------------------------------------------------------------------------
 
     You can view, comment on, or merge this pull request online at:

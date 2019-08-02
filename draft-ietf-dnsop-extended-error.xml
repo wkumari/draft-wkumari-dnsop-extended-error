@@ -256,9 +256,10 @@
       </section>
 
       <section title="The INFO-CODE field">
-          <t>This 15-bit value provides the additional context for the
-          RESPONSE-CODE of the DNS message. The INFO-CODE serves as an
-          index to the "Extended DNS Errors" registry <xref target="IANA" />.</t>
+          <t>This 15-bit value, encoded in network (MSB) byte order,
+          provides the additional context for the RESPONSE-CODE of the
+          DNS message. The INFO-CODE serves as an index to the
+          "Extended DNS Errors" registry <xref target="IANA" />.</t>
       </section>
 
       <section title="The EXTRA-TEXT field">

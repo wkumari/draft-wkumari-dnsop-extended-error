@@ -168,7 +168,7 @@
     </section>
 
     <section title="Extended Error EDNS0 option format">
-      <t>This draft uses an EDNS0 ([RFC2671]) option to include
+      <t>This draft uses an EDNS0 (<xref target="RFC2671" />) option to include
       Extended DNS Error (EDE) information in DNS messages. The option
       is structured as follows:</t>
 
@@ -181,7 +181,7 @@
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 2: |                           OPTION-LENGTH                       |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-4: | R | INFO_CODE                                                 |
+4: | R | INFO-CODE                                                 |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 6: / EXTRA-TEXT ...                                                /
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
@@ -193,11 +193,12 @@
       <t>Field definition details:</t>
 
       <t><list style="symbols">
-          <t>OPTION-CODE, 2 octets (defined in [RFC6891]), for EDE is
-          TBD. [RFC Editor: change TBD to the proper code once
-          assigned by IANA.]</t>
+          <t>OPTION-CODE, 2 octets (defined in <xref target="RFC6891"
+          />]), for EDE is TBD.
+          [RFC Editor: change TBD to the proper code once assigned by IANA.]</t>
 
-          <t>OPTION-LENGTH, 2 octets ((defined in [RFC6891]) contains
+          <t>OPTION-LENGTH, 2 octets ((defined in <xref
+          target="RFC6891" />]) contains
           the length of the payload (everything after OPTION-LENGTH)
           in octets and should be 4 plus the length of the EXTRA-TEXT
           section (which may be a zero-length string).</t>
@@ -219,15 +220,16 @@
     <section title="Use of the Extended DNS Error option">
       <t>The Extended DNS Error (EDE) is an EDNS option. It can be included
         in any response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query that
-        includes OPT Pseudo-RR <xref target="RFC6891" />. This document includes a set of initial
-      codepoints (and requests to the IANA to add them to the registry), but
-      is extensible via the IANA registry to allow additional error and
-      information codes to be defined in the future.</t>
+        includes OPT Pseudo-RR <xref target="RFC6891" />.
+        This document includes a set of initial
+        codepoints (and requests to the IANA to add them to the registry), but
+        is extensible via the IANA registry to allow additional error and
+        information codes to be defined in the future.</t>
 
       <t>The fields of the Extended DNS Error option are defined
       further in the following sub-sections.</t>
 
-      <section title="The R (Retry) flag">
+      <section title="The R (Retry) flag" anchor="rbit">
           <t>The R (Retry) flag provides a hint as to what the
           receiver may want to do with this annotated
           error. Specifically, the R (or Retry) flag provides a hint
@@ -237,45 +239,26 @@
           time; if the R bit is clear (0), the sender believes that
           the resolver should not ask another server.</t>
 
-          <t>The mechanism is specifically designed to be extensible,
-          and so implementations may receive EDE codes that it does
-          not understand. The R flag allows implementations to make a
-          decision as to what to do if it receives a response with an
-          unknown code - retry or drop the query. Note that this flag
-          is only a suggestion. Unless a protective transport
-          mechanism (like TSIG <xref target="RFC2845"/> or (D)TLS xref
-          target="RFC7858"/>, <xref
-          target="RFC8094"/>) is used, the bit's value could have have
-          been altered by a person-in-the-middle. Receivers can choose
-          to ignore this hint.  See the security considerations for
-          additional considerations.</t>
-      </section>
-
-      <section title="The RESPONSE-CODE field" anchor="responsecode">
-	  <t>This 12-bit value SHOULD be a copy of the combined RCODE
-	  from the extended RCODE field defined in the EDNS0 optional
-	  resource record (stored in the TTL field of the EDNS0
-	  resource record <xref target="RFC2671" />) and the 4 bits of
-	  the RCODE field of the DNS message.  RESPONSE-CODEs MAY use
-	  a different RCODE to provide additional or better
-	  information.  For example, multiple EDNS0/EDE records may be
-	  included in the response and the supplemental EDNS0/EDE
-	  records may wish to include other RESPONSE-CODE values based
-	  on communication results with other DNS servers.</t>
+          <t>The EDE mechanism is specifically designed to be
+          extensible, and so implementations may receive newly
+          assigned EDE codes that it does not understand. The R flag
+          allows implementations to make a decision as to what to do
+          if it receives a response with an unknown code - retry or
+          drop the query. Note that this flag is only a suggestion and
+          SHOULD NOT be used if the information code is understood by
+          the implementation.  Unless a protective transport mechanism
+          (like TSIG <xref target="RFC2845"/> or (D)TLS xref
+          target="RFC7858"/>, <xref target="RFC8094"/>) is used, the
+          bit's value could have have been altered by a
+          person-in-the-middle. Receivers MAY choose to ignore this
+          hint.  See the security considerations for additional
+          considerations.</t>
       </section>
 
       <section title="The INFO-CODE field">
-          <t>This 16-bit value provides the additional context for the
-          RESPONSE-CODE value. This combination of the RESPONSE-CODE
-          and the INFO-CODE serve as a joint-index into the IANA
-          "Extended DNS Errors" registry.</t>
-
-          <t>Note to implementers: the combination of the
-          RESPONSE-CODE and INFO-CODE fits within a 24-bit field,
-          allowing implementers the choice of treating the combination
-          as either two separate values, as defined in this document,
-          or as a single 24-bit integer as long as the results are
-          deterministic.</t>
+          <t>This 15-bit value provides the additional context for the
+          RESPONSE-CODE of the DNS message. The INFO-CODE serves as an
+          index to the "Extended DNS Errors" registry <xref target="IANA" />.</t>
       </section>
 
       <section title="The EXTRA-TEXT field">
@@ -289,16 +272,17 @@
     <section title="Defined Extended DNS Errors">
       <t>This document defines some initial EDE codes. The mechanism
       is intended to be extensible, and additional code-points can be
-      registered in the "Extended DNS Errors" registry. This document
-      provides suggestions for the R flag, but the originating server
-      may ignore these recommendations if it knows better.</t>
+      registered in the "Extended DNS Errors" registry <xref
+      target="IANA" />. This document provides suggestions for the R
+      flag, but the originating server may ignore these
+      recommendations, especially when it understands the received
+      INFO-CODE <xref target="rbit" />.</t>
 
-      <t>The RESPONSE-CODE and the INFO-CODE from the EDE EDNS option is used
-      to serve as a double index into the "Extended DNS Error codes" IANA
+      <t>The INFO-CODE from the EDE EDNS option is used
+      to serve as an index into the "Extended DNS Error codes" IANA
       registry, the initial values for which are defined in the following
       sub-sections.</t>
 
-      <section title="INFO-CODEs for use with RESPONSE-CODE: NOERROR(0)">
         <section anchor="errbaddnskeyalg"
                  title="NOERROR Extended DNS Error Code 1 - Unsupported                           DNSKEY Algorithm">
           <t>The resolver attempted to perform DNSSEC validation, but a DNSKEY
@@ -313,7 +297,6 @@
           set.</t>
         </section>
 
-      <section title="INFO-CODEs for use with RESPONSE-CODE: NOERROR(3)">
         <section anchor="stalenoerror"
 	         title="NOERROR Extended DNS Error Code 3 - Stale Answer">
           <t>The resolver was unable to resolve answer within its time
@@ -324,7 +307,6 @@
           retrying is likely to create additional load without
           yielding a more fresh answer.</t>
         </section>
-      </section>
 
         <section anchor="forgedanswer"
                  title="NOERROR Extended DNS Error Code 4 - Forged answer">
@@ -340,104 +322,87 @@
           be set.</t>
         </section>
 
-      </section>
-
-
-
-      <section title="INFO-CODEs for use with RESPONSE-CODE: SERVFAIL(2)">
         <section anchor="errbogus"
-                 title="SERVFAIL Extended DNS Error Code 1 - DNSSEC Bogus">
+                 title="SERVFAIL Extended DNS Error Code 6 - DNSSEC Bogus">
           <t>The resolver attempted to perform DNSSEC validation, but
           validation ended in the Bogus state. The R flag should not be
           set.</t>
         </section>
 
         <section anchor="errexpired"
-                 title="SERVFAIL Extended DNS Error Code 2 - Signature Expired">
+                 title="SERVFAIL Extended DNS Error Code 7 - Signature Expired">
           <t>The resolver attempted to perform DNSSEC validation, a
           signature in the validation chain was expired. The R flag
           should not be set.</t>
         </section>
 
         <section anchor="errprior"
-                 title="SERVFAIL Extended DNS Error Code 3 - Signature Not Yet Valid">
+                 title="SERVFAIL Extended DNS Error Code 8 - Signature Not Yet Valid">
           <t>The resolver attempted to perform DNSSEC validation, but the
           signatures received were not yet valid. The R flag should not be
           set.</t>
         </section>
 
         <section anchor="errnodnskey"
-                 title="SERVFAIL Extended DNS Error Code 4 - DNSKEY missing">
+                 title="SERVFAIL Extended DNS Error Code 9 - DNSKEY missing">
           <t>A DS record existed at a parent, but no supported
           matching DNSKEY record could be found for the child. The R
           flag should not be set.</t>
         </section>
 
         <section anchor="errnorrsig"
-                 title="SERVFAIL Extended DNS Error Code 5 - RRSIGs missing">
+                 title="SERVFAIL Extended DNS Error Code 10 - RRSIGs missing">
           <t>The resolver attempted to perform DNSSEC validation, but no
           RRSIGs could be found for at least one RRset where RRSIGs were
           expected.</t>
         </section>
 
         <section anchor="errnozonekey"
-                 title="SERVFAIL Extended DNS Error Code 6 - No Zone Key Bit Set">
+                 title="SERVFAIL Extended DNS Error Code 11 - No Zone Key Bit Set">
           <t>The resolver attempted to perform DNSSEC validation, but no Zone
           Key Bit was set in a DNSKEY.</t>
         </section>
 
-        <section anchor="noauth"
-                 title="SERVFAIL Extended DNS Error Code 7 - No
-                        Reachable Authority">
-          <t>The resolver could not reach any of the authoritative name servers
-          (or they refused to reply).  The R flag should be set.</t>
-        </section>
-
         <section anchor="nonsec"
-                 title="SERVFAIL Extended DNS Error Code 8 - NSEC Missing">
+                 title="SERVFAIL Extended DNS Error Code 12 - NSEC Missing">
           <t>The resolver attempted to perform DNSSEC validation, but the
           requested data was missing and a covering NSEC or NSEC3 was not provided.
           The R flag should be set.</t>
         </section>
 
         <section anchor="cachederror"
-                 title="SERVFAIL Extended DNS Error Code 9 - Cached Error">
+                 title="SERVFAIL Extended DNS Error Code 13 - Cached Error">
           <t>The resolver has cached SERVFAIL for this query without
           additional information.  Th R flag should be set.</t>
         </section>
 
         <section anchor="notready"
-                 title="SERVFAIL Extended DNS Error Code 10 - Not Ready">
+                 title="SERVFAIL Extended DNS Error Code 14 - Not Ready">
           <t>The server is unable to answer the query as it is not
           fully up and functional yet.</t>
         </section>
-      </section>
 
-      <section title="INFO-CODEs for use with RESPONSE-CODE: NOTIMP(4)">
-	<section anchor="deprecated"
-	         title="NOTIMP Extended DNS Error Code 1 - Deprecated">
-          <t>The requested operation or query is not supported as its
-          use has been deprecated. Implementations should not set the
-          R flag. (Retrying request elsewhere is unlikely to yield any
-          other results.)</t>
+
+        <section anchor="errblocked"
+	         title="NXDOMAIN Extended DNS Error Code 15 - Blocked">
+          <t>The resolver attempted to perfom a DNS query but the
+          domain is blacklisted due to a security policy implemented
+          on the server being directly talked to. The R flag should be
+          set.</t>
         </section>
 
-      </section>
-
-      <section title="INFO-CODEs for use with RESPONSE-CODE: REFUSED(5)">
-	<section anchor="errlame"
-	         title="REFUSED Extended DNS Error Code 1 - Lame">
-          <t>An authoritative server that receives a query (with the
-          RD bit clear) for a domain for which it is not authoritative
-          SHOULD include this EDE code in the SERVFAIL response.  A
-          resolver that receives a query (with the RD bit clear)
-          SHOULD include this EDE code in the REFUSED
-          response. Implementations should set the R flag in this case
-          (another nameserver or resolver might not be lame).</t>
+        <section anchor="errcensored"
+	         title="NXDOMAIN Extended DNS Error Code 16 - Censored">
+          <t>The resolver attempted to perfom a DNS query but the
+          domain was blacklisted by a security policy imposed upon the
+          server being talked to. Note that how the imposed policy is
+          applied is irrelevant (in-band DNS somehow, court order,
+          etc). The R flag should be set.</t>
         </section>
+
 
         <section anchor="errprohibted"
-	         title="REFUSED Extended DNS Error Code 2 - Prohibited">
+	         title="REFUSED Extended DNS Error Code 17 - Prohibited">
           <t>An authoritative or recursive resolver that receives a query from
           an "unauthorized" client can annotate its REFUSED message with this
           code. Examples of "unauthorized" clients are recursive queries from
@@ -447,32 +412,10 @@
           <t>Implementations SHOULD allow operators to define what to set the
           R flag to in this case.</t>
         </section>
-      </section>
 
-      <section title="INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)">
-        <section anchor="errblocked"
-	         title="NXDOMAIN Extended DNS Error Code 1 - Blocked">
-          <t>The resolver attempted to perfom a DNS query but the
-          domain is blacklisted due to a security policy implemented
-          on the server being directly talked to. The R flag should be
-          set.</t>
-        </section>
-      </section>
 
-      <section title="INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)">
-        <section anchor="errcensored"
-	         title="NXDOMAIN Extended DNS Error Code 2 - Censored">
-          <t>The resolver attempted to perfom a DNS query but the
-          domain was blacklisted by a security policy imposed upon the
-          server being talked to. Note that how the imposed policy is
-          applied is irrelevant (in-band DNS somehow, court order,
-          etc). The R flag should be set.</t>
-        </section>
-      </section>
-
-      <section title="INFO-CODEs for use with RESPONSE-CODE: NXDOMAIN(3)">
         <section anchor="stalenx"
-	         title="NXDOMAIN Extended DNS Error Code 3 - Stale Answer">
+	         title="NXDOMAIN Extended DNS Error Code 18 - Stale Answer">
           <t>The resolver was unable to resolve answer within its time
           limits and decided to answer with a previously cached
           NXDOMAIN answer instead of answering with an error.  This is
@@ -480,12 +423,40 @@
           as result of a DoS attack. The R flag should not be set,
           since retrying is likely to create additional load without
           yielding a more fresh answer.</t>
+
         </section>
+
+	<section anchor="errlame"
+	         title="REFUSED Extended DNS Error Code 19 - Lame">
+          <t>An authoritative server that receives a query (with the
+          RD bit clear) for a domain for which it is not authoritative
+          SHOULD include this EDE code in the SERVFAIL response.  A
+          resolver that receives a query (with the RD bit clear)
+          SHOULD include this EDE code in the REFUSED
+          response. Implementations should set the R flag in this case
+          (another nameserver or resolver might not be lame).</t>
+        </section>
+
+
+
+	<section anchor="deprecated"
+	         title="NOTIMP Extended DNS Error Code 20 - Deprecated">
+          <t>The requested operation or query is not supported as its
+          use has been deprecated. Implementations should not set the
+          R flag. (Retrying request elsewhere is unlikely to yield any
+          other results.)</t>
+        </section>
+
+        <section anchor="noauth"
+                 title="SERVFAIL Extended DNS Error Code 21 - No Reachable Authority">
+          <t>The resolver could not reach any of the authoritative name servers
+          (or they refused to reply).  The R flag should be set.</t>
+        </section>
+
       </section>
-    </section>
 
     <section title="IANA Considerations">
-      <section title="A New Extended Error Code EDNS Option">
+      <section title="A New Extended Error Code EDNS Option" anchor="IANA">
 
         <t>This document defines a new EDNS(0) option, entitled "Extended DNS
         Error", assigned a value of TBD1 from the "DNS EDNS0 Option Codes
@@ -501,164 +472,147 @@
 
       <section title="New Double-Index Registry Table for Extended Error Codes">
         <t>This document defines a new double-index IANA registry
-        table, where the first index value is the combined RCODE value
-        (see the <xref target="responsecode" /> section) and the
-        second index value is the INFO-CODE from the Extended DNS
-        Error EDNS option defined in this document. The IANA is
-        requested to create and maintain this "Extended DNS Error
-        codes" registry. The codepoint space for each INFO-CODE index
-        is to be broken into 3 ranges:</t>
+        table, where the index value is the INFO-CODE from the
+        Extended DNS Error EDNS option defined in this document. The
+        IANA is requested to create and maintain this "Extended DNS
+        Error codes" registry. The code-point space for each INFO-CODE
+        index is to be broken into 3 ranges:</t>
 
         <t><list style="symbols">
-            <t>0 - 65023: Specification required.</t>
+            <t>0 - : Specification required.</t>
 
             <t>65023 - 65279: First come, first served.</t>
 
-            <t>65280 - 65536: Experimental / Private use</t>
+            <t>65280 - 32767: Experimental / Private use</t>
         </list></t>
 
         <t>A starting set of entries, based on the contents of this
         document, is as follows:</t>
 
-
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 0 (NOERROR)</t>
     <t hangText="INFO-CODE:">1</t>
-    <t hangText="Purpose:">Unsupported DNSKEY</t>
+    <t hangText="Purpose:">Unsupported DNSKEY Algorithm</t>
     <t hangText="Reference:"><xref target="errbaddnskeyalg" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 0 (NOERROR)</t>
     <t hangText="INFO-CODE:">2</t>
     <t hangText="Purpose:">Unsupported DS Algorithm</t>
     <t hangText="Reference:"><xref target="errbaddsalg" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 3 (NOERROR)</t>
     <t hangText="INFO-CODE:">3</t>
     <t hangText="Purpose:">Answering with stale/cached data</t>
     <t hangText="Reference:"><xref target="stalenoerror" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 0 (NOERROR)</t>
     <t hangText="INFO-CODE:">4</t>
     <t hangText="Purpose:">Forged answer</t>
     <t hangText="Reference:"><xref target="forgedanswer" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 0 (NOERROR)</t>
     <t hangText="INFO-CODE:">5</t>
     <t hangText="Purpose:">DNSSEC Indeterminate</t>
     <t hangText="Reference:"><xref target="errindeterminate" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
-    <t hangText="INFO-CODE:">1</t>
+    <t hangText="INFO-CODE:">6</t>
     <t hangText="Purpose:">DNSSEC Bogus</t>
     <t hangText="Reference:"><xref target="errbogus" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
-    <t hangText="INFO-CODE:">2</t>
+    <t hangText="INFO-CODE:">7</t>
     <t hangText="Purpose:">Signature Expired</t>
     <t hangText="Reference:"><xref target="errexpired" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
-    <t hangText="INFO-CODE:">3</t>
+    <t hangText="INFO-CODE:">8</t>
     <t hangText="Purpose:">Signature Not Yet Valid</t>
     <t hangText="Reference:"><xref target="errprior" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
-    <t hangText="INFO-CODE:">4</t>
+    <t hangText="INFO-CODE:">9</t>
     <t hangText="Purpose:">DNSKEY missing</t>
     <t hangText="Reference:"> <xref target="errnodnskey" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
-    <t hangText="INFO-CODE:">5</t>
+    <t hangText="INFO-CODE:">10</t>
     <t hangText="Purpose:">RRSIGs missing</t>
     <t hangText="Reference:"><xref target="errnorrsig" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
-    <t hangText="INFO-CODE:">6</t>
+    <t hangText="INFO-CODE:">11</t>
     <t hangText="Purpose:">No Zone Key Bit Set</t>
     <t hangText="Reference:"><xref target="errnozonekey" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
-    <t hangText="INFO-CODE:">7</t>
+    <t hangText="INFO-CODE:">12</t>
     <t hangText="Purpose:">No NSEC records could be obtained</t>
     <t hangText="Reference:"><xref target="nonsec" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
-    <t hangText="INFO-CODE:">9</t>
+    <t hangText="INFO-CODE:">13</t>
     <t hangText="Purpose:">The SERVFAIL error comes from the cache</t>
     <t hangText="Reference:"><xref target="cachederror" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 2 (SERVFAIL)</t>
-    <t hangText="INFO-CODE:">10</t>
+    <t hangText="INFO-CODE:">14</t>
     <t hangText="Purpose:">Not Ready.</t>
     <t hangText="Reference:"><xref target="notready" /></t>
     </list></t>
     
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 3 (NXDOMAIN)</t>
-    <t hangText="INFO-CODE:">1</t>
+    <t hangText="INFO-CODE:">15</t>
     <t hangText="Purpose:">Blocked</t>
     <t hangText="Reference:"><xref target="errblocked" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 3 (NXDOMAIN)</t>
-    <t hangText="INFO-CODE:">2</t>
+    <t hangText="INFO-CODE:">16</t>
     <t hangText="Purpose:">Censored</t>
     <t hangText="Reference:"><xref target="errcensored" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 3 (NXDOMAIN)</t>
-    <t hangText="INFO-CODE:">3</t>
+    <t hangText="INFO-CODE:">17</t>
+    <t hangText="Purpose:">Prohibited</t>
+    <t hangText="Reference:"><xref target="errprohibted" /></t>
+    </list></t>
+
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="INFO-CODE:">18</t>
     <t hangText="Purpose:">Answering with stale/cached NXDOMAIN data</t>
     <t hangText="Reference:"><xref target="stalenx" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 4 (NOTIMP)</t>
-    <t hangText="INFO-CODE:">1</t>
-    <t hangText="Purpose:"></t>
-    <t hangText="Reference:"><xref target="errprohibted" /></t>
-    </list></t>
-    
-    <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 5 (REFUSED)</t>
-    <t hangText="INFO-CODE:">1</t>
+    <t hangText="INFO-CODE:">19</t>
     <t hangText="Purpose:">Lame</t>
     <t hangText="Reference:"><xref target="errlame" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="RESPONSE-CODE:"> 5 (REFUSED)</t>
-    <t hangText="INFO-CODE:">2</t>
-    <t hangText="Purpose:">Prohibited</t>
-    <t hangText="Reference:"><xref target="errprohibted" /></t>
+    <t hangText="INFO-CODE:">20</t>
+    <t hangText="Purpose:">Deprecated</t>
+    <t hangText="Reference:"><xref target="deprecated" /></t>
+    </list></t>
+
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="INFO-CODE:">21</t>
+    <t hangText="Purpose:">No Reachable Authority</t>
+    <t hangText="Reference:"><xref target="deprecated" /></t>
     </list></t>
 
       </section>

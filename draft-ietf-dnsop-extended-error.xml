@@ -310,7 +310,7 @@
         </section>
 
         <section anchor="forgedanswer"
-                 title="NOERROR Extended DNS Error Code 4 - Forged answer">
+                 title="NOERROR Extended DNS Error Code 4 - Forged Answer">
           <t>For policy reasons (legal obligation, or malware
           filtering, for instance), an answer was forged.  The R flag
           should not be set.</t>
@@ -345,14 +345,14 @@
         </section>
 
         <section anchor="errnodnskey"
-                 title="SERVFAIL Extended DNS Error Code 9 - DNSKEY missing">
+                 title="SERVFAIL Extended DNS Error Code 9 - DNSKEY Missing">
           <t>A DS record existed at a parent, but no supported
           matching DNSKEY record could be found for the child. The R
           flag should not be set.</t>
         </section>
 
         <section anchor="errnorrsig"
-                 title="SERVFAIL Extended DNS Error Code 10 - RRSIGs missing">
+                 title="SERVFAIL Extended DNS Error Code 10 - RRSIGs Missing">
           <t>The resolver attempted to perform DNSSEC validation, but no
           RRSIGs could be found for at least one RRset where RRSIGs were
           expected.</t>
@@ -510,7 +510,7 @@
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">4</t>
-    <t hangText="Purpose:">Forged answer</t>
+    <t hangText="Purpose:">Forged Answer</t>
     <t hangText="Reference:"><xref target="forgedanswer" /></t>
     </list></t>
 
@@ -540,13 +540,13 @@
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">9</t>
-    <t hangText="Purpose:">DNSKEY missing</t>
+    <t hangText="Purpose:">DNSKEY Missing</t>
     <t hangText="Reference:"> <xref target="errnodnskey" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">10</t>
-    <t hangText="Purpose:">RRSIGs missing</t>
+    <t hangText="Purpose:">RRSIGs Missing</t>
     <t hangText="Reference:"><xref target="errnorrsig" /></t>
     </list></t>
 
@@ -649,13 +649,13 @@
     <section title="Acknowledgements">
       <t>The authors wish to thank Joe Abley, Mark Andrews, Stephane
       Bortzmeyer, Vladimir Cunat, Peter DeVries, Peter van Dijk,
-      Donald Eastlake, Bob Harold, Evan Hunt, Geoff Huston, Shane
-      Kerr, Edward Lewis, Carlos M.  Martinez, George Michelson,
-      Michael Sheldon, Petr Spacek, Ondrej Sury, Loganaden Velvindron,
-      and Paul Vixie.  They also vaguely remember discussing this with
-      a number of people over the years, but have forgotten who all
-      they were -- if you were one of them, and are not listed, please
-      let us know and we'll acknowledge you.</t>
+      Donald Eastlake, Bob Harold, Geoff Huston, Shane Kerr, Edward
+      Lewis, Carlos M.  Martinez, George Michelson, Michael Sheldon,
+      Petr Spacek, Ondrej Sury, Loganaden Velvindron, and Paul Vixie.
+      They also vaguely remember discussing this with a number of
+      people over the years, but have forgotten who all they were --
+      if you were one of them, and are not listed, please let us know
+      and we'll acknowledge you.</t>
 
       <t>I also want to thank the band "Infected Mushroom" for providing a
       good background soundtrack (and to see if I can get away with this!)

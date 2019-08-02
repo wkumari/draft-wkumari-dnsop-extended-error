@@ -865,7 +865,10 @@ our public DNS resolver implementation.
        (branch extended_error
        <https://gitlab.labs.nic.cz/knot/knot-resolver/tree/extended_error>).
 
-***** TODO        > 4.1.5.  SERVFAIL Extended DNS Error Code 5 - DNSSEC Indeterminate
+***** DONE > 4.1.5.  SERVFAIL Extended DNS Error Code 5 - DNSSEC Indeterminate
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:30]
+      :END:
        >   The resolver attempted to perform DNSSEC validation, but validation
        >   ended in the Indeterminate state.  The R flag should not be set.
 
@@ -880,7 +883,14 @@ our public DNS resolver implementation.
        As expected, producing extended error codes is quite simple and the
        draft is clear. The camel will be happy.
 
-***** TODO       The biggest issue is of course to find out what to put in the extended
+      + Response: With the recent removal of the RCODE binding, I
+        think this problem goes away.  Correct?
+
+
+***** DONE The biggest issue is of course to find out what to put in the extended
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:30]
+      :END:
        error code. On some resolvers (at least on Knot), the place where the
        error is noticed can be quite far from the place where the answer is
        built, with its EDNS options. In practice, we had to add data to the
@@ -889,26 +899,49 @@ our public DNS resolver implementation.
        real difficulty is not in the draft, but in knowing and understanding
        your resolver.
 
+      + Response: As agreed to in IETF105, we've removed the RCODE binding.
+
        Some details:
 
-***** TODO           * no resolver will use all the response-code/info-codes because some
+***** NOCHANGE * no resolver will use all the response-code/info-codes because some
            are never reached for this resolver, or are mixed with other
            issues. Generic errors (such as "SERVFAIL Extended DNS Error Code 1 -
            DNSSEC Bogus") are useful for when you cannot reliably find the problem.
 
-***** TODO           * the draft is silent about the laying out of bits in info-code. Not
+      + Response: I'm not sure what change you're suggesting.  Removal
+        of the binding may help, and I don't think there is an
+        expectation that every implementation should be able to return
+        every code.  I'd expect the union of all implementations to
+        find the ability to return each code, but not each
+        implementation itself?
+
+***** DONE * the draft is silent about the laying out of bits in info-code. Not
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:33]
+      :END:
            many IETF protocols have an integer field which is larger than a byte
            but not byte-aligned.
+
+      + Response: Good point; added encoding rules (MSB)
 
 ***** TODO           * the draft has a passing mention that multiple extended error options
            are allowed but I don't see how it could be used by the poor client
            trying to figure out what happened. I suggest to disallow it.
 
-***** TODO           * the draft has (rightly so) two info-codes for NXDOMAIN/Blocked and
+***** NOCHANGE * the draft has (rightly so) two info-codes for NXDOMAIN/Blocked and
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:35]
+      :END:
            NXDOMAIN/Censored but Knot cannot use it currently since the policy
            module (written in Lua) has no way today to be configured to express
            the difference. Not a problem in the draft but it will be probably a
-           common case that the resolver cannot make use of *all* codes.
+           common case that the resolver cannot make use of *all*
+           codes.
+
+      + Response: Yep, per above I suspect different implementations
+        may need to return different codes based on their
+        implementation needs.  The point is to turn the right code to
+        help users/debuggers.
 
 ***** NOCHANGE Let's end with a few examples:
 

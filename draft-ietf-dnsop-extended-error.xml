@@ -246,7 +246,7 @@
       registry, the initial values for which are defined in the following
       sub-sections.</t>
 
-      <section archor="errother" title="Extended DNS Error Code 0 - Other">
+      <section anchor="errother" title="Extended DNS Error Code 0 - Other">
 	      <t>The error in question falls into a category that does
 	      not match known extended error codes.  Implementations
 	      SHOULD include a EXTRA-TEXT value to augment this error

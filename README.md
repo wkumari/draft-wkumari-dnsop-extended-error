@@ -18,7 +18,7 @@ Expires: February 10, 2020                                           ISC
 
 
                           Extended DNS Errors
-                   draft-ietf-dnsop-extended-error-07
+                   draft-ietf-dnsop-extended-error-08
 
 Abstract
 

@@ -254,20 +254,20 @@
       </section>
 
         <section anchor="errbaddnskeyalg"
-                 title="NOERROR Extended DNS Error Code 1 -
+                 title="Extended DNS Error Code 1 -
                         Unsupported DNSKEY Algorithm">
           <t>The resolver attempted to perform DNSSEC validation, but a DNSKEY
           RRSET contained only unknown algorithms.</t>
         </section>
 
         <section anchor="errbaddsalg"
-                 title="NOERROR Extended DNS Error Code 2 - Unsupported                           DS Algorithm">
+                 title="Extended DNS Error Code 2 - Unsupported                           DS Algorithm">
           <t>The resolver attempted to perform DNSSEC validation, but a DS
           RRSET contained only unknown algorithms.</t>
         </section>
 
         <section anchor="stalenoerror"
-	         title="NOERROR Extended DNS Error Code 3 - Stale Answer">
+	         title="Extended DNS Error Code 3 - Stale Answer">
           <t>The resolver was unable to resolve answer within its time
           limits and decided to answer with a previously cached data
           instead of answering with an error.  This is typically
@@ -276,83 +276,83 @@
         </section>
 
         <section anchor="forgedanswer"
-                 title="NOERROR Extended DNS Error Code 4 - Forged Answer">
+                 title="Extended DNS Error Code 4 - Forged Answer">
           <t>For policy reasons (legal obligation, or malware
           filtering, for instance), an answer was forged.</t>
         </section>
 
         <section anchor="errindeterminate"
-                 title="SERVFAIL Extended DNS Error Code 5 - DNSSEC Indeterminate">
+                 title="Extended DNS Error Code 5 - DNSSEC Indeterminate">
           <t>The resolver attempted to perform DNSSEC validation, but
           validation ended in the Indeterminate state.</t>
         </section>
 
         <section anchor="errbogus"
-                 title="SERVFAIL Extended DNS Error Code 6 - DNSSEC Bogus">
+                 title="Extended DNS Error Code 6 - DNSSEC Bogus">
           <t>The resolver attempted to perform DNSSEC validation, but
           validation ended in the Bogus state.</t>
         </section>
 
         <section anchor="errexpired"
-                 title="SERVFAIL Extended DNS Error Code 7 - Signature Expired">
+                 title="Extended DNS Error Code 7 - Signature Expired">
           <t>The resolver attempted to perform DNSSEC validation, a
           signature in the validation chain was expired.</t>
         </section>
 
         <section anchor="errprior"
-                 title="SERVFAIL Extended DNS Error Code 8 - Signature Not Yet Valid">
+                 title="Extended DNS Error Code 8 - Signature Not Yet Valid">
           <t>The resolver attempted to perform DNSSEC validation, but the
           signatures received were not yet valid.</t>
         </section>
 
         <section anchor="errnodnskey"
-                 title="SERVFAIL Extended DNS Error Code 9 - DNSKEY Missing">
+                 title="Extended DNS Error Code 9 - DNSKEY Missing">
           <t>A DS record existed at a parent, but no supported
           matching DNSKEY record could be found for the child.</t>
         </section>
 
         <section anchor="errnorrsig"
-                 title="SERVFAIL Extended DNS Error Code 10 - RRSIGs Missing">
+                 title="Extended DNS Error Code 10 - RRSIGs Missing">
           <t>The resolver attempted to perform DNSSEC validation, but no
           RRSIGs could be found for at least one RRset where RRSIGs were
           expected.</t>
         </section>
 
         <section anchor="errnozonekey"
-                 title="SERVFAIL Extended DNS Error Code 11 - No Zone Key Bit Set">
+                 title="Extended DNS Error Code 11 - No Zone Key Bit Set">
           <t>The resolver attempted to perform DNSSEC validation, but no Zone
           Key Bit was set in a DNSKEY.</t>
         </section>
 
         <section anchor="nonsec"
-                 title="SERVFAIL Extended DNS Error Code 12 - NSEC Missing">
+                 title="Extended DNS Error Code 12 - NSEC Missing">
           <t>The resolver attempted to perform DNSSEC validation, but
           the requested data was missing and a covering NSEC or NSEC3
           was not provided.</t>
         </section>
 
         <section anchor="cachederror"
-                 title="SERVFAIL Extended DNS Error Code 13 - Cached Error">
+                 title="Extended DNS Error Code 13 - Cached Error">
           <t>The resolver has cached SERVFAIL for this query without
           additional information.</t>
         </section>
 
         <section anchor="notready"
-                 title="SERVFAIL Extended DNS Error Code 14 - Not Ready">
+                 title="Extended DNS Error Code 14 - Not Ready">
           <t>The server is unable to answer the query as it is not
           fully up and functional yet.</t>
         </section>
 
 
         <section anchor="errblocked"
-	         title="NXDOMAIN Extended DNS Error Code 15 - Blocked">
+	         title="Extended DNS Error Code 15 - Blocked">
           <t>The resolver attempted to perfom a DNS query but the
           domain is blacklisted due to a security policy implemented
           on the server being directly talked to.</t>
         </section>
 
         <section anchor="errcensored"
-	         title="NXDOMAIN Extended DNS Error Code 16 - Censored">
+	         title="Extended DNS Error Code 16 - Censored">
           <t>The resolver attempted to perfom a DNS query but the
           domain was blacklisted by a security policy imposed upon the
           server being talked to. Note that how the imposed policy is
@@ -362,7 +362,7 @@
 
 
         <section anchor="errprohibted"
-	         title="REFUSED Extended DNS Error Code 17 - Prohibited">
+	         title="Extended DNS Error Code 17 - Prohibited">
           <t>An authoritative or recursive resolver that receives a query from
           an "unauthorized" client can annotate its REFUSED message with this
           code. Examples of "unauthorized" clients are recursive queries from
@@ -372,7 +372,7 @@
 
 
         <section anchor="stalenx"
-	         title="NXDOMAIN Extended DNS Error Code 18 - Stale Answer">
+	         title="Extended DNS Error Code 18 - Stale Answer">
           <t>The resolver was unable to resolve answer within its time
           limits and decided to answer with a previously cached
           NXDOMAIN answer instead of answering with an error.  This is
@@ -382,7 +382,7 @@
         </section>
 
 	<section anchor="errlame"
-	         title="REFUSED Extended DNS Error Code 19 - Lame">
+	         title="Extended DNS Error Code 19 - Lame">
           <t>An authoritative server that receives a query (with the
           RD bit clear) for a domain for which it is not authoritative
           SHOULD include this EDE code in the SERVFAIL response.  A
@@ -394,13 +394,13 @@
 
 
 	<section anchor="deprecated"
-	         title="NOTIMP Extended DNS Error Code 20 - Deprecated">
+	         title="Extended DNS Error Code 20 - Deprecated">
           <t>The requested operation or query is not supported as its
           use has been deprecated.</t>
         </section>
 
         <section anchor="noauth"
-                 title="SERVFAIL Extended DNS Error Code 21 - No Reachable Authority">
+                 title="Extended DNS Error Code 21 - No Reachable Authority">
           <t>The resolver could not reach any of the authoritative name servers
           (or they refused to reply).</t>
         </section>

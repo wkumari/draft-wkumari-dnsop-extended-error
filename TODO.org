@@ -790,7 +790,10 @@ our public DNS resolver implementation.
         clients from sending them so we should at least mention that
         servers should be prepared to receive them (even if useless).
 
-***** TODO > Section 3.1 The R (retry) flag
+***** DONE > Section 3.1 The R (retry) flag
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-09 Fri 21:50]
+      :END:
        > Para  2. "implementations may receive EDE codes that it does not understand.
        >   The R flag allows implementations to make a decision as to what to do
        >   if it receives a response with an unknown code - retry or drop the
@@ -800,9 +803,10 @@ our public DNS resolver implementation.
        multiple EDE options and the R flag value is different across
        them.
 
-       + Response: good question.
+       + Response: good question.  Due to popular request, the R bit
+         has now been dropped so this issue goes away.
 
-***** TODO multiple EDE vs single
+***** NOCHANGE multiple EDE vs single
 
        Comment: On a related note, what is the reasoning for allowing
        multiple instance of the EDE option in a response versus encoding all
@@ -810,6 +814,16 @@ our public DNS resolver implementation.
        option? A single EDE option would avoid having different values for
        the R flag and any new flag in the future. 16-bit length field means
        that total size of all EDE options should fit in a single option.
+
+       + Response: Implementations already need to parse multiple
+         extra EDE options (to avoid crashing, over-writing, etc).
+         And the parsing structure is significantly easier if they can
+         take the option record, pull off the 16 bit option and take
+         the rest as text.  If we added a length record for both the
+         number of options and the number of text fields (of different
+         lengths), this seems more complex to us than adding multiple
+         options instead.  Feel free to try to convince us otherwise,
+         or better get all the implementations to prefer it.
 
 ***** DONE > Section 4.1.3 and 4.1.3.1 NOERROR Extended DNS Error Code 3 - Stale Answer
       :LOGBOOK:
@@ -820,7 +834,7 @@ our public DNS resolver implementation.
        + Response: I (Wes) just rewrote that section and ensured
          everything is consistent.  Thanks for the catch though.
 
-***** TODO  DNSSEC bit
+***** NOCHANGE DNSSEC bit
        > Section 4.2 INFO-CODEs for use with RESPONSE-CODE: SERVFAIL(2)
        Comment: There are a number of INFO-CODEs here for DNSSEC failures.
        Over time it will be extra work for implementations to stay up to date
@@ -828,6 +842,10 @@ our public DNS resolver implementation.
        whether a resolution should be retried. Do we want also want a bit for
        signalling DNSSEC validation failures? Only needed if some DNSSEC
        related behavior needs to be different from the R bit value.
+
+       + Response: 1) we've now removed the R bit, and 2) interesting
+         idea...  It seems premature without a worked example/need.
+         Do you have an exact use case where this would prove beneficial. 
 
 ***** NOCHANGE dnssec protection opts
       :LOGBOOK:
@@ -924,9 +942,18 @@ our public DNS resolver implementation.
 
       + Response: Good point; added encoding rules (MSB)
 
-***** TODO           * the draft has a passing mention that multiple extended error options
+***** NOCHANGE * the draft has a passing mention that multiple extended error options
            are allowed but I don't see how it could be used by the poor client
            trying to figure out what happened. I suggest to disallow it.
+
+       + Response: Most clients should be logging the resulting
+         findings, or displaying them maybe.  We don't expect this
+         option to be used for anything other than debugging,
+         especially because its not authenticated.  The client also
+         has to be prepared to accept multiple options anyway, as not
+         doing so is equally as problematic (IE, assuming no one will
+         send you more than one option is a sure path to crashing or
+         other problem)
 
 ***** NOCHANGE * the draft has (rightly so) two info-codes for NXDOMAIN/Blocked and
       :LOGBOOK:
@@ -1095,7 +1122,7 @@ our public DNS resolver implementation.
 
       ----------------
 
-***** TODO       Finally, I note that the suggestion of requiring that the sender have
+***** NOCHANGE Finally, I note that the suggestion of requiring that the sender have
       some signal indicating that it is interested in extended errors was
       not adopted. I don't insist on it, but I think it would be useful to
       avoid bloating packets unnecessarily. It's a bit like the useless
@@ -1105,9 +1132,25 @@ our public DNS resolver implementation.
       OTOH I realize that having this information available may be useful
       for humans debugging things, even if the sender does not ask for it.
 
-***** TODO       On the gripping hand, adding unasked-for information may have privacy
+      + Response: If there sufficient support, we'd certainly add it.
+        This is primarily intended to be used for extreme cases and
+        only when problems/unusual are detected.  Most DNS messages
+        won't contain EDE options and when they do they'll likely fall
+        below the DNSSEC amplification factors that are out there.  We
+        think the benefit of including the extra information outweighs
+        the problems with sending it.  But we'd certainly love to hear
+        more feedback from the community to see if there is agreement
+        one way or another here. 
+
+***** NOCHANGE On the gripping hand, adding unasked-for information may have privacy
       implications. Possibly adding a "Privacy Considerations" section would
       be useful?
+
+      + response: What would you like us to add to such a section?
+        The question/answers section likely has most of the sensitive
+        information.  If you'd provide text to clarify your thinking,
+        we'd gladly include it.
+
 
 *** Ralph Dolmans
 
@@ -1163,7 +1206,10 @@ our public DNS resolver implementation.
       picking when to forward and when it's meant "just for you"
       becomes complex and harder to specify.
 
-***** TODO     I think having the extra information provided by this document is useful
+***** DONE I think having the extra information provided by this document is useful
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-09 Fri 21:59]
+      :END:
     for debugging, and only for that. This extra information should not be
     used to make any DNS resolving decision, which makes the retry flag a
     bad idea. At the moment I don't have to trust all my secondaries as long
@@ -1174,7 +1220,8 @@ our public DNS resolver implementation.
     power to make my zone unavailable. This completely changes the current
     trust model. Please remove the retry flag from the document.
 
-    
+    + The R bit has been removed in the latest flag, due to your and
+      other people's requests :-)
 
 *** Evan Hunt 
 
@@ -1194,19 +1241,27 @@ our public DNS resolver implementation.
         RESPONSE-CODE.  And yes, network-byte order is critical and
         has been specified in the most recent document.  Thanks!
        
-***** TODO      2. He requested the addition of a generic error code for SERVFAIL responses
+***** TODO 2. He requested the addition of a generic error code for SERVFAIL responses
         that don't fall into any defined category. For example, it's possible to
         configure Knot to send SERVFAIL as a result of a policy decision, which
         doesn't fall into any of the existing buckets, and it would seem silly to
         add a specific bucket for that.
        
-      + Response: Since we've removed the RCODE copy/binding this
-        suggestion goes away right?
+      + We're adding a "other" type error code and agree this is a
+        good suggestion.
 
-***** TODO      3. Finally, he recommended removal of the suggestion in section 3.2 that
+***** NOCHANGE 3. Finally, he recommended removal of the suggestion in section 3.2 that
         multiple EDE records could be included with a response, and instead forbid
         it. It makes parsing harder, and it's unclear what to do if different codes
         contradict one another.
+
+        + The debugging codes shouldn't be used for decision making
+          process, and clients must not fail when they receive
+          multiple options anyway.  It would be better to specify that
+          you better expect it than have clients not be able to handle
+          them.  We expect most clients will log/display all errors
+          and "contradicting" doesn't make much sense from a
+          non-decision making logic tree.
 
 ***** DONE 4. Incidental point that I noticed while checking the existing text: "The
       :LOGBOOK:

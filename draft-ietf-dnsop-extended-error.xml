@@ -630,36 +630,5 @@
         </front>
       </reference>
     </references>
-
-    <section title="Changes / Author Notes.">
-      <t>[RFC Editor: Please remove this section before publication ]</t>
-
-      <t>From -00 to -01:<list style="symbols">
-          <t>Address comments from IETF meeting.</t>
-
-          <t>document copying the response code</t>
-
-          <t>mention zero length fields are ok</t>
-
-          <t>clarify lookup procedure</t>
-
-          <t>mention that table isn't done</t>
-        </list></t>
-
-      <t>From -03 to -IETF 00:<list style="symbols">
-          <t>Renamed to draft-ietf-dnsop-extended-error</t>
-        </list></t>
-
-      <t>From -02 to -03:<list style="symbols">
-          <t>Added David Lawrence -- I somehow missed that in last
-          version.</t>
-        </list></t>
-
-      <t>From -00 to -01;</t>
-
-      <t><list style="symbols">
-          <t>Fixed up some of the text, minor clarifications.</t>
-        </list></t>
-    </section>
   </back>
 </rfc>

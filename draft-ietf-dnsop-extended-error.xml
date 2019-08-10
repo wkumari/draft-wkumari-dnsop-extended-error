@@ -246,8 +246,16 @@
       registry, the initial values for which are defined in the following
       sub-sections.</t>
 
+      <section archor="errother" title="Extended DNS Error Code 0 - Other">
+	      <t>The error in question falls into a category that does
+	      not match known extended error codes.  Implementations
+	      SHOULD include a EXTRA-TEXT value to augment this error
+	      code with additional information.</t>
+      </section>
+
         <section anchor="errbaddnskeyalg"
-                 title="NOERROR Extended DNS Error Code 1 - Unsupported                           DNSKEY Algorithm">
+                 title="NOERROR Extended DNS Error Code 1 -
+                        Unsupported DNSKEY Algorithm">
           <t>The resolver attempted to perform DNSSEC validation, but a DNSKEY
           RRSET contained only unknown algorithms.</t>
         </section>
@@ -432,6 +440,12 @@
 
         <t>A starting set of entries, based on the contents of this
         document, is as follows:</t>
+
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="INFO-CODE:">0</t>
+    <t hangText="Purpose:">Other Error</t>
+    <t hangText="Reference:"><xref target="errother" /></t>
+    </list></t>
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">1</t>

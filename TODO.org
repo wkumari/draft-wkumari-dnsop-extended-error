@@ -1027,21 +1027,21 @@ our public DNS resolver implementation.
            ;; ADDITIONAL SECTION:
            explanation.invalid.	10800 IN TXT "No tracking"
 
-***** Shane Kerr
+*** Shane Kerr
 
-      Several folks have worked on implementing the
-      draft-ietf-dnsop-extended-error at the IETF Hackthon yesterday and
-      today. This is my own feedback on the draft based on trying to get it
-      added to dnsdist.
+    Several folks have worked on implementing the
+    draft-ietf-dnsop-extended-error at the IETF Hackthon yesterday and
+    today. This is my own feedback on the draft based on trying to get it
+    added to dnsdist.
 
-      ----------------
+    ----------------
 
-      Stéphane Bortzmeyer pointed out that it wasn't clear how to encode the
-      INFO-CODE into the 12 bits allocated to it. I think that the idea is
-      that it should be represented in network (MSB) order, but probably it
-      should be specified.
+    Stéphane Bortzmeyer pointed out that it wasn't clear how to encode the
+    INFO-CODE into the 12 bits allocated to it. I think that the idea is
+    that it should be represented in network (MSB) order, but probably it
+    should be specified.
 
-      ----------------
+    ----------------
 
 ***** DONE Minor suggestion: text for the descriptions should be consistent
       :LOGBOOK:

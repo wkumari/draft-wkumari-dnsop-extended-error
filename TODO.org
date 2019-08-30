@@ -1142,7 +1142,10 @@ our public DNS resolver implementation.
         more feedback from the community to see if there is agreement
         one way or another here. 
 
-***** NOCHANGE On the gripping hand, adding unasked-for information may have privacy
+***** DONE On the gripping hand, adding unasked-for information may have privacy
+      :LOGBOOK:
+      - State "DONE"       from "NOCHANGE"   [2019-08-30 Fri 16:22]
+      :END:
       implications. Possibly adding a "Privacy Considerations" section would
       be useful?
 
@@ -1150,6 +1153,31 @@ our public DNS resolver implementation.
         The question/answers section likely has most of the sensitive
         information.  If you'd provide text to clarify your thinking,
         we'd gladly include it.
+
+      + Shane:
+
+        I looked through RFC 6973 Section 7 - 
+        https://tools.ietf.org/html/rfc6973#section-7 - and didn't see
+        anything that stuck out obviously to me.
+
+        Possibly the only real concern is with extra text. It currently reads:
+
+           The UTF-8-encoded, EXTRA-TEXT field may be zero-length, or may hold
+           additional information useful to network operators.
+
+        Quad9's proposal to include various helpful information like how
+        dangerous a particular answer might be made me think that we should be
+        careful not to leak information in this channel. For example, a
+        response should not say something like, "daily query limit reached for
+        account 7452-54".
+
+        Possibly the description could be changed to something like:
+
+           The UTF-8-encoded, EXTRA-TEXT field may be zero-length, or may hold
+           additional information useful to network operators. Care should be
+           take not to leak private information that an observer would not
+           otherwise have access to, such as account numbers.
+
 
 
 *** Ralph Dolmans
@@ -1298,8 +1326,11 @@ our public DNS resolver implementation.
       * https://github.com/wkumari/draft-wkumari-dnsop-extended-error/pull/5.patch
       * https://github.com/wkumari/draft-wkumari-dnsop-extended-error/pull/5.diff
 
+* Aug 26 Shane Kerr
+
+*** 
+
 * Other stuff
 
-ODO SHOULD all r flag suggestions
 
 

@@ -232,7 +232,9 @@
       <section title="The EXTRA-TEXT field">
           <t>The UTF-8-encoded, EXTRA-TEXT field may be zero-length,
           or may hold additional information useful to network
-          operators.</t>
+          operators.  Care should be take not to leak private
+          information that an observer would not otherwise have access
+          to, such as account numbers.</t>
       </section>
 
     </section>

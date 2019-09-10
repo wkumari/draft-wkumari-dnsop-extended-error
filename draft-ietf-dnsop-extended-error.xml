@@ -199,43 +199,29 @@
           in octets and should be 4 plus the length of the EXTRA-TEXT
           section (which may be a zero-length string).</t>
 
-          <t>INFO-CODE, 16-bits, which is the principal contribution of
-          this document.</t>
+          <t>INFO-CODE, 16-bits, which is the principal contribution
+          of this document.  This 16-bit value, encoded in network
+          (MSB) byte order, provides the additional context for the
+          RESPONSE-CODE of the DNS message. The INFO-CODE serves as an
+          index to the "Extended DNS Errors" registry <xref
+          target="IANA" />.</t>
 
           <t>EXTRA-TEXT, a variable length, UTF-8 encoded, text field
           that may hold additional textual information.  Note:
           EXTRA-TEXT may be zero octets in length, indicating there is
-          no EXTRA-TEXT included.</t>
+          no EXTRA-TEXT included.  Care should be take not to leak
+          private information that an observer would not otherwise
+          have access to, such as account numbers.</t>
         </list></t>
 
-    </section>
-
-    <section title="Use of the Extended DNS Error option">
-      <t>The Extended DNS Error (EDE) is an EDNS option. It can be included
-        in any response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query that
-        includes OPT Pseudo-RR <xref target="RFC6891" />.
-        This document includes a set of initial
-        codepoints (and requests to the IANA to add them to the registry), but
-        is extensible via the IANA registry to allow additional error and
-        information codes to be defined in the future.</t>
-
-      <t>The fields of the Extended DNS Error option are defined
-      further in the following sub-sections.</t>
-
-      <section title="The INFO-CODE field">
-          <t>This 16-bit value, encoded in network (MSB) byte order,
-          provides the additional context for the RESPONSE-CODE of the
-          DNS message. The INFO-CODE serves as an index to the
-          "Extended DNS Errors" registry <xref target="IANA" />.</t>
-      </section>
-
-      <section title="The EXTRA-TEXT field">
-          <t>The UTF-8-encoded, EXTRA-TEXT field may be zero-length,
-          or may hold additional information useful to network
-          operators.  Care should be take not to leak private
-          information that an observer would not otherwise have access
-          to, such as account numbers.</t>
-      </section>
+      <t>The Extended DNS Error (EDE) is an EDNS option. It can be
+      included in any response (SERVFAIL, NXDOMAIN, REFUSED, and even
+      NOERROR, etc) to a query that includes OPT Pseudo-RR <xref
+      target="RFC6891" />.  This document includes a set of initial
+      codepoints (and requests to the IANA to add them to the
+      registry), but is extensible via the IANA registry to allow
+      additional error and information codes to be defined in the
+      future.</t>
 
     </section>
 

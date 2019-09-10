@@ -436,11 +436,11 @@
         index is to be broken into 3 ranges:</t>
 
         <t><list style="symbols">
-            <t>0 - 32767: Specification required.</t>
+            <t>0 - 32767: Expert Review <xref target="RFC2434" />.</t>
 
             <t>32768 - 49151: First come, first served.</t>
 
-            <t>49152 - 65535: Experimental / Private use</t>
+            <t>49152 - 65535: Experimental / Private use.</t>
         </list></t>
 
         <t>A starting set of entries, based on the contents of this
@@ -601,7 +601,7 @@
       response into already untrusted data &mdash; ideally clients and
       resolvers would not trust any unauthenticated information, but until we
       live in an era where all DNS answers are authenticated via DNSSEC or
-      other mechanisms, there are some tradeoffs. As an example, an attacker
+      other mechanisms <xref target="RFC2845" /> <xref target="RFC8094" />, there are some tradeoffs. As an example, an attacker
       who is able to insert the DNSSEC Bogus Extended Error into a packet
       could instead simply reply with a fictitious address (A or AAAA) record.
       </t>
@@ -629,6 +629,7 @@
   <back>
     <references title="Normative References">
       <?rfc include='reference.RFC.2119'?>
+      <?rfc include='reference.RFC.2434'?>
       <?rfc include='reference.RFC.2671'?>
       <?rfc include='reference.RFC.6891'?>
     </references>

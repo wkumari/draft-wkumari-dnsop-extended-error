@@ -362,7 +362,6 @@
           etc).</t>
         </section>
 
-
         <section anchor="errprohibted"
 	         title="Extended DNS Error Code 17 - Prohibited">
           <t>An authoritative or recursive resolver that receives a query from
@@ -372,9 +371,17 @@
           policy, etc.</t>
         </section>
 
+        <section anchor="errfiltered"
+	         title="Extended DNS Error Code 18 - Filtered">
+          <t>An authoritative or recursive resolver that receives a
+          query from a client that had requested certain domains be
+          filtered can annotate its REFUSED message with this
+          code.  Functionally, this amounts to "you asked us to filter
+          domains like this one."</t>
+        </section>
 
         <section anchor="stalenx"
-	         title="Extended DNS Error Code 18 - Stale Answer">
+	         title="Extended DNS Error Code 19 - Stale Answer">
           <t>The resolver was unable to resolve answer within its time
           limits and decided to answer with a previously cached
           NXDOMAIN answer instead of answering with an error.  This is
@@ -384,7 +391,7 @@
         </section>
 
 	<section anchor="errlame"
-	         title="Extended DNS Error Code 19 - Lame">
+	         title="Extended DNS Error Code 20 - Lame">
           <t>An authoritative server that receives a query (with the
           RD bit clear) for a domain for which it is not authoritative
           SHOULD include this EDE code in the SERVFAIL response.  A
@@ -396,13 +403,13 @@
 
 
 	<section anchor="deprecated"
-	         title="Extended DNS Error Code 20 - Deprecated">
+	         title="Extended DNS Error Code 21 - Deprecated">
           <t>The requested operation or query is not supported as its
           use has been deprecated.</t>
         </section>
 
         <section anchor="noauth"
-                 title="Extended DNS Error Code 21 - No Reachable Authority">
+                 title="Extended DNS Error Code 22 - No Reachable Authority">
           <t>The resolver could not reach any of the authoritative name servers
           (or they refused to reply).</t>
         </section>
@@ -553,24 +560,30 @@
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">18</t>
+    <t hangText="Purpose:">Filtered</t>
+    <t hangText="Reference:"><xref target="errfiltered" /></t>
+    </list></t>
+
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="INFO-CODE:">19</t>
     <t hangText="Purpose:">Answering with stale/cached NXDOMAIN data</t>
     <t hangText="Reference:"><xref target="stalenx" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="INFO-CODE:">19</t>
+    <t hangText="INFO-CODE:">20</t>
     <t hangText="Purpose:">Lame</t>
     <t hangText="Reference:"><xref target="errlame" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="INFO-CODE:">20</t>
+    <t hangText="INFO-CODE:">21</t>
     <t hangText="Purpose:">Deprecated</t>
     <t hangText="Reference:"><xref target="deprecated" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
-    <t hangText="INFO-CODE:">21</t>
+    <t hangText="INFO-CODE:">22</t>
     <t hangText="Purpose:">No Reachable Authority</t>
     <t hangText="Reference:"><xref target="deprecated" /></t>
     </list></t>
@@ -603,15 +616,16 @@
     </section>
 
     <section title="Acknowledgements">
-      <t>The authors wish to thank Joe Abley, Mark Andrews, Stephane
-      Bortzmeyer, Vladimir Cunat, Ralph Dolmans, Peter DeVries, Peter
-      van Dijk, Donald Eastlake, Bob Harold, Geoff Huston, Shane Kerr,
-      Edward Lewis, Carlos M.  Martinez, George Michelson, Michael
-      Sheldon, Puneet Sood, Petr Spacek, Ondrej Sury, Loganaden
-      Velvindron, and Paul Vixie.  They also vaguely remember
-      discussing this with a number of people over the years, but have
-      forgotten who all they were -- if you were one of them, and are
-      not listed, please let us know and we'll acknowledge you.</t>
+      <t>The authors wish to thank Joe Abley, Mark Andrews, Vittorio
+      Bertola, Stephane Bortzmeyer, Vladimir Cunat, Ralph Dolmans,
+      Peter DeVries, Peter van Dijk, Donald Eastlake, Bob Harold,
+      Geoff Huston, Shane Kerr, Edward Lewis, Carlos M.  Martinez,
+      George Michelson, Michael Sheldon, Puneet Sood, Petr Spacek,
+      Ondrej Sury, Loganaden Velvindron, and Paul Vixie.  They also
+      vaguely remember discussing this with a number of people over
+      the years, but have forgotten who all they were -- if you were
+      one of them, and are not listed, please let us know and we'll
+      acknowledge you.</t>
 
       <t>I also want to thank the band "Infected Mushroom" for providing a
       good background soundtrack (and to see if I can get away with this!)

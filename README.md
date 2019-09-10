@@ -99,15 +99,15 @@ Table of Contents
      4.16. Extended DNS Error Code 15 - Blocked  . . . . . . . . . .   7
      4.17. Extended DNS Error Code 16 - Censored . . . . . . . . . .   7
      4.18. Extended DNS Error Code 17 - Prohibited . . . . . . . . .   7
-     4.19. Extended DNS Error Code 18 - Stale Answer . . . . . . . .   7
-     4.20. Extended DNS Error Code 19 - Lame . . . . . . . . . . . .   7
-     4.21. Extended DNS Error Code 20 - Deprecated . . . . . . . . .   8
-     4.22. Extended DNS Error Code 21 - No Reachable Authority . . .   8
+     4.19. Extended DNS Error Code 18 - Filtered . . . . . . . . . .   7
+     4.20. Extended DNS Error Code 19 - Stale Answer . . . . . . . .   7
+     4.21. Extended DNS Error Code 20 - Lame . . . . . . . . . . . .   8
+     4.22. Extended DNS Error Code 21 - Deprecated . . . . . . . . .   8
+     4.23. Extended DNS Error Code 22 - No Reachable Authority . . .   8
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
      5.1.  A New Extended Error Code EDNS Option . . . . . . . . . .   8
      5.2.  New Double-Index Registry Table for Extended Error Codes    8
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .  10
-   7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  11
 
 
 
@@ -116,9 +116,10 @@ Kumari, et al.          Expires February 10, 2020               [Page 2]
 Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
 
 
+   7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  11
    8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  11
      8.1.  Normative References  . . . . . . . . . . . . . . . . . .  11
-     8.2.  Informative References  . . . . . . . . . . . . . . . . .  11
+     8.2.  Informative References  . . . . . . . . . . . . . . . . .  12
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  12
 
 1.  Introduction and background
@@ -159,7 +160,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in [RFC2119].
-
 
 
 
@@ -238,7 +238,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
 3.2.  The EXTRA-TEXT field
 
    The UTF-8-encoded, EXTRA-TEXT field may be zero-length, or may hold
-   additional information useful to network operators.
+   additional information useful to network operators.  Care should be
+   take not to leak private information that an observer would not
+   otherwise have access to, such as account numbers.
 
 4.  Defined Extended DNS Errors
 
@@ -271,8 +273,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
    decided to answer with a previously cached data instead of answering
    with an error.  This is typically caused by problems on authoritative
    side, possibly as result of a DoS attack.
-
-
 
 
 
@@ -371,20 +371,20 @@ Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
    IP addresses outside the network, blacklisted IP addresses, local
    policy, etc.
 
-4.19.  Extended DNS Error Code 18 - Stale Answer
+4.19.  Extended DNS Error Code 18 - Filtered
+
+   An authoritative or recursive resolver that receives a query from a
+   client that had requested certain domains be filtered can annotate
+   its REFUSED message with this code.  Functionally, this amounts to
+   "you asked us to filter domains like this one."
+
+4.20.  Extended DNS Error Code 19 - Stale Answer
 
    The resolver was unable to resolve answer within its time limits and
    decided to answer with a previously cached NXDOMAIN answer instead of
    answering with an error.  This is typically caused by problems on
    authoritative side, possibly as result of a DoS attack.
 
-4.20.  Extended DNS Error Code 19 - Lame
-
-   An authoritative server that receives a query (with the RD bit clear)
-   for a domain for which it is not authoritative SHOULD include this
-   EDE code in the SERVFAIL response.  A resolver that receives a query
-   (with the RD bit clear) SHOULD include this EDE code in the REFUSED
-   response.
 
 
 
@@ -396,12 +396,20 @@ Kumari, et al.          Expires February 10, 2020               [Page 7]
 Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
 
 
-4.21.  Extended DNS Error Code 20 - Deprecated
+4.21.  Extended DNS Error Code 20 - Lame
+
+   An authoritative server that receives a query (with the RD bit clear)
+   for a domain for which it is not authoritative SHOULD include this
+   EDE code in the SERVFAIL response.  A resolver that receives a query
+   (with the RD bit clear) SHOULD include this EDE code in the REFUSED
+   response.
+
+4.22.  Extended DNS Error Code 21 - Deprecated
 
    The requested operation or query is not supported as its use has been
    deprecated.
 
-4.22.  Extended DNS Error Code 21 - No Reachable Authority
+4.23.  Extended DNS Error Code 22 - No Reachable Authority
 
    The resolver could not reach any of the authoritative name servers
    (or they refused to reply).
@@ -436,14 +444,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
    as follows:
 
    INFO-CODE:  0
-   Purpose:  Other Error
-   Reference:  Section 4.1
-
-   INFO-CODE:  1
-   Purpose:  Unsupported DNSKEY Algorithm
-   Reference:  Section 4.2
-
-   INFO-CODE:  2
 
 
 
@@ -452,6 +452,14 @@ Kumari, et al.          Expires February 10, 2020               [Page 8]
 Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
 
 
+   Purpose:  Other Error
+   Reference:  Section 4.1
+
+   INFO-CODE:  1
+   Purpose:  Unsupported DNSKEY Algorithm
+   Reference:  Section 4.2
+
+   INFO-CODE:  2
    Purpose:  Unsupported DS Algorithm
    Reference:  Section 4.3
 
@@ -492,14 +500,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
    Reference:  Section 4.12
 
    INFO-CODE:  12
-   Purpose:  No NSEC records could be obtained
-   Reference:  Section 4.13
-
-   INFO-CODE:  13
-   Purpose:  The SERVFAIL error comes from the cache
-   Reference:  Section 4.14
-
-   INFO-CODE:  14
 
 
 
@@ -508,6 +508,14 @@ Kumari, et al.          Expires February 10, 2020               [Page 9]
 Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
 
 
+   Purpose:  No NSEC records could be obtained
+   Reference:  Section 4.13
+
+   INFO-CODE:  13
+   Purpose:  The SERVFAIL error comes from the cache
+   Reference:  Section 4.14
+
+   INFO-CODE:  14
    Purpose:  Not Ready.
    Reference:  Section 4.15
 
@@ -524,26 +532,38 @@ Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
    Reference:  Section 4.18
 
    INFO-CODE:  18
-   Purpose:  Answering with stale/cached NXDOMAIN data
+   Purpose:  Filtered
    Reference:  Section 4.19
 
    INFO-CODE:  19
-   Purpose:  Lame
+   Purpose:  Answering with stale/cached NXDOMAIN data
    Reference:  Section 4.20
 
    INFO-CODE:  20
-   Purpose:  Deprecated
+   Purpose:  Lame
    Reference:  Section 4.21
 
    INFO-CODE:  21
+   Purpose:  Deprecated
+   Reference:  Section 4.22
+
+   INFO-CODE:  22
    Purpose:  No Reachable Authority
-   Reference:  Section 4.21
+   Reference:  Section 4.22
 
 6.  Security Considerations
 
    Though DNSSEC continues to be deployed, unfortunately a significant
    number of clients (~11% according to [GeoffValidation]) that receive
    a SERVFAIL from a validating resolver because of a DNSSEC validaion
+
+
+
+Kumari, et al.          Expires February 10, 2020              [Page 10]
+
+Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
+
+
    issue will simply ask the next (potentially non-validating) resolver
    in their list, and thus don't get any of the protections which DNSSEC
    should provide.  This is very similar to a kid asking his mother if
@@ -556,29 +576,21 @@ Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
    response into already untrusted data -- ideally clients and resolvers
    would not trust any unauthenticated information, but until we live in
    an era where all DNS answers are authenticated via DNSSEC or other
-
-
-
-Kumari, et al.          Expires February 10, 2020              [Page 10]
-
-Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
-
-
    mechanisms, there are some tradeoffs.  As an example, an attacker who
    is able to insert the DNSSEC Bogus Extended Error into a packet could
    instead simply reply with a fictitious address (A or AAAA) record.
 
 7.  Acknowledgements
 
-   The authors wish to thank Joe Abley, Mark Andrews, Stephane
-   Bortzmeyer, Vladimir Cunat, Ralph Dolmans, Peter DeVries, Peter van
-   Dijk, Donald Eastlake, Bob Harold, Geoff Huston, Shane Kerr, Edward
-   Lewis, Carlos M.  Martinez, George Michelson, Michael Sheldon, Puneet
-   Sood, Petr Spacek, Ondrej Sury, Loganaden Velvindron, and Paul Vixie.
-   They also vaguely remember discussing this with a number of people
-   over the years, but have forgotten who all they were -- if you were
-   one of them, and are not listed, please let us know and we'll
-   acknowledge you.
+   The authors wish to thank Joe Abley, Mark Andrews, Vittorio Bertola,
+   Stephane Bortzmeyer, Vladimir Cunat, Ralph Dolmans, Peter DeVries,
+   Peter van Dijk, Donald Eastlake, Bob Harold, Geoff Huston, Shane
+   Kerr, Edward Lewis, Carlos M.  Martinez, George Michelson, Michael
+   Sheldon, Puneet Sood, Petr Spacek, Ondrej Sury, Loganaden Velvindron,
+   and Paul Vixie.  They also vaguely remember discussing this with a
+   number of people over the years, but have forgotten who all they were
+   -- if you were one of them, and are not listed, please let us know
+   and we'll acknowledge you.
 
    I also want to thank the band "Infected Mushroom" for providing a
    good background soundtrack (and to see if I can get away with this!)
@@ -598,6 +610,16 @@ Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
               RFC 2671, DOI 10.17487/RFC2671, August 1999,
               <https://www.rfc-editor.org/info/rfc2671>.
 
+
+
+
+
+
+Kumari, et al.          Expires February 10, 2020              [Page 11]
+
+Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
+
+
    [RFC6891]  Damas, J., Graff, M., and P. Vixie, "Extension Mechanisms
               for DNS (EDNS(0))", STD 75, RFC 6891,
               DOI 10.17487/RFC6891, April 2013, <https://www.rfc-
@@ -609,16 +631,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
               IANA, "A quick review of DNSSEC Validation in today's
               Internet", June 2016, <http://www.potaroo.net/
               presentations/2016-06-27-dnssec.pdf>.
-
-
-
-
-
-
-Kumari, et al.          Expires February 10, 2020              [Page 11]
-
-Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
-
 
    [RFC2845]  Vixie, P., Gudmundsson, O., Eastlake 3rd, D., and B.
               Wellington, "Secret Key Transaction Authentication for DNS
@@ -656,6 +668,14 @@ Authors' Addresses
    Email: roy.arends@icann.org
 
 
+
+
+
+Kumari, et al.          Expires February 10, 2020              [Page 12]
+
+Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
+
+
    Wes Hardaker
    USC/ISI
    P.O. Box 382
@@ -665,17 +685,6 @@ Authors' Addresses
    Email: ietf@hardakers.net
 
 
-
-
-
-
-
-
-Kumari, et al.          Expires February 10, 2020              [Page 12]
-
-Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
-
-
    David C Lawrence
    Oracle + Dyn
    150 Dow St
@@ -683,15 +692,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error         August 2019
    US
 
    Email: tale@dd.org
-
-
-
-
-
-
-
-
-
 
 
 

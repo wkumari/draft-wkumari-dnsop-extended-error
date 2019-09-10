@@ -1573,6 +1573,88 @@ I went to talk to quad9. Here is the reply they sent.
   declaration, such as that the request should retry the same recursor,
   or should instead immediately move to and try the next available.
 
+* Paul Hoffman
+
+  Greetings again. The changes here generally help the document, but
+  they also highlight some of the deficiencies. A few comments on the
+  current draft:
+
+*** NOCHANGE what error codes?
+
+  - The spec does not say anything about the kinds of responses where it
+  is allowed to send particular extended error codes. For example, if a
+  response has an RCODE of NOERROR, what does it mean for it to also
+  have a EDE? Or if the RCODE is FORMERR, can it have an EDE that
+  relates to DNSSEC validation failure? The exact semantics for the
+  receiver need to be specified.
+
+  + The EDE was specifically meant to be an "addition" to an existing
+    reply of *any* RCODE, including NOERROR codes.  There is no
+    restriction about when you might include one.  Similarly, it
+    makes no sense for some codes to be returned for some RCODES, but
+    any good receiver shouldn't segfault either.  I don't think we can
+    specify all potential combinations in any meaningful way.
+
+*** DONE extend vs annotate
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-09 Mon 20:54]
+    :END:
+
+  - In the introduction, it says:
+     This document specifies a mechanism to extend (or annotate) DNS
+     errors to provide additional information about the cause of the
+     error.
+  "extend" and "annotate" have very different meanings. This is the crux
+  of the use of the mechanism, so it needs to be clearer.
+
+  + response: I've removed (or annotate)
+
+    (though it didn't bother me)
+
+*** DONE ...
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-09 Mon 21:00]
+    :END:
+
+  - In the introduction, it says:
+     These extended error codes are specially useful when received
+     by resolvers, to return to stub resolvers or to downstream resolvers.
+     Authoritative servers MAY parse and use them, but most error codes
+     would make no sense for them.  Authoritative servers may need to
+     generate extended error codes though.
+
+  This is confusing because many authoritative servers also send queries
+  when they are doing AXFR and so on. Instead, I propose:
+
+     These extended error codes described in this document can be used
+     by any system that sends DNS queries. Different codes are useful
+     in different circumstances, and thus different systems (stub
+     resolvers, recursive resolvers, and authoritative resolvers)
+     might receive and use them.
+
+  + Response: thanks for the text.  Adopted!
+
+*** TODO stop repeating yourself
+
+  - Sections 3.1 and 3.2 repeat the information at the end of Section 2,
+  and thus should be eliminated. Instead, leave Section 2 as is, and
+  simply include the the first paragraph of Section 3, and then
+  eliminate Section 3 altogether.
+
+*** DONE flippant language
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-09 Mon 20:59]
+    :END:
+
+  - There are many places where the document uses flippant language that
+  could confuse readers who don't understand English idioms. Although
+  they are somewhat humorous, these could lead to confusion and should
+  be removed.
+
+  + Response: I've removed the ones I found, and may remove more after
+    a final pass if I missed any in a skim.
+
+
 * Other stuff
 
 

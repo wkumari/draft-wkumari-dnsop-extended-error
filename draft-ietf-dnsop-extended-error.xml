@@ -133,7 +133,7 @@
       what the issue is - e.g. was the answer marked REFUSED because
       of a lame delegation, or because the nameserver is still
       starting up and loading zones? Is a SERVFAIL a DNSSEC validation
-      issue, or is the nameserver experiencing a bad hair day?</t>
+      issue, or is the nameserver experiencing some other failure?</t>
 
       <t>A good example of issues that would benefit by additional error
       information are errors caused by DNSSEC validation issues. When a stub
@@ -598,11 +598,7 @@
       validating resolver because of a DNSSEC validaion issue will
       simply ask the next (potentially non-validating) resolver in
       their list, and thus don't get any of the protections which
-      DNSSEC should provide.  This is very similar to a kid asking his
-      mother if he can have another cookie. When the mother says "No,
-      it will ruin your dinner!", going off and asking his (more
-      permissive) father and getting a "Yes, sure, have a
-      cookie!".</t>
+      DNSSEC should provide.</t>
 
       <t>This information is unauthenticated information, and an attacker (e.g
       MITM or malicious recursive server) could insert an extended error

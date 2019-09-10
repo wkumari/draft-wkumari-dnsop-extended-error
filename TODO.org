@@ -1332,8 +1332,10 @@ our public DNS resolver implementation.
 
 * Sep 4 Vittorio Bertola
 
-*** TODO Add another blocked error
-    ack: Vittorio Bertola
+*** DONE Add another blocked error
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-09 Mon 20:43]
+    :END:
 
     Given some recent discussions on the ADD list, I think that it could
     make sense to add a third error code for DNS filtering. Currently, the
@@ -1364,33 +1366,36 @@ our public DNS resolver implementation.
     + Response: I think the idea of a "you requested we block this"
       makes sense, so I'll add that one
 
-***** WONTDO you requested blocking
+*** WONTDO you requested blocking
 
-    There was also some discussion on whether these error codes could be
-    accompanied by a URL that the client device can use to display a
-    human-readable explanation to the user, which would be a cleaner
-    solution than the current practice of giving to the client a positive
-    response, but with the IP address of a local web server instead of the
-    original one (a practice that doesn't work well with HTTPS anyway).
+  There was also some discussion on whether these error codes could be
+  accompanied by a URL that the client device can use to display a
+  human-readable explanation to the user, which would be a cleaner
+  solution than the current practice of giving to the client a positive
+  response, but with the IP address of a local web server instead of the
+  original one (a practice that doesn't work well with HTTPS anyway).
 
-    This has many security caveats, and could only work with an
-    authenticated, trusted resolver (which is anyway true of the above
-    error codes in themselves, since an adversarial recursor could just
-    lie on the reason for blocking or even on the fact that it is actually
-    blocking something). It is really too early to say whether this could
-    work or whether it would actually be implemented, and also, on
-    transports other than DoH, I'm not sure if applications could ever
-    access this information. Still, perhaps a note on whether EXTRA-TEXT
-    could bear structured information for certain error codes, and how
-    this mechanism could be later defined, could be useful.
+  This has many security caveats, and could only work with an
+  authenticated, trusted resolver (which is anyway true of the above
+  error codes in themselves, since an adversarial recursor could just
+  lie on the reason for blocking or even on the fact that it is actually
+  blocking something). It is really too early to say whether this could
+  work or whether it would actually be implemented, and also, on
+  transports other than DoH, I'm not sure if applications could ever
+  access this information. Still, perhaps a note on whether EXTRA-TEXT
+  could bear structured information for certain error codes, and how
+  this mechanism could be later defined, could be useful.
 
-    + Response: I don't think we want to get into how log messages
-      should be delivered.  If an implementation wants to put a URL in
-      the additional information, that certainly would make sense.
-      But the Web does not equal the internet, and figuring out how to
-      do it for everything is not easily possible.
+  + Response: I don't think we want to get into how log messages
+    should be delivered.  If an implementation wants to put a URL in
+    the additional information, that certainly would make sense.
+    But the Web does not equal the internet, and figuring out how to
+    do it for everything is not easily possible.
 
-***** TODO ack
+*** DONE ack
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-09 Mon 20:43]
+    :END:
 
 I went to talk to quad9. Here is the reply they sent.
 

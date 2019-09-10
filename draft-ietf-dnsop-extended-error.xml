@@ -147,13 +147,13 @@
       a validating resolver, and the user is returned a potentially harmful
       result.</t>
 
-      <t>This document specifies a mechanism to extend (or annotate) DNS
+      <t>This document specifies a mechanism to extend DNS
       errors to provide additional information about the cause of the error.
-      These extended error codes are specially useful when received
-      by resolvers, to return to stub resolvers or to downstream
-      resolvers. Authoritative servers MAY parse and use them, but
-      most error codes would make no sense for them.  Authoritative
-      servers may need to generate extended error codes though.</t>
+      These extended error codes described in this document can be used
+      by any system that sends DNS queries. Different codes are useful
+      in different circumstances, and thus different systems (stub
+      resolvers, recursive resolvers, and authoritative resolvers)
+      might receive and use them.</t>
 
       <section title="Requirements notation">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",

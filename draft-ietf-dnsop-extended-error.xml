@@ -427,8 +427,8 @@
           </figure></t>
       </section>
 
-      <section title="New Double-Index Registry Table for Extended Error Codes">
-        <t>This document defines a new double-index IANA registry
+      <section title="New Registry Table for Extended Error Codes">
+        <t>This document defines a new IANA registry
         table, where the index value is the INFO-CODE from the
         Extended DNS Error EDNS option defined in this document. The
         IANA is requested to create and maintain this "Extended DNS

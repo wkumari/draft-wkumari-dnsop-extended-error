@@ -1629,6 +1629,25 @@ I went to talk to quad9. Here is the reply they sent.
     any good receiver shouldn't segfault either.  I don't think we can
     specify all potential combinations in any meaningful way.
 
+  + Paul's response response:
+
+  Being silent on this is also bad. Proposed text for the introduction:
+
+  This document does not allow or prohibit any particular extended error
+  codes and information be matched with any particular RCODEs. Some
+  combinations of extended error codes and RCODEs may seem nonsensical
+  (such as resolver-specific extended error codes in responses from
+  authoritative servers), so systems interpreting the extended error
+  codes MUST NOT assume that a combination will make sense.
+
+  Having said that, I think not having restrictions on which EDE can be
+  used with which RCODE with systems in particular roles is actively
+  dangerous. We know that software developers *will* make such
+  assumptions, and attackers will use those wrong assumptions in the
+  future.
+
+  + Result: added his suggested paragraph
+
 *** DONE extend vs annotate
     :LOGBOOK:
     - State "DONE"       from "TODO"       [2019-09-09 Mon 20:54]

@@ -1399,7 +1399,7 @@ our public DNS resolver implementation.
 
 I went to talk to quad9. Here is the reply they sent.
 
-* Loganaden Velvindron <loganaden@gmail.com>
+* TODO Loganaden Velvindron <loganaden@gmail.com>
 
 *** WONTDO pass-through
 
@@ -1607,7 +1607,10 @@ I went to talk to quad9. Here is the reply they sent.
   potentially at a well-known URI, or even within the DNS itself via TXT
   records or even within the EXTRA-TEXT field itself.
 
-* Paul Hoffman
+* DONE Paul Hoffman
+  :LOGBOOK:
+  - State "DONE"       from "TODO"       [2019-09-10 Tue 16:03]
+  :END:
 
   Greetings again. The changes here generally help the document, but
   they also highlight some of the deficiencies. A few comments on the

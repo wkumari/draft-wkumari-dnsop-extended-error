@@ -162,13 +162,13 @@
       might receive and use them.</t>
 
       <t>This document does not allow or prohibit any particular
-      extended error codes and information be matched with any
+      extended error codes and information to be matched with any
       particular RCODEs. Some combinations of extended error codes and
       RCODEs may seem nonsensical (such as resolver-specific extended
       error codes in responses from authoritative servers), so systems
       interpreting the extended error codes MUST NOT assume that a
       combination will make sense.  Receivers MUST be able to accept
-      EDE codes and EXTRA-TEXT in all messages, including even those
+      EDE codes and EXTRA-TEXT in all messages, including those
       with a NOERROR RCODE.</t>
 
       <section title="Requirements notation">

@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="std" docName="draft-ietf-dnsop-extended-error-08"
+<rfc category="std" docName="draft-ietf-dnsop-extended-error-09"
      ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -110,7 +110,7 @@
       </address>
     </author>
 
-    <date day="09" month="August" year="2019"/>
+    <date day="10" month="September" year="2019"/>
 
     <abstract>
       <t>This document defines an extensible method to return
@@ -135,22 +135,28 @@
       starting up and loading zones? Is a SERVFAIL a DNSSEC validation
       issue, or is the nameserver experiencing some other failure?</t>
 
-      <t>A good example of issues that would benefit by additional error
-      information are errors caused by DNSSEC validation issues. When a stub
-      resolver queries a DNSSEC bogus name (using a validating resolver), the
-      stub resolver receives only a SERVFAIL in response. Unfortunately,
-      SERVFAIL is used to signal many sorts of DNS errors, and so the stub
-      resolver simply asks the next configured DNS resolver. The result of
-      trying the next resolver is one of two outcomes: either the next
-      resolver also validates, a SERVFAIL is returned again, and the user gets
-      an (largely) incomprehensible error message; or the next resolver is not
-      a validating resolver, and the user is returned a potentially harmful
-      result.</t>
+      <t>A good example of issues that would benefit by additional
+      error information are errors caused by DNSSEC validation
+      issues. When a stub resolver queries a name which is DNSSEC
+      bogus (using a validating resolver), the stub resolver receives
+      only a SERVFAIL in response. Unfortunately, the SERVFAIL
+      Response Code (RCODE) is used to signal many sorts of DNS
+      errors, and so the stub resolvers only option is to ask the next
+      configured DNS resolver. The result of trying the next resolver
+      is one of two outcomes: either the next resolver also validates,
+      and a SERVFAIL is returned again or the next resolver is not a
+      validating resolver, and the user is returned a potentially
+      harmful result.  With an Extended DNS Error (EDE) option
+      enclosed in the response message, the resolver is able to return
+      a more descriptive reason as to why any failures happened, or
+      add additional context to a message containing a NOERROR
+      RCODE.</t>
 
-      <t>This document specifies a mechanism to extend DNS
-      errors to provide additional information about the cause of the error.
-      These extended error codes described in this document can be used
-      by any system that sends DNS queries. Different codes are useful
+      <t>This document specifies a mechanism to extend DNS errors to
+      provide additional information about the cause of an error.
+      These extended DNS error codes described in this document and can be
+      used by any system that sends DNS queries and receives a
+      response containing an EDE option.. Different codes are useful
       in different circumstances, and thus different systems (stub
       resolvers, recursive resolvers, and authoritative resolvers)
       might receive and use them.</t>
@@ -161,9 +167,9 @@
       RCODEs may seem nonsensical (such as resolver-specific extended
       error codes in responses from authoritative servers), so systems
       interpreting the extended error codes MUST NOT assume that a
-      combination will make sense.  Receives MUST be able to accept
-      EDE codes and text in all messages, including even those with a
-      NOERROR RCODE.</t>
+      combination will make sense.  Receivers MUST be able to accept
+      EDE codes and EXTRA-TEXT in all messages, including even those
+      with a NOERROR RCODE.</t>
 
       <section title="Requirements notation">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -224,14 +230,13 @@
           have access to, such as account numbers.</t>
         </list></t>
 
-      <t>The Extended DNS Error (EDE) is an EDNS option. It can be
-      included in any response (SERVFAIL, NXDOMAIN, REFUSED, and even
-      NOERROR, etc) to a query that includes OPT Pseudo-RR <xref
-      target="RFC6891" />.  This document includes a set of initial
-      codepoints (and requests to the IANA to add them to the
-      registry), but is extensible via the IANA registry to allow
-      additional error and information codes to be defined in the
-      future.</t>
+      <t>The Extended DNS Error (EDE) option can be included in any
+      response (SERVFAIL, NXDOMAIN, REFUSED, and even NOERROR, etc) to
+      a query that includes OPT Pseudo-RR <xref target="RFC6891" />.
+      This document includes a set of initial codepoints (and requests
+      to the IANA to add them to the registry), but is extensible via
+      the IANA registry to allow additional error and information
+      codes to be defined in the future.</t>
 
     </section>
 
@@ -239,10 +244,10 @@
       <t>This document defines some initial EDE codes. The mechanism
       is intended to be extensible, and additional code-points can be
       registered in the "Extended DNS Errors" registry <xref
-      target="IANA" />.  The INFO-CODE from the EDE EDNS option is used
-      to serve as an index into the "Extended DNS Error codes" IANA
-      registry, the initial values for which are defined in the following
-      sub-sections.</t>
+      target="IANA" />.  The INFO-CODE from the EDE EDNS option is
+      used to serve as an index into the "Extended DNS Error" IANA
+      registry, the initial values for which are defined in the
+      following sub-sections.</t>
 
       <section anchor="errother" title="Extended DNS Error Code 0 - Other">
 	      <t>The error in question falls into a category that does
@@ -267,10 +272,11 @@
         <section anchor="stalenoerror"
 	         title="Extended DNS Error Code 3 - Stale Answer">
           <t>The resolver was unable to resolve answer within its time
-          limits and decided to answer with a previously cached data
+          limits and decided to answer with previously cached data
           instead of answering with an error.  This is typically
-          caused by problems on authoritative side, possibly as result
-          of a DoS attack.</t>
+          caused by problems communicating with an authoritative
+          serever, possibly as result of a DoS attack against another
+          network.</t>
         </section>
 
         <section anchor="forgedanswer"
@@ -293,7 +299,7 @@
 
         <section anchor="errexpired"
                  title="Extended DNS Error Code 7 - Signature Expired">
-          <t>The resolver attempted to perform DNSSEC validation, a
+          <t>The resolver attempted to perform DNSSEC validation, but a
           signature in the validation chain was expired.</t>
         </section>
 
@@ -331,14 +337,13 @@
 
         <section anchor="cachederror"
                  title="Extended DNS Error Code 13 - Cached Error">
-          <t>The resolver has cached SERVFAIL for this query without
-          additional information.</t>
+          <t>The resolver has cached SERVFAIL for this query.</t>
         </section>
 
         <section anchor="notready"
                  title="Extended DNS Error Code 14 - Not Ready">
           <t>The server is unable to answer the query as it is not
-          fully up and functional yet.</t>
+          fully functional (yet).</t>
         </section>
 
 
@@ -354,7 +359,7 @@
           <t>The resolver attempted to perfom a DNS query but the
           domain was blacklisted by a security policy imposed upon the
           server being talked to. Note that how the imposed policy is
-          applied is irrelevant (in-band DNS somehow, court order,
+          applied is irrelevant (in-band DNS filtering, court order,
           etc).</t>
         </section>
 
@@ -371,18 +376,19 @@
 	         title="Extended DNS Error Code 18 - Filtered">
           <t>An authoritative or recursive resolver that receives a
           query from a client that had requested certain domains be
-          filtered can annotate its REFUSED message with this
-          code.  Functionally, this amounts to "you asked us to filter
+          filtered can annotate its REFUSED message with this code.
+          Functionally, this amounts to "you requested that we filter
           domains like this one."</t>
         </section>
 
         <section anchor="stalenx"
-	         title="Extended DNS Error Code 19 - Stale Answer">
-          <t>The resolver was unable to resolve answer within its time
-          limits and decided to answer with a previously cached
-          NXDOMAIN answer instead of answering with an error.  This is
-          typically caused by problems on authoritative side, possibly
-          as result of a DoS attack.</t>
+	         title="Extended DNS Error Code 19 - Stale NXDOMAIN Answer">
+          <t>The resolver was unable to resolve an answer within its
+          configured time limits and decided to answer with a
+          previously cached NXDOMAIN answer instead of answering with
+          an error. This is typically caused by problems communicating
+          with an authoritative serever, possibly as result of a DoS
+          attack against another network.</t>
 
         </section>
 
@@ -404,20 +410,26 @@
           use has been deprecated.</t>
         </section>
 
-        <section anchor="noauth"
+        <section anchor="noreachable"
                  title="Extended DNS Error Code 22 - No Reachable Authority">
           <t>The resolver could not reach any of the authoritative name servers
           (or they refused to reply).</t>
         </section>
 
+        <section anchor="networkerror"
+                 title="Extended DNS Error Code 23 - Network Error">
+          <t>An unrecoverable error occurred while communicating with
+          another server.</t>
+        </section>
       </section>
 
     <section title="IANA Considerations">
-      <section title="A New Extended Error Code EDNS Option" anchor="IANA">
+      <section title="A New Extended DNS Error Code EDNS Option" anchor="IANA">
 
-        <t>This document defines a new EDNS(0) option, entitled "Extended DNS
-        Error", assigned a value of TBD1 from the "DNS EDNS0 Option Codes
-        (OPT)" registry [to be removed upon publication:
+        <t>This document defines a new EDNS(0) option, entitled
+        "Extended DNS Error", assigned a value of TBD1 from the "DNS
+        EDNS0 Option Codes (OPT)" registry [to be removed upon
+        publication:
         [http://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-11]</t>
 
         <t><figure>
@@ -427,12 +439,12 @@
           </figure></t>
       </section>
 
-      <section title="New Registry Table for Extended Error Codes">
+      <section title="New Registry Table for Extended DNS Error Codes">
         <t>This document defines a new IANA registry
         table, where the index value is the INFO-CODE from the
-        Extended DNS Error EDNS option defined in this document. The
+        "Extended DNS Error" EDNS option defined in this document. The
         IANA is requested to create and maintain this "Extended DNS
-        Error codes" registry. The code-point space for each INFO-CODE
+        Error" codes registry. The code-point space for the INFO-CODE
         index is to be broken into 3 ranges:</t>
 
         <t><list style="symbols">
@@ -466,7 +478,7 @@
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">3</t>
-    <t hangText="Purpose:">Answering with stale/cached data</t>
+    <t hangText="Purpose:">Stale Answer</t>
     <t hangText="Reference:"><xref target="stalenoerror" /></t>
     </list></t>
 
@@ -520,13 +532,13 @@
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">12</t>
-    <t hangText="Purpose:">No NSEC records could be obtained</t>
+    <t hangText="Purpose:">NSEC Missing</t>
     <t hangText="Reference:"><xref target="nonsec" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">13</t>
-    <t hangText="Purpose:">The SERVFAIL error comes from the cache</t>
+    <t hangText="Purpose:">Cached Error</t>
     <t hangText="Reference:"><xref target="cachederror" /></t>
     </list></t>
 
@@ -562,7 +574,7 @@
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">19</t>
-    <t hangText="Purpose:">Answering with stale/cached NXDOMAIN data</t>
+    <t hangText="Purpose:">Stale NXDomain Answer</t>
     <t hangText="Reference:"><xref target="stalenx" /></t>
     </list></t>
 
@@ -581,9 +593,14 @@
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">22</t>
     <t hangText="Purpose:">No Reachable Authority</t>
-    <t hangText="Reference:"><xref target="deprecated" /></t>
+    <t hangText="Reference:"><xref target="noreachable" /></t>
     </list></t>
 
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="INFO-CODE:">23</t>
+    <t hangText="Purpose:">Network Error</t>
+    <t hangText="Reference:"><xref target="networkerror" /></t>
+    </list></t>
       </section>
     </section>
 
@@ -597,11 +614,12 @@
       DNSSEC should provide.</t>
 
       <t>This information is unauthenticated information, and an attacker (e.g
-      MITM or malicious recursive server) could insert an extended error
+      a MITM or malicious recursive server) could insert an extended error
       response into already untrusted data &mdash; ideally clients and
       resolvers would not trust any unauthenticated information, but until we
       live in an era where all DNS answers are authenticated via DNSSEC or
-      other mechanisms <xref target="RFC2845" /> <xref target="RFC8094" />, there are some tradeoffs. As an example, an attacker
+      other mechanisms <xref target="RFC2845" /> <xref target="RFC8094" />, 
+      there are some tradeoffs. As an example, an attacker
       who is able to insert the DNSSEC Bogus Extended Error into a packet
       could instead simply reply with a fictitious address (A or AAAA) record.
       </t>
@@ -610,19 +628,20 @@
     <section title="Acknowledgements">
       <t>The authors wish to thank Joe Abley, Mark Andrews, Vittorio
       Bertola, Stephane Bortzmeyer, Vladimir Cunat, Ralph Dolmans,
-      Peter DeVries, Peter van Dijk, Donald Eastlake, Bob Harold,
-      Geoff Huston, Shane Kerr, Edward Lewis, Carlos M.  Martinez,
-      George Michelson, Michael Sheldon, Puneet Sood, Petr Spacek,
-      Ondrej Sury, Loganaden Velvindron, and Paul Vixie.  They also
-      vaguely remember discussing this with a number of people over
-      the years, but have forgotten who all they were -- if you were
-      one of them, and are not listed, please let us know and we'll
-      acknowledge you.</t>
+      Peter DeVries, Peter van Dijk, Donald Eastlake, Bob Harold, Paul
+      Hoffman, Geoff Huston, Shane Kerr, Edward Lewis, Carlos M.
+      Martinez, George Michelson, Michael Sheldon, Puneet Sood, Petr
+      Spacek, Ondrej Sury, Loganaden Velvindron, and Paul Vixie.  They
+      also vaguely remember discussing this with a number of people
+      over the years, but have forgotten who all they were -- if you
+      were one of them, and are not listed, please let us know and
+      we'll acknowledge you.</t>
 
-      <t>I also want to thank the band "Infected Mushroom" for providing a
-      good background soundtrack (and to see if I can get away with this!)
-      Another author would like to thank the band "Mushroom Infectors". This
-      was funny at the time we wrote it, but we cannot remember why...</t>
+      <t>One author also wants to thank the band "Infected Mushroom"
+      for providing a good background soundtrack (and to see if he can
+      get away with this in an RFC!)  Another author would like to
+      thank the band "Mushroom Infectors". This was funny at the time
+      we wrote it, but we cannot remember why...</t>
     </section>
   </middle>
 

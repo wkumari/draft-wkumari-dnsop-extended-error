@@ -410,12 +410,17 @@
           use has been deprecated.</t>
         </section>
 
-        <section anchor="noauth"
+        <section anchor="noreachable"
                  title="Extended DNS Error Code 22 - No Reachable Authority">
           <t>The resolver could not reach any of the authoritative name servers
           (or they refused to reply).</t>
         </section>
 
+        <section anchor="networkerror"
+                 title="Extended DNS Error Code 23 - Network Error">
+          <t>An unrecoverable error occurred while communicating with
+          another server.</t>
+        </section>
       </section>
 
     <section title="IANA Considerations">
@@ -588,9 +593,14 @@
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">22</t>
     <t hangText="Purpose:">No Reachable Authority</t>
-    <t hangText="Reference:"><xref target="deprecated" /></t>
+    <t hangText="Reference:"><xref target="noreachable" /></t>
     </list></t>
 
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="INFO-CODE:">23</t>
+    <t hangText="Purpose:">Network Error</t>
+    <t hangText="Reference:"><xref target="networkerror" /></t>
+    </list></t>
       </section>
     </section>
 

@@ -387,7 +387,7 @@
           configured time limits and decided to answer with a
           previously cached NXDOMAIN answer instead of answering with
           an error. This is typically caused by problems communicating
-          with an authoritative serever, possibly as result of a DoS
+          with an authoritative server, possibly as result of a DoS
           attack against another network.</t>
 
         </section>

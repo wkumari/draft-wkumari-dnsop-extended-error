@@ -1739,7 +1739,9 @@ I went to talk to quad9. Here is the reply they sent.
     a final pass if I missed any in a skim.
 
 
-* Other stuff
+* IETF106 discussion
 
-
-
+  + EDE and RCODE binding
+    + all receivers shouldn't assume a binding
+    + can we state this
+    + what if receivers ignore an EDE?

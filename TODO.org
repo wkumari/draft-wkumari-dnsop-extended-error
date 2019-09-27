@@ -1872,7 +1872,10 @@ I went to talk to quad9. Here is the reply they sent.
       + Response: good point.  I'll use a reference to 4035.
 
     
-***** TODO Section 3.8, the text reads:
+***** DONE Section 3.8, the text reads:
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 15:17]
+      :END:
 
            The resolver attempted to perform DNSSEC validation, but a signature
            in the validation chain was expired.
@@ -1887,7 +1890,9 @@ I went to talk to quad9. Here is the reply they sent.
        the text could more clearly read "but *all* signatures for an
        RRset in the validation chain expired", or some such.
 
-******* Vladimír Čunát adds 
+       + Response: good point, changed
+
+       + Vladimír Čunát adds 
 
        Nitpick: *if* we were diving into such details... each RRSIG might fail
        for a different reason, for example.  That's the general problem with
@@ -1896,6 +1901,10 @@ I went to talk to quad9. Here is the reply they sent.
        succeeds.  A failure could typically be fixed by multiple different ways
        (EDE codes).  Still, I'd hope that in most real-life cases the
        implementations can "correctly" guess what's wrong.
+
+       + Response: That's true, and I think if you had sigs that were
+         both "early" and "late" but not "now" you'd return both codes
+         or more likely an "other" error code (0) with informational text.
 
 ***** TODO Section 3.13: the text reads:
 
@@ -2170,7 +2179,10 @@ I went to talk to quad9. Here is the reply they sent.
 
     Some questions about the intended meanings...
 
-***** TODO 3.6.  Extended DNS Error Code 5 - DNSSEC Indeterminate
+***** DONE 3.6.  Extended DNS Error Code 5 - DNSSEC Indeterminate
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 15:14]
+      :END:
 
       If I remember correctly, there isn't a consistent definition of what
       "indeterminate" means. Perhaps it's worth adding a reference to the
@@ -2180,7 +2192,11 @@ I went to talk to quad9. Here is the reply they sent.
       cases are mentioned in existing specifications, perhaps with a comment
       that the citations are not intended to be exhausive ]
 
-      3.5.  Extended DNS Error Code 4 - Forged Answer
+      + Response: good point.  I'll use a reference to 4035.  We'll
+        have to collect references for the rest...  That's a good (and
+        painful) idea.
+
+***** TODO 3.5.  Extended DNS Error Code 4 - Forged Answer
       3.16.  Extended DNS Error Code 15 - Blocked
       3.17.  Extended DNS Error Code 16 - Censored
       3.19.  Extended DNS Error Code 18 - Filtered

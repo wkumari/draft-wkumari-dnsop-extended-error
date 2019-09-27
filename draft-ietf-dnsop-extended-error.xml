@@ -303,14 +303,14 @@
 
         <section anchor="errexpired"
                  title="Extended DNS Error Code 7 - Signature Expired">
-          <t>The resolver attempted to perform DNSSEC validation, but a
-          signature in the validation chain was expired.</t>
+          <t>The resolver attempted to perform DNSSEC validation, but all
+          signatures in an RRset in the validation chain were expired.</t>
         </section>
 
         <section anchor="errprior"
                  title="Extended DNS Error Code 8 - Signature Not Yet Valid">
-          <t>The resolver attempted to perform DNSSEC validation, but the
-          signatures received were not yet valid.</t>
+          <t>The resolver attempted to perform DNSSEC validation, but
+          all the signatures received were not yet valid.</t>
         </section>
 
         <section anchor="errnodnskey"

@@ -1745,3 +1745,415 @@ I went to talk to quad9. Here is the reply they sent.
     + all receivers shouldn't assume a binding
     + can we state this
     + what if receivers ignore an EDE?
+* Last Call Comments
+*** Viktor Dukhovni 1
+***** Introduction 3rd paragraph (missing verb, extra period):
+
+             [...] These extended DNS error codes [are?] described in this
+             document and can be used by any system that sends DNS queries
+             and receives a response containing an EDE option.. [...]
+
+      With respect to the much discussed caveat:
+
+             This document does not allow or prohibit any particular extended
+             error codes and information be matched with any particular RCODEs.
+             Some combinations of extended error codes and RCODEs may seem
+             nonsensical (such as resolver-specific extended error codes in
+             responses from authoritative servers), so systems interpreting the
+             extended error codes MUST NOT assume that a combination will make
+             sense.  Receivers MUST be able to accept EDE codes and EXTRA-TEXT in
+             all messages, including even those with a NOERROR RCODE.
+
+          My take is that when the (12 bit EDNS) RCODE and new extended error
+          are in apparent conflict, I should treat the RCODE as definitive,
+          and ignore the extended error code.  That is, the extended error
+          can *refine* but not contradict the status indicated by the RCODE.
+          If that's correct, perhaps it should be stated explicitly.  If not
+          correct, then a clarification is perhaps still in order.
+
+      Section 2, 3rd bullet:  s/index to/index into/
+
+            The INFO-CODE serves as an index to the "Extended DNS
+            Errors" registry Section 4.1.
+
+      Section 2, 4th bullet: s/be take/be taken/
+
+            Care should be take not to leak private information that an
+            observer would not otherwise have access to, such as account
+            numbers.
+
+         I find "such as account numbers" a bit of a non sequitur (what
+         account numbers?) I'd drop this, or produce a more transparent
+         example.
+
+      Section 3.2 (code 2), may warrant more guidance on when this is
+      appropriate.  AFAIK, there is nothing wrong with all DNSKEY algorithms
+      being unsupported, provided the same holds for the DS RRset.  So,
+      while I see a use-case for code 3 (all DS unsupported, perhaps to
+      signal why the AD bit is not set, despite the non-empty DS RRset),
+      I don't understand when one would use code 2.
+
+******* Vladimír Čunát adds
+
+        I do fail to understand the split codes 1 and 2 for all DS/DNSKEY
+        algorithms being unsupported, and it actually makes me wonder how to
+        exactly write the resolver code that would set this pair.  For
+        validation I need at least one usable DS RR, i.e. one where *both* the
+        DS and DNSKEY algorithms are supported.  I believe that's the exact
+        condition to be able to extend the trust chain. (and that's how I
+        implemented it for Knot Resolver)  It may theoretically even happen that
+        there is a supported DS algorithm and a supported DNSKEY algorithm but
+        never paired together in the DS RRset - IIRC it's not perfectly correct
+        to generate such an RRset but that's probably not something a validator
+        should care for.
+
+
+      Section 3.6, code 6 (indeterminate answer) needs clarification,
+      since there is no single defintion of "indeterminate" in DNSSEC.
+      In particular different definitions are given in RFCs 4034 and
+      4035 (as explained in <https://tools.ietf.org/html/rfc7672#section-2.1.1>).
+
+          My take is that with the root zone signed, the 4033 definition
+          is obsolete, and the correct one is 4035.  This should probably
+          be made explicit:
+
+          4035 "indeterminate":
+
+            An RRset for which the resolver is not able to determine whether
+            the RRset should be signed, as the resolver is not able to obtain
+            the necessary DNSSEC RRs.  This can occur when the security-aware
+            resolver is not able to contact security-aware name servers for
+            the relevant zones.
+
+          4033 "indeterminate":
+
+            There is no trust anchor that would indicate that a specific
+            portion of the tree is secure.
+
+      Section 3.8, the text reads:
+
+             The resolver attempted to perform DNSSEC validation, but a signature
+             in the validation chain was expired.
+
+         However, there are recent observations of domain where each RRset was
+         accompanied by both expired *and* unexpired RRSIGs.
+
+             https://twitter.com/VDukhovni/status/1171170411712827393
+
+         So just *an* expired signature is not really a problem provided
+         another signature for the same RRset is not expired.  So I think
+         the text could more clearly read "but *all* signatures for an
+         RRset in the validation chain expired", or some such.
+
+******* Vladimír Čunát adds 
+
+       Nitpick: *if* we were diving into such details... each RRSIG might fail
+       for a different reason, for example.  That's the general problem with
+       providing reasons for validation failures: validation is defined in the
+       sense that you (may) succeed when at least one of various ways
+       succeeds.  A failure could typically be fixed by multiple different ways
+       (EDE codes).  Still, I'd hope that in most real-life cases the
+       implementations can "correctly" guess what's wrong.
+
+***** TODO Section 3.13: the text reads:
+
+             The resolver attempted to perform DNSSEC validation, but the
+             requested data was missing and a covering NSEC or NSEC3 was not
+             provided.
+
+         I think that "missing" can be misleading, it is not that the
+         answer is "missing" from the response, but rather that the
+         response affirmatively denies the existence of the requested
+         RRset.  So perhaps "but the response denies the existence of
+         the requested RRset" or something similar.
+
+      I find the two sections:
+
+          3.16.  Extended DNS Error Code 15 - Blocked
+          3.17.  Extended DNS Error Code 16 - Censored
+
+      somewhat confusing, it seems that the resolver returning the answer
+      is reporting second-hand status from an upstream server, but the
+      language leaves me unsure.  Perhaps this can be stated more clearly.
+
+
+*** Viktor Dukhovni 2
+    On Thu, Sep 12, 2019 at 09:51:25AM -0400, Tim Wicinski wrote:
+
+    > - Viktor's comments from 11 September will be rolled into the WGLC
+    >   comments, which means I'll be tracking them with the authors.
+
+    Much appreciated, thanks!
+
+    FWIW, on the hot topic of conflict between RCODE and extended RCODE,
+    Paul Hoffman's latest comment:
+
+        Proposal: add the following sentence to the end of the abstract:
+        "Extended error information does not change the processing of
+        RCODEs."
+
+        Proposal: add to the end of the Introduction: Applications MUST
+        NOT change the processing of RCODEs in messages based on extended
+        error codes.
+
+    seems to align with my take on the interaction of EDEs as a (to
+    coin a phrase) diagnostic refinement rather than "replacement" of
+    the RCODE.
+
+    >From a related nomenclature perspective, I wonder whether there
+    might be any confusion between the existing high 8 bits of RCODE
+    in the EDNS OPT pseudo-header (MSB octet of the TTL) and the proposed
+    new "Extended DNS Error Code".  Perhaps "Extended RCODE" and "Extended
+    DNS Error Code" are sufficiently similar terms to warrant a brief
+    comment to the effect that the proposed EDEs are diagnostic refinements
+    of the existing "Extended RCODE", which is distinct from EDEs and
+    remains the definitive status of the response...
+
+
+*** DONE Loganaden Velvindron <loganaden@gmail.com>
+    :LOGBOOK:
+    - State "DONE"       from              [2019-09-27 Fri 14:14]
+    :END:
+
+    I'm ok with the latest revision. Just a small request: John Todd
+    from quad9 sent his feedback, so it's fair to credit him in the
+    next revision of the draft.
+
+    + Response: ah, whoops; thanks!
+
+*** TODO Stephane Bortzmeyer
+
+    IMHO, the document is good. I like the fact there is no longer a
+    limitation of a given EDE to some RCODEs (it makes things simpler).
+
+    Some details, all editorial:
+
+    * it could be a good idea to add more specific references for the
+    EDE. For instance, 3 "Stale Answer" could have a reference to
+    draft-ietf-dnsop-serve-stale.
+
+    * I think that many people will be confused with 15, 16, 17 and 18.
+    Suggestions:
+      * remove 18, which is redundant with 15 (if the user chooses the
+      resolver, and he should have the right to do so, 15 and 18 are the
+      same). 18 is meaningful only if the user does have a simple way to
+      change this behaviour.
+      * Add to the definition of 15 "The policy was decided by the server
+    administrators"
+      * Add to the definition of 16 "This means that the policy was
+      not decided by the server administrators, and it is probably useless
+      to complain to them".
+
+
+*** TODO Michael J. Sheldon" <msheldon@godaddy.com>
+
+
+***** TODO In section 3.21
+
+      3.21.  Extended DNS Error Code 20 - Lame
+
+         An authoritative server that receives a query (with the RD bit clear)
+         for a domain for which it is not authoritative SHOULD include this
+         EDE code in the SERVFAIL response.  A resolver that receives a query
+         (with the RD bit clear) SHOULD include this EDE code in the REFUSED
+         response.
+
+      The above case is not consistent with current authoritative server behavior.
+
+      The authoritative servers I have tested all return REFUSED, not
+      SERVFAIL, regardless of the query RD bit, when the server does not allow
+      recursion, and the server is not authoritative for the zone.
+
+      I would change to:
+
+      
+      3.21.  Extended DNS Error Code 20 - Not Authoritative
+
+         An authoritative server that receives a query (with the RD bit clear,
+         or when not configured for recursion) for a domain for which it is
+         not authoritative SHOULD include this EDE code in the REFUSED
+         response.  A resolver that receives a query (with the RD bit clear)
+         SHOULD include this EDE code in the REFUSED response.
+
+
+
+      IMO, while "lame" is a valid term, quite frankly, it's not nearly as
+      clear in meaning as just saying "not authoritative". To me, "lame" is at
+      the delegation (referring server), not the targeted server.
+
+*** TODO Puneet Sood
+
+     
+***** I got around to review the draft only recently and have made an
+      attempt to avoid points of discussion that have been resolved since
+      IETF Prague. Apologies in advance for any duplicates.
+
+      1. Introduction and background
+      Para 2: "A good example of issues that would benefit ..."
+      Comment: The paragraph leads up to the conclusion that the EDE codes
+      will be helpful to a client to decide between retry and stopping.
+      Since the consensus is that the EDEs are purely diagnostic, it would
+      be good to reiterate that at the end of this paragraph.
+
+      + Response from Viktor: For the record, while that was
+      "diagnostic" was my take on the purpose of these codes, reading
+      other responses, I am not sure that's yet the consensus view...
+      I could also live with these being actionable, provided the text
+      is then more clear on how to do that correctly.
+
+      If the actions based on these codes are arbitrary choices for each
+      implementation, with not even a clear correspondence with associated
+      RCODEs, that feels like too much rope to me...
+
+
+      Eric Orth's comment from Sept 17 is also relevant here (no one has
+      responded to it yet). Quoting the last bullet from his response here
+      for reference:
+      https://mailarchive.ietf.org/arch/msg/dnsop/GTg8wa7lQ-VoBFcp_P5tT4VuQhE
+      *Something like "applications MUST NOT act on EDE" or "applications
+      MUST NOT change rcode processing" does not seem reasonable to me.  Way
+      too unclear what "diagnostic" processing is reasonable and allowed or
+      not.  And potentially limits applications from doing processing based
+      on very reasonable or obvious interpretations of the received
+      rcode/EDE combinations."
+
+      2. Extended Error EDNS0 option format
+      Final para: "The Extended DNS Error (EDE) option can be included in
+      any response (SERVFAIL, NXDOMAIN, REFUSED, and even NOERROR, etc) to a
+      query that includes OPT Pseudo-RR [RFC6891]. ..."
+
+      Comment: Given the level of discussion around behavior when
+      sending/receiving the EDE option, there should be some more text
+      giving guidance on behavior.
+
+      a. For recursive resolvers, it may be worth pointing that it is not
+      expected to copy/forward EDE values received from authoritative
+      nameservers to their clients.
+      b. What is the expectation on caching for the EDE code generated by a
+      recursive resolver in response to a query? My expectation is that it
+      will be cached (if the answer itself is cached) so the next response
+      has the same EDE code.
+      c. Truncation: In case a response including the EDE option with
+      EXTRA-TEXT filled in exceeds the effective UDP payload size, what is
+      the desired behavior for the EDE option? Should the EXTRA-TEXT field
+      be left empty in favor of filling in other RR types? Should the
+      response be marked truncated to require a re-query over TCP?
+
+      This is unlikely for failures but could happen when DNSSEC validation
+      could not be performed due to unsupported digest type.
+
+      3.14 Extended DNS Error Code 13 - Cached Error
+      The resolver has cached SERVFAIL for this query.
+
+      Comment: To match the text the name should be "Cached SERVFAIL".
+
+      5. Security Considerations
+      Para 2: "This information is unauthenticated information, and an attacker (e.g
+         a MITM or malicious recursive server) could insert an extended error
+         response into already untrusted data ..."
+      Comment: Agree with some other comments that this is not relevant
+      since no action is expected to be taken based on EDEs.
+      Comment: There are ideas in the thread to have links to info in the
+      EXTRA-TEXT and possibly display it to users. I guess the usual
+      warnings to not click on potentially unsafe links apply.
+
+      Thanks,
+      Puneet
+
+*** TODO Tony Finch
+
+    On 9/13/19 10:01 PM, Tony Finch wrote:
+    > 3.5.  Extended DNS Error Code 4 - Forged Answer
+    > 3.16.  Extended DNS Error Code 15 - Blocked
+    > 3.17.  Extended DNS Error Code 16 - Censored
+    > 3.19.  Extended DNS Error Code 18 - Filtered
+    >
+    > I don't understand the shades of meaning that these are supposed to
+    > distinguish.
+    >
+    > wrt "filtered", the description implies vaguely RPZ flavoured filtering,
+    > but it mentions a REFUSED RCODE which isn't what a sensible implementation
+    > would use for that purpose, so I am more confused.
+
+    With the switch to codes not specific to RCODE, I think some more
+    code-merging would be nice, in particular 3+19: stale (NXDOMAIN)
+    answer.  Perhaps also drop "4 forged" in favor of the other options?
+    (blocked, censored, if I understand the definitions)  Or is "forged"
+    meant for cases like the special top-level invalid. zone?
+
+
+    I think the current -09 "Security considerations" section is a bit
+    misleading.  It talks about the extended error being unauthenticated in
+    case of validation failure, but the current SERVFAIL is the very same
+    and that part is the more important bit (noticed by Paul Hoffman, too). 
+    With extended errors we only get more information of the same
+    authenticity.  In general, clients that don't want to validate
+    themselves can also choose a middle ground where they trust the resolver
+    and secure their link to it (typically by DoT or DoH).
+
+    Also, *if* the EDE codes will only be used for [diagnostics], I don't
+    really understand why have any "Security considerations" at all. 
+    Perhaps I'm just confused about the overall intention.
+    [diagnostics]
+    https://mailarchive.ietf.org/arch/msg/dnsop/rbkGvMH-vG-P5GHUx06-LRWYRgM
+
+*** TODO Mats Dufberg
+
+    Error codes 1 and 2, respectively, says "unsupported algorithm" in the
+    headline but "unknown algorithm" in the description. It should be
+    consistent, and I think unsupported makes most sense.
+
+*** TODO Petr Špaček
+
+*** TODO Paul Hoffman previously
+
+***** TODO Proposal: add the following sentence to the end of the abstract:
+      "Extended error information does not change the processing of RCODEs."
+
+  
+***** TODO Proposal: add to the end of the Introduction: Applications MUST NOT
+      change the processing of RCODEs in messages based on extended error
+      codes.
+
+*** TODO Tony Finch in a sub thread to Paul
+
+    Some questions about the intended meanings...
+
+***** TODO 3.6.  Extended DNS Error Code 5 - DNSSEC Indeterminate
+
+      If I remember correctly, there isn't a consistent definition of what
+      "indeterminate" means. Perhaps it's worth adding a reference to the
+      intended definition.
+
+      [ actually maybe all the codes could have citations to where the error
+      cases are mentioned in existing specifications, perhaps with a comment
+      that the citations are not intended to be exhausive ]
+
+      3.5.  Extended DNS Error Code 4 - Forged Answer
+      3.16.  Extended DNS Error Code 15 - Blocked
+      3.17.  Extended DNS Error Code 16 - Censored
+      3.19.  Extended DNS Error Code 18 - Filtered
+
+      I don't understand the shades of meaning that these are supposed to
+      distinguish.
+
+      wrt "filtered", the description implies vaguely RPZ flavoured filtering,
+      but it mentions a REFUSED RCODE which isn't what a sensible implementation
+      would use for that purpose, so I am more confused.
+
+      
+***** TODO 3.18.  Extended DNS Error Code 17 - Prohibited
+
+      If I understand correctly, the four above are about the qname whereas this
+      is about the client? The ordering is a bit confusing.
+
+      
+***** TODO 3.21.  Extended DNS Error Code 20 - Lame
+
+      This needs to be split into two: server doesn't know about the zone
+      queried for (typically RCODE=REFUSED), and server knows about the zone but
+      it has expired (typically RCODE=SERVFAIL).
+
+      Resolvers handling RD=0 queries typically answer from cache or would
+      answer REFUSED/Prohibited, I would have thought.
+    

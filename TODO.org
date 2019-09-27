@@ -1747,13 +1747,18 @@ I went to talk to quad9. Here is the reply they sent.
     + what if receivers ignore an EDE?
 * Last Call Comments
 *** Viktor Dukhovni 1
-***** Introduction 3rd paragraph (missing verb, extra period):
+***** DONE Introduction 3rd paragraph (missing verb, extra period):
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 14:43]
+      :END:
 
              [...] These extended DNS error codes [are?] described in this
              document and can be used by any system that sends DNS queries
              and receives a response containing an EDE option.. [...]
-
-      With respect to the much discussed caveat:
+***** DONE With respect to the much discussed caveat:
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 14:44]
+      :END:
 
              This document does not allow or prohibit any particular extended
              error codes and information be matched with any particular RCODEs.
@@ -1771,29 +1776,50 @@ I went to talk to quad9. Here is the reply they sent.
           If that's correct, perhaps it should be stated explicitly.  If not
           correct, then a clarification is perhaps still in order.
 
-      Section 2, 3rd bullet:  s/index to/index into/
+          + Response: there seems to be consensus around this and I
+            adopted Paul's text to clarify this
+
+***** DONE Section 2, 3rd bullet:  s/index to/index into/
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 14:45]
+      :END:
 
             The INFO-CODE serves as an index to the "Extended DNS
             Errors" registry Section 4.1.
 
-      Section 2, 4th bullet: s/be take/be taken/
+
+***** DONE Section 2, 4th bullet: s/be take/be taken/
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 14:45]
+      :END:
 
             Care should be take not to leak private information that an
             observer would not otherwise have access to, such as account
             numbers.
 
-         I find "such as account numbers" a bit of a non sequitur (what
-         account numbers?) I'd drop this, or produce a more transparent
-         example.
+***** NOCHANGE account numbers and privacy 
+      I find "such as account numbers" a bit of a non sequitur (what
+      account numbers?) I'd drop this, or produce a more transparent
+      example.
 
-      Section 3.2 (code 2), may warrant more guidance on when this is
+      + Response: I agree, it's a bit of an unusual statement.  But it
+        was suggested by Shane Kerr in the summer and if you want to
+        suggest better text for replacing it, I need a real suggestion
+        as deleting it would delete his desire to have an example in
+        there (which I agree with, FWIW).  Maybe "account name" would
+        be a middle ground?
+
+***** DONE Section 3.2 (code 2), may warrant more guidance on when this is
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 15:09]
+      :END:
       appropriate.  AFAIK, there is nothing wrong with all DNSKEY algorithms
       being unsupported, provided the same holds for the DS RRset.  So,
       while I see a use-case for code 3 (all DS unsupported, perhaps to
       signal why the AD bit is not set, despite the non-empty DS RRset),
       I don't understand when one would use code 2.
 
-******* Vladimír Čunát adds
+      + Vladimír Čunát adds
 
         I do fail to understand the split codes 1 and 2 for all DS/DNSKEY
         algorithms being unsupported, and it actually makes me wonder how to
@@ -1807,43 +1833,54 @@ I went to talk to quad9. Here is the reply they sent.
         to generate such an RRset but that's probably not something a validator
         should care for.
 
+      + So this confuses me...  Error 1 (unsupported DNSKEY alg) could
+        be included in any message where the DNSKEY algorithm (say 1
+        RSA/MD5) isn't supported. A servfail would be returned with
+        EDE-1 as well.
 
-      Section 3.6, code 6 (indeterminate answer) needs clarification,
-      since there is no single defintion of "indeterminate" in DNSSEC.
-      In particular different definitions are given in RFCs 4034 and
-      4035 (as explained in <https://tools.ietf.org/html/rfc7672#section-2.1.1>).
+        For DS unsupported, a similar case occurs when chaining from
+        the parent and a DS Digest Type of 1 (MD5) is hit that the
+        validator doesn't support.  I *think* the problem is that the
+        text should really say "Unsupported DS Digest Type", which
+        I'll go change it to.  Let me know if that's wrong.
+     
+***** TODO Section 3.6, code 6 (indeterminate answer) needs clarification,
+    since there is no single defintion of "indeterminate" in DNSSEC.
+    In particular different definitions are given in RFCs 4034 and
+    4035 (as explained in <https://tools.ietf.org/html/rfc7672#section-2.1.1>).
 
-          My take is that with the root zone signed, the 4033 definition
-          is obsolete, and the correct one is 4035.  This should probably
-          be made explicit:
+        My take is that with the root zone signed, the 4033 definition
+        is obsolete, and the correct one is 4035.  This should probably
+        be made explicit:
 
-          4035 "indeterminate":
+        4035 "indeterminate":
 
-            An RRset for which the resolver is not able to determine whether
-            the RRset should be signed, as the resolver is not able to obtain
-            the necessary DNSSEC RRs.  This can occur when the security-aware
-            resolver is not able to contact security-aware name servers for
-            the relevant zones.
+          An RRset for which the resolver is not able to determine whether
+          the RRset should be signed, as the resolver is not able to obtain
+          the necessary DNSSEC RRs.  This can occur when the security-aware
+          resolver is not able to contact security-aware name servers for
+          the relevant zones.
 
-          4033 "indeterminate":
+        4033 "indeterminate":
 
-            There is no trust anchor that would indicate that a specific
-            portion of the tree is secure.
+          There is no trust anchor that would indicate that a specific
+          portion of the tree is secure.
 
-      Section 3.8, the text reads:
+    
+***** TODO Section 3.8, the text reads:
 
-             The resolver attempted to perform DNSSEC validation, but a signature
-             in the validation chain was expired.
+           The resolver attempted to perform DNSSEC validation, but a signature
+           in the validation chain was expired.
 
-         However, there are recent observations of domain where each RRset was
-         accompanied by both expired *and* unexpired RRSIGs.
+       However, there are recent observations of domain where each RRset was
+       accompanied by both expired *and* unexpired RRSIGs.
 
-             https://twitter.com/VDukhovni/status/1171170411712827393
+           https://twitter.com/VDukhovni/status/1171170411712827393
 
-         So just *an* expired signature is not really a problem provided
-         another signature for the same RRset is not expired.  So I think
-         the text could more clearly read "but *all* signatures for an
-         RRset in the validation chain expired", or some such.
+       So just *an* expired signature is not really a problem provided
+       another signature for the same RRset is not expired.  So I think
+       the text could more clearly read "but *all* signatures for an
+       RRset in the validation chain expired", or some such.
 
 ******* Vladimír Čunát adds 
 

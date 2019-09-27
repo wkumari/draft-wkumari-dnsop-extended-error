@@ -221,13 +221,13 @@
           of this document.  This 16-bit value, encoded in network
           (MSB) byte order, provides the additional context for the
           RESPONSE-CODE of the DNS message. The INFO-CODE serves as an
-          index to the "Extended DNS Errors" registry <xref
+          index into the "Extended DNS Errors" registry <xref
           target="IANA" />.</t>
 
           <t>EXTRA-TEXT, a variable length, UTF-8 encoded, text field
           that may hold additional textual information.  Note:
           EXTRA-TEXT may be zero octets in length, indicating there is
-          no EXTRA-TEXT included.  Care should be take not to leak
+          no EXTRA-TEXT included.  Care should be taken not to leak
           private information that an observer would not otherwise
           have access to, such as account numbers.</t>
         </list></t>
@@ -262,13 +262,14 @@
                  title="Extended DNS Error Code 1 -
                         Unsupported DNSKEY Algorithm">
           <t>The resolver attempted to perform DNSSEC validation, but a DNSKEY
-          RRSET contained only unknown algorithms.</t>
+          RRSET contained only unknown DNSSEC algorithms.</t>
         </section>
 
-        <section anchor="errbaddsalg"
-                 title="Extended DNS Error Code 2 - Unsupported                           DS Algorithm">
+        <section anchor="errbaddsdigest"
+                 title="Extended DNS Error Code 2 - Unsupported DS
+                        Digest Type">
           <t>The resolver attempted to perform DNSSEC validation, but a DS
-          RRSET contained only unknown algorithms.</t>
+          RRSET contained only unknown Digest Types.</t>
         </section>
 
         <section anchor="stalenoerror"
@@ -474,8 +475,8 @@
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">2</t>
-    <t hangText="Purpose:">Unsupported DS Algorithm</t>
-    <t hangText="Reference:"><xref target="errbaddsalg" /></t>
+    <t hangText="Purpose:">Unsupported DS Digest Type</t>
+    <t hangText="Reference:"><xref target="errbaddsdigest" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">

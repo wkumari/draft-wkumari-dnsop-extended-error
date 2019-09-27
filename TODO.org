@@ -1746,7 +1746,10 @@ I went to talk to quad9. Here is the reply they sent.
     + can we state this
     + what if receivers ignore an EDE?
 * Last Call Comments
-*** TODO Viktor Dukhovni 1
+*** DONE Viktor Dukhovni 1
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-27 Fri 16:12]
+    :END:
 ***** DONE Introduction 3rd paragraph (missing verb, extra period):
       :LOGBOOK:
       - State "DONE"       from "TODO"       [2019-09-27 Fri 14:43]
@@ -1925,7 +1928,10 @@ I went to talk to quad9. Here is the reply they sent.
            down through keys and then got an NXDOMAIN with no NSEC for
            'wwww'.
 
-***** TODO I find the two sections:
+***** DONE I find the two sections:
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 16:12]
+      :END:
 
           3.16.  Extended DNS Error Code 15 - Blocked
           3.17.  Extended DNS Error Code 16 - Censored
@@ -1934,39 +1940,10 @@ I went to talk to quad9. Here is the reply they sent.
       is reporting second-hand status from an upstream server, but the
       language leaves me unsure.  Perhaps this can be stated more clearly.
 
-
-*** Viktor Dukhovni 2
-    On Thu, Sep 12, 2019 at 09:51:25AM -0400, Tim Wicinski wrote:
-
-    > - Viktor's comments from 11 September will be rolled into the WGLC
-    >   comments, which means I'll be tracking them with the authors.
-
-    Much appreciated, thanks!
-
-    FWIW, on the hot topic of conflict between RCODE and extended RCODE,
-    Paul Hoffman's latest comment:
-
-        Proposal: add the following sentence to the end of the abstract:
-        "Extended error information does not change the processing of
-        RCODEs."
-
-        Proposal: add to the end of the Introduction: Applications MUST
-        NOT change the processing of RCODEs in messages based on extended
-        error codes.
-
-    seems to align with my take on the interaction of EDEs as a (to
-    coin a phrase) diagnostic refinement rather than "replacement" of
-    the RCODE.
-
-    >From a related nomenclature perspective, I wonder whether there
-    might be any confusion between the existing high 8 bits of RCODE
-    in the EDNS OPT pseudo-header (MSB octet of the TTL) and the proposed
-    new "Extended DNS Error Code".  Perhaps "Extended RCODE" and "Extended
-    DNS Error Code" are sufficiently similar terms to warrant a brief
-    comment to the effect that the proposed EDEs are diagnostic refinements
-    of the existing "Extended RCODE", which is distinct from EDEs and
-    remains the definitive status of the response...
-
+      + Response: Those three codes were supplied in a previous
+        comment round and they are supposed to indicate policies being
+        applied from different sources.  Can you check the new text of
+        them to see if they are more understandable now?
 
 *** DONE Loganaden Velvindron <loganaden@gmail.com>
     :LOGBOOK:
@@ -1979,7 +1956,10 @@ I went to talk to quad9. Here is the reply they sent.
 
     + Response: ah, whoops; thanks!
 
-*** TODO Stephane Bortzmeyer
+*** DONE Stephane Bortzmeyer
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-27 Fri 16:11]
+    :END:
 
     IMHO, the document is good. I like the fact there is no longer a
     limitation of a given EDE to some RCODEs (it makes things simpler).
@@ -1995,8 +1975,12 @@ I went to talk to quad9. Here is the reply they sent.
 
     + Rseponse that seems popular; I'll try to do this where I can.
 
-**** TODO I think that many people will be confused with 15, 16, 17 and 18.
+**** DONE I think that many people will be confused with 15, 16, 17 and 18.
+     :LOGBOOK:
+     - State "DONE"       from "TODO"       [2019-09-27 Fri 16:11]
+     :END:
     Suggestions:
+
       * remove 18, which is redundant with 15 (if the user chooses the
       resolver, and he should have the right to do so, 15 and 18 are the
       same). 18 is meaningful only if the user does have a simple way to
@@ -2007,6 +1991,10 @@ I went to talk to quad9. Here is the reply they sent.
       not decided by the server administrators, and it is probably useless
       to complain to them".
 
+      + Response: Those three codes were supplied in a previous
+        comment round and they are supposed to indicate policies being
+        applied from different sources.  Can you check the new text of
+        them to see if they are more understandable now?
 
 *** DONE Michael J. Sheldon" <msheldon@godaddy.com>
     :LOGBOOK:
@@ -2146,9 +2134,15 @@ I went to talk to quad9. Here is the reply they sent.
       Thanks,
       Puneet
 
-*** TODO Tony Finch
+*** DONE Tony Finch
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-27 Fri 16:10]
+    :END:
 
-***** TODO On 9/13/19 10:01 PM, Tony Finch wrote:
+***** DONE On 9/13/19 10:01 PM, Tony Finch wrote:
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 16:09]
+      :END:
       > 3.5.  Extended DNS Error Code 4 - Forged Answer
       > 3.16.  Extended DNS Error Code 15 - Blocked
       > 3.17.  Extended DNS Error Code 16 - Censored
@@ -2167,6 +2161,10 @@ I went to talk to quad9. Here is the reply they sent.
       (blocked, censored, if I understand the definitions)  Or is "forged"
       meant for cases like the special top-level invalid. zone?
 
+      + Response: Those three codes were supplied in a previous
+        comment round and they are supposed to indicate policies being
+        applied from different sources.  Can you check the new text of
+        them to see if they are more understandable now?
 
 ***** DONE I think the current -09 "Security considerations" section is a bit
       :LOGBOOK:
@@ -2204,8 +2202,6 @@ I went to talk to quad9. Here is the reply they sent.
     consistent, and I think unsupported makes most sense.
 
     + good catch!  fixed.
-
-*** TODO Petr Špaček
 
 *** DONE Paul Hoffman previously
     :LOGBOOK:
@@ -2247,7 +2243,10 @@ I went to talk to quad9. Here is the reply they sent.
         have to collect references for the rest...  That's a good (and
         painful) idea.
 
-***** TODO 3.5.  Extended DNS Error Code 4 - Forged Answer
+***** DONE 3.5.  Extended DNS Error Code 4 - Forged Answer
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 16:10]
+      :END:
       3.16.  Extended DNS Error Code 15 - Blocked
       3.17.  Extended DNS Error Code 16 - Censored
       3.19.  Extended DNS Error Code 18 - Filtered
@@ -2259,11 +2258,16 @@ I went to talk to quad9. Here is the reply they sent.
       but it mentions a REFUSED RCODE which isn't what a sensible implementation
       would use for that purpose, so I am more confused.
 
-      
-***** TODO 3.18.  Extended DNS Error Code 17 - Prohibited
+      3.18.  Extended DNS Error Code 17 - Prohibited
 
       If I understand correctly, the four above are about the qname whereas this
       is about the client? The ordering is a bit confusing.
+
+      + Response: Those three codes were supplied in a previous
+        comment round and they are supposed to indicate policies being
+        applied from different sources.  Can you check the new text of
+        them to see if they are more understandable now?
+      
 
       
 ***** TODO 3.21.  Extended DNS Error Code 20 - Lame
@@ -2275,3 +2279,7 @@ I went to talk to quad9. Here is the reply they sent.
       Resolvers handling RD=0 queries typically answer from cache or would
       answer REFUSED/Prohibited, I would have thought.
     
+      + Response: So, in the second case (expired), it should return
+        an expired EDE...  I think what you're suggesting is "expired
+        under validation" and "expired under authoritative".  I'd love
+        to hear other people's opinions on that.

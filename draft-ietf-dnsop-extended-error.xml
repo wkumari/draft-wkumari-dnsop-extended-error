@@ -341,7 +341,7 @@
 
         <section anchor="cachederror"
                  title="Extended DNS Error Code 13 - Cached Error">
-          <t>The resolver has cached SERVFAIL for this query.</t>
+          <t>The resolver has Cached SERVFAIL for this query.</t>
         </section>
 
         <section anchor="notready"

@@ -397,13 +397,12 @@
         </section>
 
 	<section anchor="errlame"
-	         title="Extended DNS Error Code 20 - Lame">
-          <t>An authoritative server that receives a query (with the
-          RD bit clear) for a domain for which it is not authoritative
-          SHOULD include this EDE code in the SERVFAIL response.  A
-          resolver that receives a query (with the RD bit clear)
-          SHOULD include this EDE code in the REFUSED
-          response.</t>
+	         title="Extended DNS Error Code 20 - Not Authoritative">
+          <t>An authoritative server that receives a query (with the RD bit clear,
+         or when not configured for recursion) for a domain for which it is
+         not authoritative SHOULD include this EDE code in the REFUSED
+         response.  A resolver that receives a query (with the RD bit clear)
+         SHOULD include this EDE code in the REFUSED response.</t>
         </section>
 
 
@@ -483,7 +482,7 @@
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">3</t>
     <t hangText="Purpose:">Stale Answer</t>
-    <t hangText="Reference:"><xref target="stalenoerror" /></t>
+    <t hangText="Reference:"><xref target="stalenoerror" />, <xref target="id-serve-stale"></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
@@ -584,7 +583,7 @@
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">20</t>
-    <t hangText="Purpose:">Lame</t>
+    <t hangText="Purpose:">Not Authoritative</t>
     <t hangText="Reference:"><xref target="errlame" /></t>
     </list></t>
 

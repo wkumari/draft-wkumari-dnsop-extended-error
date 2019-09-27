@@ -1986,11 +1986,16 @@ I went to talk to quad9. Here is the reply they sent.
 
     Some details, all editorial:
 
-    * it could be a good idea to add more specific references for the
+**** DONE it could be a good idea to add more specific references for the
+     :LOGBOOK:
+     - State "DONE"       from "TODO"       [2019-09-27 Fri 15:22]
+     :END:
     EDE. For instance, 3 "Stale Answer" could have a reference to
     draft-ietf-dnsop-serve-stale.
 
-    * I think that many people will be confused with 15, 16, 17 and 18.
+    + Rseponse that seems popular; I'll try to do this where I can.
+
+**** TODO I think that many people will be confused with 15, 16, 17 and 18.
     Suggestions:
       * remove 18, which is redundant with 15 (if the user chooses the
       resolver, and he should have the right to do so, 15 and 18 are the
@@ -2003,10 +2008,16 @@ I went to talk to quad9. Here is the reply they sent.
       to complain to them".
 
 
-*** TODO Michael J. Sheldon" <msheldon@godaddy.com>
+*** DONE Michael J. Sheldon" <msheldon@godaddy.com>
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-27 Fri 15:24]
+    :END:
 
 
-***** TODO In section 3.21
+***** DONE In section 3.21
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 15:24]
+      :END:
 
       3.21.  Extended DNS Error Code 20 - Lame
 
@@ -2038,6 +2049,11 @@ I went to talk to quad9. Here is the reply they sent.
       IMO, while "lame" is a valid term, quite frankly, it's not nearly as
       clear in meaning as just saying "not authoritative". To me, "lame" is at
       the delegation (referring server), not the targeted server.
+
+      + Response: good catch and I like (and have put in) you
+        replacements.  I've never liked the "lame" name either, as I
+        don't think it's descriptive to someone that isn't in the
+        inner circle of DNS.
 
 *** TODO Puneet Sood
 

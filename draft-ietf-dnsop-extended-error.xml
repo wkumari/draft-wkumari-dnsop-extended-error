@@ -409,8 +409,6 @@
          SHOULD include this EDE code in the REFUSED response.</t>
         </section>
 
-
-
 	<section anchor="deprecated"
 	         title="Extended DNS Error Code 21 - Deprecated">
           <t>The requested operation or query is not supported as its
@@ -428,6 +426,16 @@
           <t>An unrecoverable error occurred while communicating with
           another server.</t>
         </section>
+
+        <section anchor="invaliddata"
+                 title="Extended DNS Error Code 24 - Invalid Data">
+          <t>An authoritative server that cannot answer with data for
+          a zone it is otherwise configured to support.  This may
+          occur because its most recent zone is too old, or has
+          expired, for example.</t>
+        </section>
+        
+
       </section>
 
     <section title="IANA Considerations">
@@ -609,6 +617,13 @@
     <t hangText="Purpose:">Network Error</t>
     <t hangText="Reference:"><xref target="networkerror" /></t>
     </list></t>
+
+    <t><list style="hanging" hangIndent="10">
+    <t hangText="INFO-CODE:">24</t>
+    <t hangText="Purpose:">Invalid Data</t>
+    <t hangText="Reference:"><xref target="invaliddata" /></t>
+    </list></t>
+
       </section>
     </section>
 

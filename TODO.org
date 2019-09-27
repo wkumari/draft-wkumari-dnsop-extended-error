@@ -2108,6 +2108,9 @@ I went to talk to quad9. Here is the reply they sent.
       This is unlikely for failures but could happen when DNSSEC validation
       could not be performed due to unsupported digest type.
 
+      + Response: good questions, and I think the WG needs to think
+        about whether to add that much more data.
+
 ****** DONE 3.14 Extended DNS Error Code 13 - Cached Error
        :LOGBOOK:
        - State "DONE"       from "TODO"       [2019-09-27 Fri 15:28]
@@ -2222,7 +2225,10 @@ I went to talk to quad9. Here is the reply they sent.
       change the processing of RCODEs in messages based on extended error
       codes.
 
-*** TODO Tony Finch in a sub thread to Paul
+*** DONE Tony Finch in a sub thread to Paul
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-27 Fri 16:25]
+    :END:
 
     Some questions about the intended meanings...
 
@@ -2270,7 +2276,10 @@ I went to talk to quad9. Here is the reply they sent.
       
 
       
-***** TODO 3.21.  Extended DNS Error Code 20 - Lame
+***** DONE 3.21.  Extended DNS Error Code 20 - Lame
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 16:25]
+      :END:
 
       This needs to be split into two: server doesn't know about the zone
       queried for (typically RCODE=REFUSED), and server knows about the zone but
@@ -2279,7 +2288,15 @@ I went to talk to quad9. Here is the reply they sent.
       Resolvers handling RD=0 queries typically answer from cache or would
       answer REFUSED/Prohibited, I would have thought.
     
-      + Response: So, in the second case (expired), it should return
-        an expired EDE...  I think what you're suggesting is "expired
-        under validation" and "expired under authoritative".  I'd love
-        to hear other people's opinions on that.
+      + Response: I created an "Invalid Data" error code to handle
+        this.  Does this work for you?
+
+*** My summary of state
+
+    + most comments handled
+    + need clarification on two: Puneed Sood and adding handling of
+      recursive resolvers and caching.  This has been...
+    + Tony Finch wants to split the lame code into two, with a new one
+      being authoritative but won't serve data since its expired or
+      otherwise bad.
+    + reference adding

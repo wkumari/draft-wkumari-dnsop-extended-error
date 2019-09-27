@@ -285,7 +285,11 @@
         <section anchor="forgedanswer"
                  title="Extended DNS Error Code 4 - Forged Answer">
           <t>For policy reasons (legal obligation, or malware
-          filtering, for instance), an answer was forged.</t>
+          filtering, for instance), an answer was forged.  Note that
+          this should be used when an answer is still provided, not
+          when failure codes are returned instead.  See Blocked(15),
+          Censored (16), and Filtered (17) for use when returning
+          other response codes.</t>
         </section>
 
         <section anchor="errindeterminate"
@@ -369,7 +373,7 @@
         </section>
 
         <section anchor="errfiltered"
-	         title="Extended DNS Error Code 18 - Filtered">
+	         title="Extended DNS Error Code 17 - Filtered">
           <t>The server is unable to respond to the request because
           the domain is blacklisted as requested by the client.
           Functionally, this amounts to "you requested that we filter

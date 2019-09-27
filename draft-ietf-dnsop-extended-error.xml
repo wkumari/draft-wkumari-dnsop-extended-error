@@ -624,7 +624,9 @@
       other mechanisms <xref target="RFC2845" /> <xref target="RFC8094" />, 
       there are some tradeoffs. As an example, an attacker
       who is able to insert the DNSSEC Bogus Extended Error into a packet
-      could instead simply reply with a fictitious address (A or AAAA) record.
+      could instead simply reply with a fictitious address (A or AAAA)
+      record.  Note that DNS Response Codes also contain no
+      authentication and can be just as easily manipulated.
       </t>
     </section>
 

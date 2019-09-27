@@ -495,7 +495,7 @@
     <t hangText="INFO-CODE:">3</t>
     <t hangText="Purpose:">Stale Answer</t>
     <t hangText="Reference:"><xref target="stalenoerror" />,
-    <xref target="id-serve-stale" /></t>
+    <xref target="I-D.ietf-dnsop-serve-stale" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
@@ -678,6 +678,7 @@
       <?rfc include='reference.RFC.2671'?>
       <?rfc include='reference.RFC.4035'?>
       <?rfc include='reference.RFC.6891'?>
+      <?rfc include="reference.I-D.ietf-dnsop-serve-stale"?>
     </references>
 
     <references title="Informative References">

@@ -2056,13 +2056,14 @@ I went to talk to quad9. Here is the reply they sent.
         inner circle of DNS.
 
 *** TODO Puneet Sood
-
-     
-***** I got around to review the draft only recently and have made an
+      I got around to review the draft only recently and have made an
       attempt to avoid points of discussion that have been resolved since
       IETF Prague. Apologies in advance for any duplicates.
 
-      1. Introduction and background
+****** DONE 1. Introduction and background
+       :LOGBOOK:
+       - State "DONE"       from "TODO"       [2019-09-27 Fri 15:25]
+       :END:
       Para 2: "A good example of issues that would benefit ..."
       Comment: The paragraph leads up to the conclusion that the EDE codes
       will be helpful to a client to decide between retry and stopping.
@@ -2073,12 +2074,11 @@ I went to talk to quad9. Here is the reply they sent.
       "diagnostic" was my take on the purpose of these codes, reading
       other responses, I am not sure that's yet the consensus view...
       I could also live with these being actionable, provided the text
-      is then more clear on how to do that correctly.
+      is then more clear on how to do that correctly
 
       If the actions based on these codes are arbitrary choices for each
       implementation, with not even a clear correspondence with associated
       RCODEs, that feels like too much rope to me...
-
 
       Eric Orth's comment from Sept 17 is also relevant here (no one has
       responded to it yet). Quoting the last bullet from his response here
@@ -2091,7 +2091,11 @@ I went to talk to quad9. Here is the reply they sent.
       on very reasonable or obvious interpretations of the received
       rcode/EDE combinations."
 
-      2. Extended Error EDNS0 option format
+      + Response: Paul H. gave us language to put in both the abstract
+        and introduction to address this.  Let me know if you think it
+        doesn't address this issue.
+
+****** TODO 2. Extended Error EDNS0 option format / forwarding /etc/
       Final para: "The Extended DNS Error (EDE) option can be included in
       any response (SERVFAIL, NXDOMAIN, REFUSED, and even NOERROR, etc) to a
       query that includes OPT Pseudo-RR [RFC6891]. ..."
@@ -2116,12 +2120,15 @@ I went to talk to quad9. Here is the reply they sent.
       This is unlikely for failures but could happen when DNSSEC validation
       could not be performed due to unsupported digest type.
 
-      3.14 Extended DNS Error Code 13 - Cached Error
+****** DONE 3.14 Extended DNS Error Code 13 - Cached Error
+       :LOGBOOK:
+       - State "DONE"       from "TODO"       [2019-09-27 Fri 15:28]
+       :END:
       The resolver has cached SERVFAIL for this query.
 
       Comment: To match the text the name should be "Cached SERVFAIL".
 
-      5. Security Considerations
+****** NOCHANGE 5. Security Considerations
       Para 2: "This information is unauthenticated information, and an attacker (e.g
          a MITM or malicious recursive server) could insert an extended error
          response into already untrusted data ..."
@@ -2131,45 +2138,61 @@ I went to talk to quad9. Here is the reply they sent.
       EXTRA-TEXT and possibly display it to users. I guess the usual
       warnings to not click on potentially unsafe links apply.
 
+      + Yeah, it really would be remiss to leave out that point.
+        There may be nothing we can do, but the whole point of a
+        security consideration is to properly disclose any known
+        threats/issues.
+
       Thanks,
       Puneet
 
 *** TODO Tony Finch
 
-    On 9/13/19 10:01 PM, Tony Finch wrote:
-    > 3.5.  Extended DNS Error Code 4 - Forged Answer
-    > 3.16.  Extended DNS Error Code 15 - Blocked
-    > 3.17.  Extended DNS Error Code 16 - Censored
-    > 3.19.  Extended DNS Error Code 18 - Filtered
-    >
-    > I don't understand the shades of meaning that these are supposed to
-    > distinguish.
-    >
-    > wrt "filtered", the description implies vaguely RPZ flavoured filtering,
-    > but it mentions a REFUSED RCODE which isn't what a sensible implementation
-    > would use for that purpose, so I am more confused.
+***** TODO On 9/13/19 10:01 PM, Tony Finch wrote:
+      > 3.5.  Extended DNS Error Code 4 - Forged Answer
+      > 3.16.  Extended DNS Error Code 15 - Blocked
+      > 3.17.  Extended DNS Error Code 16 - Censored
+      > 3.19.  Extended DNS Error Code 18 - Filtered
+      >
+      > I don't understand the shades of meaning that these are supposed to
+      > distinguish.
+      >
+      > wrt "filtered", the description implies vaguely RPZ flavoured filtering,
+      > but it mentions a REFUSED RCODE which isn't what a sensible implementation
+      > would use for that purpose, so I am more confused.
 
-    With the switch to codes not specific to RCODE, I think some more
-    code-merging would be nice, in particular 3+19: stale (NXDOMAIN)
-    answer.  Perhaps also drop "4 forged" in favor of the other options?
-    (blocked, censored, if I understand the definitions)  Or is "forged"
-    meant for cases like the special top-level invalid. zone?
+      With the switch to codes not specific to RCODE, I think some more
+      code-merging would be nice, in particular 3+19: stale (NXDOMAIN)
+      answer.  Perhaps also drop "4 forged" in favor of the other options?
+      (blocked, censored, if I understand the definitions)  Or is "forged"
+      meant for cases like the special top-level invalid. zone?
 
 
-    I think the current -09 "Security considerations" section is a bit
-    misleading.  It talks about the extended error being unauthenticated in
-    case of validation failure, but the current SERVFAIL is the very same
-    and that part is the more important bit (noticed by Paul Hoffman, too). 
-    With extended errors we only get more information of the same
-    authenticity.  In general, clients that don't want to validate
-    themselves can also choose a middle ground where they trust the resolver
-    and secure their link to it (typically by DoT or DoH).
+***** DONE I think the current -09 "Security considerations" section is a bit
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 15:34]
+      :END:
+      misleading.  It talks about the extended error being unauthenticated in
+      case of validation failure, but the current SERVFAIL is the very same
+      and that part is the more important bit (noticed by Paul Hoffman, too). 
+      With extended errors we only get more information of the same
+      authenticity.  In general, clients that don't want to validate
+      themselves can also choose a middle ground where they trust the resolver
+      and secure their link to it (typically by DoT or DoH).
 
-    Also, *if* the EDE codes will only be used for [diagnostics], I don't
-    really understand why have any "Security considerations" at all. 
-    Perhaps I'm just confused about the overall intention.
-    [diagnostics]
-    https://mailarchive.ietf.org/arch/msg/dnsop/rbkGvMH-vG-P5GHUx06-LRWYRgM
+      Also, *if* the EDE codes will only be used for [diagnostics], I don't
+      really understand why have any "Security considerations" at all. 
+      Perhaps I'm just confused about the overall intention.
+      [diagnostics]
+      https://mailarchive.ietf.org/arch/msg/dnsop/rbkGvMH-vG-P5GHUx06-LRWYRgM
+
+      + My thoughts on this is that it would be remiss to leave out
+        any known issues, even if they were "previously known".  The
+        point of a security considerations section is to document
+        known things that people should be aware of, and I'd count "we
+        can't verified the authenticity of these codes" as important
+        to document, even if clients won't act on them anyway.  I will
+        add a note that clients also can't trust rcodes.
 
 *** TODO Mats Dufberg
 

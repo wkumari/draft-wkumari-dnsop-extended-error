@@ -118,7 +118,8 @@
       created primarily to extend SERVFAIL to provide additional
       information about the cause of DNS and DNSSEC failures, the
       Extended DNS Errors option defined in this document allows all
-      response types to contain extended error information.</t>
+      response types to contain extended error information. Extended
+      DNS Error information does not change the processing of RCODEs.</t>
     </abstract>
   </front>
 
@@ -156,7 +157,7 @@
       provide additional information about the cause of an error.
       These extended DNS error codes described in this document and can be
       used by any system that sends DNS queries and receives a
-      response containing an EDE option.. Different codes are useful
+      response containing an EDE option. Different codes are useful
       in different circumstances, and thus different systems (stub
       resolvers, recursive resolvers, and authoritative resolvers)
       might receive and use them.</t>
@@ -168,8 +169,9 @@
       error codes in responses from authoritative servers), so systems
       interpreting the extended error codes MUST NOT assume that a
       combination will make sense.  Receivers MUST be able to accept
-      EDE codes and EXTRA-TEXT in all messages, including those
-      with a NOERROR RCODE.</t>
+      EDE codes and EXTRA-TEXT in all messages, including those with a
+      NOERROR RCODE.  Receivers MUST NOT change the processing of
+      RCODEs in messages based on extended error codes.</t>
 
       <section title="Requirements notation">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",

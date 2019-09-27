@@ -2105,13 +2105,22 @@ I went to talk to quad9. Here is the reply they sent.
 
 *** TODO Petr Špaček
 
-*** TODO Paul Hoffman previously
+*** DONE Paul Hoffman previously
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-27 Fri 14:42]
+    :END:
 
-***** TODO Proposal: add the following sentence to the end of the abstract:
+***** DONE Proposal: add the following sentence to the end of the abstract:
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 14:41]
+      :END:
       "Extended error information does not change the processing of RCODEs."
 
   
-***** TODO Proposal: add to the end of the Introduction: Applications MUST NOT
+***** DONE Proposal: add to the end of the Introduction: Applications MUST NOT
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 14:42]
+      :END:
       change the processing of RCODEs in messages based on extended error
       codes.
 

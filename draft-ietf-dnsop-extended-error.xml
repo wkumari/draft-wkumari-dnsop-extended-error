@@ -353,18 +353,27 @@
 
         <section anchor="errblocked"
 	         title="Extended DNS Error Code 15 - Blocked">
-          <t>The resolver attempted to perfom a DNS query but the
-          domain is blacklisted due to a security policy implemented
-          on the server being directly talked to.</t>
+          <t>The server is unable to respond to the request because
+          the domain is blacklisted due to an internal security policy
+          imposed by the operator of the server being directly talked
+          to.</t>
         </section>
 
         <section anchor="errcensored"
 	         title="Extended DNS Error Code 16 - Censored">
-          <t>The resolver attempted to perfom a DNS query but the
-          domain was blacklisted by a security policy imposed upon the
-          server being talked to. Note that how the imposed policy is
-          applied is irrelevant (in-band DNS filtering, court order,
-          etc).</t>
+          <t>The server is unable to respond to the request because the
+          domain is blacklisted by a security policy imposed upon the
+          server being talked to by an external requirement. Note that
+          how the imposed policy is applied is irrelevant (in-band DNS
+          filtering, court order, etc).</t>
+        </section>
+
+        <section anchor="errfiltered"
+	         title="Extended DNS Error Code 18 - Filtered">
+          <t>The server is unable to respond to the request because
+          the domain is blacklisted as requested by the client.
+          Functionally, this amounts to "you requested that we filter
+          domains like this one."</t>
         </section>
 
         <section anchor="errprohibted"
@@ -374,15 +383,6 @@
           code. Examples of "unauthorized" clients are recursive queries from
           IP addresses outside the network, blacklisted IP addresses, local
           policy, etc.</t>
-        </section>
-
-        <section anchor="errfiltered"
-	         title="Extended DNS Error Code 18 - Filtered">
-          <t>An authoritative or recursive resolver that receives a
-          query from a client that had requested certain domains be
-          filtered can annotate its REFUSED message with this code.
-          Functionally, this amounts to "you requested that we filter
-          domains like this one."</t>
         </section>
 
         <section anchor="stalenx"
@@ -482,7 +482,8 @@
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">3</t>
     <t hangText="Purpose:">Stale Answer</t>
-    <t hangText="Reference:"><xref target="stalenoerror" />, <xref target="id-serve-stale"></t>
+    <t hangText="Reference:"><xref target="stalenoerror" />,
+    <xref target="id-serve-stale" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
@@ -565,14 +566,14 @@
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">17</t>
-    <t hangText="Purpose:">Prohibited</t>
-    <t hangText="Reference:"><xref target="errprohibted" /></t>
+    <t hangText="Purpose:">Filtered</t>
+    <t hangText="Reference:"><xref target="errfiltered" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">18</t>
-    <t hangText="Purpose:">Filtered</t>
-    <t hangText="Reference:"><xref target="errfiltered" /></t>
+    <t hangText="Purpose:">Prohibited</t>
+    <t hangText="Reference:"><xref target="errprohibted" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
@@ -656,6 +657,7 @@
       <?rfc include='reference.RFC.2119'?>
       <?rfc include='reference.RFC.2434'?>
       <?rfc include='reference.RFC.2671'?>
+      <?rfc include='reference.RFC.4035'?>
       <?rfc include='reference.RFC.6891'?>
     </references>
 

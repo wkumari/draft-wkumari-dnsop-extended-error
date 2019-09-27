@@ -2186,7 +2186,7 @@ I went to talk to quad9. Here is the reply they sent.
       [diagnostics]
       https://mailarchive.ietf.org/arch/msg/dnsop/rbkGvMH-vG-P5GHUx06-LRWYRgM
 
-      + My thoughts on this is that it would be remiss to leave out
+      + Response: My thoughts on this is that it would be remiss to leave out
         any known issues, even if they were "previously known".  The
         point of a security considerations section is to document
         known things that people should be aware of, and I'd count "we
@@ -2194,11 +2194,16 @@ I went to talk to quad9. Here is the reply they sent.
         to document, even if clients won't act on them anyway.  I will
         add a note that clients also can't trust rcodes.
 
-*** TODO Mats Dufberg
+*** DONE Mats Dufberg
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-27 Fri 15:36]
+    :END:
 
     Error codes 1 and 2, respectively, says "unsupported algorithm" in the
     headline but "unknown algorithm" in the description. It should be
     consistent, and I think unsupported makes most sense.
+
+    + good catch!  fixed.
 
 *** TODO Petr Špaček
 

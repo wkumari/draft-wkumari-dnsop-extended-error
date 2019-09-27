@@ -262,14 +262,14 @@
                  title="Extended DNS Error Code 1 -
                         Unsupported DNSKEY Algorithm">
           <t>The resolver attempted to perform DNSSEC validation, but a DNSKEY
-          RRSET contained only unknown DNSSEC algorithms.</t>
+          RRSET contained only unsupported DNSSEC algorithms.</t>
         </section>
 
         <section anchor="errbaddsdigest"
                  title="Extended DNS Error Code 2 - Unsupported DS
                         Digest Type">
           <t>The resolver attempted to perform DNSSEC validation, but a DS
-          RRSET contained only unknown Digest Types.</t>
+          RRSET contained only unsupported Digest Types.</t>
         </section>
 
         <section anchor="stalenoerror"

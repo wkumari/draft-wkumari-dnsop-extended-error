@@ -1833,10 +1833,10 @@ I went to talk to quad9. Here is the reply they sent.
         to generate such an RRset but that's probably not something a validator
         should care for.
 
-      + So this confuses me...  Error 1 (unsupported DNSKEY alg) could
-        be included in any message where the DNSKEY algorithm (say 1
-        RSA/MD5) isn't supported. A servfail would be returned with
-        EDE-1 as well.
+      + Response: Error 1 (unsupported DNSKEY alg) could be included
+        in any message where the DNSKEY algorithm (say 1 RSA/MD5)
+        isn't supported. A servfail would be returned with EDE-1 as
+        well.
 
         For DS unsupported, a similar case occurs when chaining from
         the parent and a DS Digest Type of 1 (MD5) is hit that the
@@ -1844,7 +1844,10 @@ I went to talk to quad9. Here is the reply they sent.
         text should really say "Unsupported DS Digest Type", which
         I'll go change it to.  Let me know if that's wrong.
      
-***** TODO Section 3.6, code 6 (indeterminate answer) needs clarification,
+***** DONE Section 3.6, code 6 (indeterminate answer) needs clarification,
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 15:13]
+      :END:
     since there is no single defintion of "indeterminate" in DNSSEC.
     In particular different definitions are given in RFCs 4034 and
     4035 (as explained in <https://tools.ietf.org/html/rfc7672#section-2.1.1>).
@@ -1865,6 +1868,8 @@ I went to talk to quad9. Here is the reply they sent.
 
           There is no trust anchor that would indicate that a specific
           portion of the tree is secure.
+
+      + Response: good point.  I'll use a reference to 4035.
 
     
 ***** TODO Section 3.8, the text reads:

@@ -291,7 +291,8 @@
         <section anchor="errindeterminate"
                  title="Extended DNS Error Code 5 - DNSSEC Indeterminate">
           <t>The resolver attempted to perform DNSSEC validation, but
-          validation ended in the Indeterminate state.</t>
+          validation ended in the Indeterminate state <xref
+          target="RFC4035" />.</t>
         </section>
 
         <section anchor="errbogus"

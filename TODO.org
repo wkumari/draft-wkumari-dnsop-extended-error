@@ -1746,7 +1746,7 @@ I went to talk to quad9. Here is the reply they sent.
     + can we state this
     + what if receivers ignore an EDE?
 * Last Call Comments
-*** Viktor Dukhovni 1
+*** TODO Viktor Dukhovni 1
 ***** DONE Introduction 3rd paragraph (missing verb, extra period):
       :LOGBOOK:
       - State "DONE"       from "TODO"       [2019-09-27 Fri 14:43]
@@ -1906,7 +1906,7 @@ I went to talk to quad9. Here is the reply they sent.
          both "early" and "late" but not "now" you'd return both codes
          or more likely an "other" error code (0) with informational text.
 
-***** TODO Section 3.13: the text reads:
+***** NOCHANGE Section 3.13: the text reads:
 
              The resolver attempted to perform DNSSEC validation, but the
              requested data was missing and a covering NSEC or NSEC3 was not
@@ -1918,7 +1918,14 @@ I went to talk to quad9. Here is the reply they sent.
          RRset.  So perhaps "but the response denies the existence of
          the requested RRset" or something similar.
 
-      I find the two sections:
+         + I think you're misreading that section (or I'm not
+           following).  The point is that the validator *failed* to
+           get a NSEC or NSEC3 that proved the name doesn't exist to
+           match the NXDOMAIN.  So the validator changed all the way
+           down through keys and then got an NXDOMAIN with no NSEC for
+           'wwww'.
+
+***** TODO I find the two sections:
 
           3.16.  Extended DNS Error Code 15 - Blocked
           3.17.  Extended DNS Error Code 16 - Censored

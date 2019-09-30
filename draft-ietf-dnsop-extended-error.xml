@@ -170,8 +170,9 @@
       interpreting the extended error codes MUST NOT assume that a
       combination will make sense.  Receivers MUST be able to accept
       EDE codes and EXTRA-TEXT in all messages, including those with a
-      NOERROR RCODE.  Receivers MUST NOT change the processing of
-      RCODEs in messages based on extended error codes.</t>
+      NOERROR RCODE.  Applications MUST continue to follow
+      requirements from applicable specs on how to process RCODEs no
+      matter what EDE values is also received</t>
 
       <section title="Requirements notation">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",

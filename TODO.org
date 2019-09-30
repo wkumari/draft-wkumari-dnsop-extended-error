@@ -2083,6 +2083,98 @@ I went to talk to quad9. Here is the reply they sent.
         and introduction to address this.  Let me know if you think it
         doesn't address this issue.
 
+      + Eric Orth objected:
+
+        I object to the addition of "Receivers MUST NOT change the processing of RCODEs
+        in messages based on extended error codes." in section 1.  I feel that it goes
+        too far in limiting options for applications to make use of the new error
+        codes, and it is too vague for an implementer to know what processing actions
+        are allowed or not.  As currently written, I do not feel that Chrome DNS would
+        be able to handle EDEs in any way and be confident of being spec-compliant.
+
+        Regarding the statement being too limiting for implementers, I don't understand
+        the motivation for such a strong MUST-level restriction.  Maybe I'm biased as a
+        client-side implementer, but I think we should avoid restricting application
+        behavior when not relevant to the spec'ed protocol itself.  If the goal is to
+        prevent applications from misinterpreting the meaning of RCODE/EDE combinations
+        or making false assumptions about what combinations may be sent, the spec
+        should clearly state what may be sent (as it currently does) and what it
+        means.  What an application then does with that properly communicated
+        information is not relevant to the spec..  If we forbid applications from doing
+        processing based on very reasonable or obvious interpretations of RCODE/EDE
+        combinations, I think it makes it much less likely that applications will find
+        value in and implement this spec.
+
+        Regarding being too vague, as-written, I do not understand what handling of EDE
+        is allowed or not in the current draft.  From discussions here, I assume the
+        intent isn't to prevent an application from reading an EDE and including it in
+        error logs or error messages to users.  But it's not at all clear enough for
+        MUST-level statements if that would be changing RCODE processing or not if such
+        logging and messaging are currently based on RCODE alone.
+
+        My previous comment on this topic (Sept 17) quoted here for reference:
+
+            Any suggestions of making absolute requirements of how the application
+            "acts on" EDE codes sounds way too restrictive to me.  Most of how the
+            application acts on any error codes is up to the application, and it would
+            be unnecessarily limiting to pretend otherwise.  Seems to me it would lead
+            to silliness like "this application processes SERVFAIL by sometimes
+            continuing to other servers and sometimes not" and then claiming they
+            aren't changing that processing by using EDE codes to determine the actual
+            continuation behavior.
+           
+            Specific thoughts:
+            *The text currently in the draft ("systems interpreting the extended error
+            codes MUST NOT assume that a combination will make sense") seems
+            reasonable.  Not overly restrictive.  Just a reasonable warning of a
+            potential false assumption of how the recursive resolver may act.
+            *Something like "applications MUST continue to follow requirements from
+            applicable specs on how to process rcodes no matter what EDE is also
+            received" also seems reasonable.  Clarifies that those cases where
+            requirements do exist on how an application acts on errors still apply but
+            doesn't pretend that the EDE spec now tells the application what to do in
+            all cases.
+            *Something like "applications SHOULD interpret EDE as supplemental to rcode
+            rather than as a replacement" also seems reasonable.  Clarifies the
+            communicated meaning of the code without over prescribing how the
+            application acts on that meaning.
+            *Something like "applications MUST NOT act on EDE" or "applications MUST
+            NOT change rcode processing" does not seem reasonable to me.  Way too
+            unclear what "diagnostic" processing is reasonable and allowed or not.  And
+            potentially limits applications from doing processing based on very
+            reasonable or obvious interpretations of the received rcode/EDE
+            combinations.
+
+      + I responded and changed the text:
+
+        > I object to the addition of "Receivers MUST NOT change the processing
+        > of RCODEs in messages based on extended error codes."
+
+        Actually, I agree with you.  That text was from suggestion and I put it
+        in unaltered.  I thought about changing it to a SHOULD NOT.
+
+        But, I like some of your suggestions:
+
+        > *Something like "applications MUST continue to follow requirements from
+        > applicable specs on how to process rcodes no matter what EDE is also
+        > received" also seems reasonable.  Clarifies that those cases where
+        > requirements do exist on how an application acts on errors still apply but
+        > doesn't pretend that the EDE spec now tells the application what to do in
+        > all cases.
+
+        I think your point is valid and follows the intent: EDE is *not*
+        supposed to supersede other specifications that specify how to process a
+        DNS response.
+
+        > *Something like "applications SHOULD interpret EDE as supplemental to rcode
+        > rather than as a replacement" also seems reasonable.  Clarifies the
+        > communicated meaning of the code without over prescribing how the
+        > application acts on that meaning.
+
+        Again, makes sense.  I think it's covered by your other sentence though?
+        (which I've just replaced the previous sentence with)
+
+
 ****** TODO 2. Extended Error EDNS0 option format / forwarding /etc/
       Final para: "The Extended DNS Error (EDE) option can be included in
       any response (SERVFAIL, NXDOMAIN, REFUSED, and even NOERROR, etc) to a

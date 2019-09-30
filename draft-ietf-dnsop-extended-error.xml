@@ -654,13 +654,13 @@
     </section>
 
     <section title="Acknowledgements">
-      <t>The authors wish to thank Joe Abley, Mark Andrews, Vittorio
-      Bertola, Stephane Bortzmeyer, Vladimir Cunat, Ralph Dolmans,
-      Peter DeVries, Peter van Dijk, Mats Dufberg, Donald Eastlake,
-      Bob Harold, Paul Hoffman, Geoff Huston, Shane Kerr, Edward
-      Lewis, Carlos M.  Martinez, George Michelson, Eric Orth, Michael
-      Sheldon, Puneet Sood, Petr Spacek, Ondrej Sury, John Todd,
-      Loganaden Velvindron, and Paul Vixie.  They also vaguely
+      <t>The authors wish to thank Joe Abley, Mark Andrews, Tim April,
+      Vittorio Bertola, Stephane Bortzmeyer, Vladimir Cunat, Ralph
+      Dolmans, Peter DeVries, Peter van Dijk, Mats Dufberg, Donald
+      Eastlake, Bob Harold, Paul Hoffman, Geoff Huston, Shane Kerr,
+      Edward Lewis, Carlos M.  Martinez, George Michelson, Eric Orth,
+      Michael Sheldon, Puneet Sood, Petr Spacek, Ondrej Sury, John
+      Todd, Loganaden Velvindron, and Paul Vixie.  They also vaguely
       remember discussing this with a number of people over the years,
       but have forgotten who all they were -- if you were one of them,
       and are not listed, please let us know and we'll acknowledge

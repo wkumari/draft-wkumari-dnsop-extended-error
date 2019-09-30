@@ -91,14 +91,14 @@ Table of Contents
      3.11. Extended DNS Error Code 10 - RRSIGs Missing . . . . . . .   6
      3.12. Extended DNS Error Code 11 - No Zone Key Bit Set  . . . .   6
      3.13. Extended DNS Error Code 12 - NSEC Missing . . . . . . . .   6
-     3.14. Extended DNS Error Code 13 - Cached Error . . . . . . . .   6
+     3.14. Extended DNS Error Code 13 - Cached Error . . . . . . . .   7
      3.15. Extended DNS Error Code 14 - Not Ready  . . . . . . . . .   7
      3.16. Extended DNS Error Code 15 - Blocked  . . . . . . . . . .   7
      3.17. Extended DNS Error Code 16 - Censored . . . . . . . . . .   7
      3.18. Extended DNS Error Code 17 - Filtered . . . . . . . . . .   7
      3.19. Extended DNS Error Code 18 - Prohibited . . . . . . . . .   7
      3.20. Extended DNS Error Code 19 - Stale NXDOMAIN Answer  . . .   7
-     3.21. Extended DNS Error Code 20 - Not Authoritative  . . . . .   7
+     3.21. Extended DNS Error Code 20 - Not Authoritative  . . . . .   8
      3.22. Extended DNS Error Code 21 - Not Supported  . . . . . . .   8
      3.23. Extended DNS Error Code 22 - No Reachable Authority . . .   8
      3.24. Extended DNS Error Code 23 - Network Error  . . . . . . .   8
@@ -203,12 +203,13 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
    Field definition details:
 
-   o  OPTION-CODE, 2 octets (defined in [RFC6891]]), for EDE is TBD.
-      [RFC Editor: change TBD to the proper code once assigned by IANA.]
-   o  OPTION-LENGTH, 2 octets ((defined in [RFC6891]]) contains the
-      length of the payload (everything after OPTION-LENGTH) in octets
-      and should be 4 plus the length of the EXTRA-TEXT section (which
-      may be a zero-length string).
+   o  OPTION-CODE, 2-octets/16-bits (defined in [RFC6891]]), for EDE is
+      TBD.  [RFC Editor: change TBD to the proper code once assigned by
+      IANA.]
+   o  OPTION-LENGTH, 2-octets/16-bits ((defined in [RFC6891]]) contains
+      the length of the payload (everything after OPTION-LENGTH) in
+      octets and should be 4 plus the length of the EXTRA-TEXT section
+      (which may be a zero-length string).
    o  INFO-CODE, 16-bits, which is the principal contribution of this
       document.  This 16-bit value, encoded in network (MSB) byte order,
       provides the additional context for the RESPONSE-CODE of the DNS
@@ -218,8 +219,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
       hold additional textual information.  Note: EXTRA-TEXT may be zero
       octets in length, indicating there is no EXTRA-TEXT included.
       Care should be taken not to leak private information that an
-      observer would not otherwise have access to, such as account
-      numbers.
+
 
 
 
@@ -227,6 +227,9 @@ Kumari, et al.            Expires April 2, 2020                 [Page 4]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
+
+      observer would not otherwise have access to, such as account
+      numbers.
 
    The Extended DNS Error (EDE) option can be included in any response
    (SERVFAIL, NXDOMAIN, REFUSED, and even NOERROR, etc) to a query that
@@ -273,9 +276,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
    For policy reasons (legal obligation, or malware filtering, for
    instance), an answer was forged.  Note that this should be used when
    an answer is still provided, not when failure codes are returned
-   instead.  See Blocked(15), Censored (16), and Filtered (17) for use
-   when returning other response codes.
-
 
 
 
@@ -283,6 +283,9 @@ Kumari, et al.            Expires April 2, 2020                 [Page 5]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
+
+   instead.  See Blocked(15), Censored (16), and Filtered (17) for use
+   when returning other response codes.
 
 3.6.  Extended DNS Error Code 5 - DNSSEC Indeterminate
 
@@ -296,13 +299,13 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 3.8.  Extended DNS Error Code 7 - Signature Expired
 
-   The resolver attempted to perform DNSSEC validation, but all
-   signatures in an RRset in the validation chain were expired.
+   The resolver attempted to perform DNSSEC validation, but no
+   signatures are presently valid and some (often all) are expired.
 
 3.9.  Extended DNS Error Code 8 - Signature Not Yet Valid
 
-   The resolver attempted to perform DNSSEC validation, but all the
-   signatures received were not yet valid.
+   The resolver attempted to perform DNSSEC validation, but but no
+   signatures are presently valid and at least some are not yet valid.
 
 3.10.  Extended DNS Error Code 9 - DNSKEY Missing
 
@@ -325,9 +328,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
    requested data was missing and a covering NSEC or NSEC3 was not
    provided.
 
-3.14.  Extended DNS Error Code 13 - Cached Error
-
-   The resolver is returning the SERVFAIL RCODE from its cache.
 
 
 
@@ -339,6 +339,10 @@ Kumari, et al.            Expires April 2, 2020                 [Page 6]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
+
+3.14.  Extended DNS Error Code 13 - Cached Error
+
+   The resolver is returning the SERVFAIL RCODE from its cache.
 
 3.15.  Extended DNS Error Code 14 - Not Ready
 
@@ -380,13 +384,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
    for example, by problems communicating with an authoritative server,
    possibly as result of a DoS attack against another network.
 
-3.21.  Extended DNS Error Code 20 - Not Authoritative
 
-   An authoritative server that receives a query (with the RD bit clear,
-   or when not configured for recursion) for a domain for which it is
-   not authoritative SHOULD include this EDE code in the REFUSED
-   response.  A resolver that receives a query (with the RD bit clear)
-   SHOULD include this EDE code in the REFUSED response.
+
+
 
 
 
@@ -395,6 +395,14 @@ Kumari, et al.            Expires April 2, 2020                 [Page 7]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
+
+3.21.  Extended DNS Error Code 20 - Not Authoritative
+
+   An authoritative server that receives a query (with the RD bit clear,
+   or when not configured for recursion) for a domain for which it is
+   not authoritative SHOULD include this EDE code in the REFUSED
+   response.  A resolver that receives a query (with the RD bit clear)
+   SHOULD include this EDE code in the REFUSED response.
 
 3.22.  Extended DNS Error Code 21 - Not Supported
 
@@ -436,14 +444,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
    This document defines a new IANA registry table, where the index
    value is the INFO-CODE from the "Extended DNS Error" EDNS option
    defined in this document.  The IANA is requested to create and
-   maintain this "Extended DNS Error" codes registry.  The code-point
-   space for the INFO-CODE index is to be broken into 3 ranges:
-
-   o  0 - 32767: Expert Review [RFC2434].
-   o  32768 - 49151: First come, first served.
-   o  49152 - 65535: Experimental / Private use.
-
-
 
 
 
@@ -451,6 +451,13 @@ Kumari, et al.            Expires April 2, 2020                 [Page 8]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
+
+   maintain this "Extended DNS Error" codes registry.  The code-point
+   space for the INFO-CODE index is to be broken into 3 ranges:
+
+   o  0 - 32767: Expert Review [RFC2434].
+   o  32768 - 49151: First come, first served.
+   o  49152 - 65535: Experimental / Private use.
 
    A starting set of entries, based on the contents of this document, is
    as follows:
@@ -493,13 +500,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
    INFO-CODE:  9
    Purpose:  DNSKEY Missing
-   Reference:  Section 3.10
-
-   INFO-CODE:  10
-   Purpose:  RRSIGs Missing
-   Reference:  Section 3.11
-
-   INFO-CODE:  11
 
 
 
@@ -508,6 +508,13 @@ Kumari, et al.            Expires April 2, 2020                 [Page 9]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
+   Reference:  Section 3.10
+
+   INFO-CODE:  10
+   Purpose:  RRSIGs Missing
+   Reference:  Section 3.11
+
+   INFO-CODE:  11
    Purpose:  No Zone Key Bit Set
    Reference:  Section 3.12
 
@@ -549,13 +556,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
    INFO-CODE:  21
    Purpose:  Not Supported
-   Reference:  Section 3.22
-
-   INFO-CODE:  22
-   Purpose:  No Reachable Authority
-   Reference:  Section 3.23
-
-   INFO-CODE:  23
 
 
 
@@ -564,6 +564,13 @@ Kumari, et al.            Expires April 2, 2020                [Page 10]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
+   Reference:  Section 3.22
+
+   INFO-CODE:  22
+   Purpose:  No Reachable Authority
+   Reference:  Section 3.23
+
+   INFO-CODE:  23
    Purpose:  Network Error
    Reference:  Section 3.24
 
@@ -593,23 +600,16 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 6.  Acknowledgements
 
-   The authors wish to thank Joe Abley, Mark Andrews, Vittorio Bertola,
-   Stephane Bortzmeyer, Vladimir Cunat, Ralph Dolmans, Peter DeVries,
-   Peter van Dijk, Mats Dufberg, Donald Eastlake, Bob Harold, Paul
-   Hoffman, Geoff Huston, Shane Kerr, Edward Lewis, Carlos M.  Martinez,
-   George Michelson, Eric Orth, Michael Sheldon, Puneet Sood, Petr
-   Spacek, Ondrej Sury, John Todd, Loganaden Velvindron, and Paul Vixie.
-   They also vaguely remember discussing this with a number of people
-   over the years, but have forgotten who all they were -- if you were
-   one of them, and are not listed, please let us know and we'll
-   acknowledge you.
-
-   One author also wants to thank the band "Infected Mushroom" for
-   providing a good background soundtrack (and to see if he can get away
-   with this in an RFC!)  Another author would like to thank the band
-   "Mushroom Infectors".  This was funny at the time we wrote it, but we
-   cannot remember why...
-
+   The authors wish to thank Joe Abley, Mark Andrews, Tim April,
+   Vittorio Bertola, Stephane Bortzmeyer, Vladimir Cunat, Ralph Dolmans,
+   Peter DeVries, Peter van Dijk, Mats Dufberg, Donald Eastlake, Bob
+   Harold, Paul Hoffman, Geoff Huston, Shane Kerr, Edward Lewis, Carlos
+   M.  Martinez, George Michelson, Eric Orth, Michael Sheldon, Puneet
+   Sood, Petr Spacek, Ondrej Sury, John Todd, Loganaden Velvindron, and
+   Paul Vixie.  They also vaguely remember discussing this with a number
+   of people over the years, but have forgotten who all they were -- if
+   you were one of them, and are not listed, please let us know and
+   we'll acknowledge you.
 
 
 
@@ -619,6 +619,12 @@ Kumari, et al.            Expires April 2, 2020                [Page 11]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
+
+   One author also wants to thank the band "Infected Mushroom" for
+   providing a good background soundtrack (and to see if he can get away
+   with this in an RFC!)  Another author would like to thank the band
+   "Mushroom Infectors".  This was funny at the time we wrote it, but we
+   cannot remember why...
 
 7.  References
 
@@ -660,12 +666,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
               Internet", June 2016, <http://www.potaroo.net/
               presentations/2016-06-27-dnssec.pdf>.
 
-   [RFC2845]  Vixie, P., Gudmundsson, O., Eastlake 3rd, D., and B.
-              Wellington, "Secret Key Transaction Authentication for DNS
-              (TSIG)", RFC 2845, DOI 10.17487/RFC2845, May 2000,
-              <https://www.rfc-editor.org/info/rfc2845>.
-
-
 
 
 
@@ -675,6 +675,11 @@ Kumari, et al.            Expires April 2, 2020                [Page 12]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
+
+   [RFC2845]  Vixie, P., Gudmundsson, O., Eastlake 3rd, D., and B.
+              Wellington, "Secret Key Transaction Authentication for DNS
+              (TSIG)", RFC 2845, DOI 10.17487/RFC2845, May 2000,
+              <https://www.rfc-editor.org/info/rfc2845>.
 
    [RFC8094]  Reddy, T., Wing, D., and P. Patil, "DNS over Datagram
               Transport Layer Security (DTLS)", RFC 8094,
@@ -716,6 +721,17 @@ Authors' Addresses
    Email: ietf@hardakers.net
 
 
+
+
+
+
+
+
+Kumari, et al.            Expires April 2, 2020                [Page 13]
+
+Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
+
+
    David C Lawrence
    Oracle + Dyn
    150 Dow St
@@ -727,5 +743,45 @@ Authors' Addresses
 
 
 
-Kumari, et al.            Expires April 2, 2020                [Page 13]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kumari, et al.            Expires April 2, 2020                [Page 14]
 ```

@@ -174,7 +174,7 @@
       EDE codes and EXTRA-TEXT in all messages, including those with a
       NOERROR RCODE.  Applications MUST continue to follow
       requirements from applicable specs on how to process RCODEs no
-      matter what EDE values is also received</t>
+      matter what EDE values is also received.</t>
 
       <section title="Requirements notation">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -310,14 +310,16 @@
 
         <section anchor="errexpired"
                  title="Extended DNS Error Code 7 - Signature Expired">
-          <t>The resolver attempted to perform DNSSEC validation, but all
-          signatures in an RRset in the validation chain were expired.</t>
+          <t>The resolver attempted to perform DNSSEC validation, but
+          no signatures are presently valid and some (often all) are
+          expired.</t>
         </section>
 
         <section anchor="errprior"
                  title="Extended DNS Error Code 8 - Signature Not Yet Valid">
           <t>The resolver attempted to perform DNSSEC validation, but
-          all the signatures received were not yet valid.</t>
+          but no signatures are presently valid and at least some are
+          not yet valid.</t>
         </section>
 
         <section anchor="errnodnskey"

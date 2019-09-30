@@ -134,7 +134,9 @@
       what the issue is - e.g. was the answer marked REFUSED because
       of a lame delegation, or because the nameserver is still
       starting up and loading zones? Is a SERVFAIL a DNSSEC validation
-      issue, or is the nameserver experiencing some other failure?</t>
+      issue, or is the nameserver experiencing some other failure?
+      What error messages should be presented to the user or logged
+      under these conditions?</t>
 
       <t>A good example of issues that would benefit by additional
       error information are errors caused by DNSSEC validation
@@ -346,7 +348,7 @@
 
         <section anchor="cachederror"
                  title="Extended DNS Error Code 13 - Cached Error">
-          <t>The resolver has Cached SERVFAIL for this query.</t>
+          <t>The resolver is returning the SERVFAIL RCODE from its cache.</t>
         </section>
 
         <section anchor="notready"
@@ -382,7 +384,7 @@
         </section>
 
         <section anchor="errprohibted"
-	         title="Extended DNS Error Code 17 - Prohibited">
+	         title="Extended DNS Error Code 18 - Prohibited">
           <t>An authoritative or recursive resolver that receives a query from
           an "unauthorized" client can annotate its REFUSED message with this
           code. Examples of "unauthorized" clients are recursive queries from
@@ -395,9 +397,9 @@
           <t>The resolver was unable to resolve an answer within its
           configured time limits and decided to answer with a
           previously cached NXDOMAIN answer instead of answering with
-          an error. This is typically caused by problems communicating
-          with an authoritative server, possibly as result of a DoS
-          attack against another network.</t>
+          an error. This is may be caused, for example, by problems
+          communicating with an authoritative server, possibly as
+          result of a DoS attack against another network.</t>
 
         </section>
 
@@ -411,7 +413,7 @@
         </section>
 
 	<section anchor="deprecated"
-	         title="Extended DNS Error Code 21 - Deprecated">
+	         title="Extended DNS Error Code 21 - Not Supported">
           <t>The requested operation or query is not supported as its
           use has been deprecated.</t>
         </section>
@@ -603,7 +605,7 @@
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">21</t>
-    <t hangText="Purpose:">Deprecated</t>
+    <t hangText="Purpose:">Not Supported</t>
     <t hangText="Reference:"><xref target="deprecated" /></t>
     </list></t>
 

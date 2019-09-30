@@ -2298,6 +2298,82 @@ I went to talk to quad9. Here is the reply they sent.
 
     + good catch!  fixed.
 
+*** DONE Mats Dufberg 2
+    :LOGBOOK:
+    - State "DONE"       from              [2019-09-30 Mon 14:05]
+    :END:
+
+    Mats Dufberg <mats.dufberg@internetstiftelsen.se> writes:
+
+    > Section 1 ends with "Receivers MUST NOT change the processing of
+    > RCODEs in messages based on extended error codes" but it is not fully
+    > clear what that statement means in the light of the description in the
+    > beginning of the same section where the motivation for extended error
+    > codes is that the resolver cannot know what specific error that is
+    > behind, e.g., REFUSED and there does not know what the best next step
+    > is.
+
+    See the discussion with Eric about new wording for that sentence.  That
+    being said, I think your point is valid about misunderstanding the
+    purpose as well.  So I've added this sentence to the end of the first
+    paragraph:
+
+          What error messages should be presented to the user or logged
+          under these conditions?</t>
+
+    Seem ok?
+
+    > Both section 3.18 (filtered) and section 3.19 (prohibited) has code 17. In the
+    > registry table (4.2) it is code 17 and 18, respectively.
+
+    Fixed, thanks.
+
+    > Both 3.14 (Cached error) and 3.20 (Stale NXDOMAIN answer) reports that the
+    > RCODE returned was taken from cached. In 3.20 it is described in detail what
+    > the resolver has done before the answer is returned, whereas in 3.14 there are
+    > not details at all.
+    > 
+    > 3.14 needs more specification of when to use cached SERVFAIL.
+
+    Hmm...  What more would I put other than "the resolver is to include
+    this when it returns a SERVFAIL from the cache?"  I've changed the text
+    to
+
+        The resolver is returning the SERVFAIL RCODE from its cache.
+
+    Which I think is clearer.
+
+    > I think that the last sentence in 3.20 ("This is typically caused [...] result
+    > of a DoS attack against another network") does not belong to a standard
+    > document.
+
+    I've changed it to this:
+
+              This is may be caused, for example, by problems
+              communicating with an authoritative server, possibly as
+              result of a DoS attack against another network.
+
+    Which removes "typically", which I think you're right is out of place.
+    I don't think removing the sentence is helpful to the reader, so I'd
+    rather fix it.
+
+    > In 3.22 it would be better to say that the operation or query is not supported
+    > ("Not supported"). As the text is now it is unclear by whom it is deprecated.
+
+    Ok, I'm fine with that.  Changed.
+
+    > I suggest that the sentence "This may occur because its most recent
+    > zone is too old, or has expired, for example" is removed from 3.25
+    > since there could be multiple reasons and it is not needed to give an
+    > example in a standard document.
+
+    I'm not sure why you think examples aren't useful in standards
+    documents?  IMHO, they're used all the time (the IMAP RFC is one of my
+    favorites that is full of example usages).  In the previous example you
+    brought up above, I agree that we shouldn't be determining commonality
+    of possibilities.  But I think examples in generally greatly help the
+    reader determine how to more accurately interpret a specification. 
+
 *** DONE Paul Hoffman previously
     :LOGBOOK:
     - State "DONE"       from "TODO"       [2019-09-27 Fri 14:42]

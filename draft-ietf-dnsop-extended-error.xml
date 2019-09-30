@@ -210,11 +210,11 @@
       <t>Field definition details:</t>
 
       <t><list style="symbols">
-          <t>OPTION-CODE, 2 octets (defined in <xref target="RFC6891"
+          <t>OPTION-CODE, 2-octets/16-bits (defined in <xref target="RFC6891"
           />]), for EDE is TBD.
           [RFC Editor: change TBD to the proper code once assigned by IANA.]</t>
 
-          <t>OPTION-LENGTH, 2 octets ((defined in <xref
+          <t>OPTION-LENGTH, 2-octets/16-bits ((defined in <xref
           target="RFC6891" />]) contains
           the length of the payload (everything after OPTION-LENGTH)
           in octets and should be 4 plus the length of the EXTRA-TEXT

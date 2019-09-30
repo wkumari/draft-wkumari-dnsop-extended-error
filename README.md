@@ -96,10 +96,10 @@ Table of Contents
      3.16. Extended DNS Error Code 15 - Blocked  . . . . . . . . . .   7
      3.17. Extended DNS Error Code 16 - Censored . . . . . . . . . .   7
      3.18. Extended DNS Error Code 17 - Filtered . . . . . . . . . .   7
-     3.19. Extended DNS Error Code 17 - Prohibited . . . . . . . . .   7
+     3.19. Extended DNS Error Code 18 - Prohibited . . . . . . . . .   7
      3.20. Extended DNS Error Code 19 - Stale NXDOMAIN Answer  . . .   7
      3.21. Extended DNS Error Code 20 - Not Authoritative  . . . . .   7
-     3.22. Extended DNS Error Code 21 - Deprecated . . . . . . . . .   8
+     3.22. Extended DNS Error Code 21 - Not Supported  . . . . . . .   8
      3.23. Extended DNS Error Code 22 - No Reachable Authority . . .   8
      3.24. Extended DNS Error Code 23 - Network Error  . . . . . . .   8
      3.25. Extended DNS Error Code 24 - Invalid Data . . . . . . . .   8
@@ -132,7 +132,8 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
    - e.g. was the answer marked REFUSED because of a lame delegation, or
    because the nameserver is still starting up and loading zones?  Is a
    SERVFAIL a DNSSEC validation issue, or is the nameserver experiencing
-   some other failure?
+   some other failure?  What error messages should be presented to the
+   user or logged under these conditions?
 
    A good example of issues that would benefit by additional error
    information are errors caused by DNSSEC validation issues.  When a
@@ -163,7 +164,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
    nonsensical (such as resolver-specific extended error codes in
    responses from authoritative servers), so systems interpreting the
    extended error codes MUST NOT assume that a combination will make
-   sense.  Receivers MUST be able to accept EDE codes and EXTRA-TEXT in
 
 
 
@@ -172,9 +172,10 @@ Kumari, et al.           Expires March 30, 2020                 [Page 3]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
-   all messages, including those with a NOERROR RCODE.  Receivers MUST
-   NOT change the processing of RCODEs in messages based on extended
-   error codes.
+   sense.  Receivers MUST be able to accept EDE codes and EXTRA-TEXT in
+   all messages, including those with a NOERROR RCODE.  Applications
+   MUST continue to follow requirements from applicable specs on how to
+   process RCODEs no matter what EDE values is also received
 
 1.1.  Requirements notation
 
@@ -219,7 +220,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
       Care should be taken not to leak private information that an
       observer would not otherwise have access to, such as account
       numbers.
-
 
 
 
@@ -327,7 +327,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 3.14.  Extended DNS Error Code 13 - Cached Error
 
-   The resolver has Cached SERVFAIL for this query.
+   The resolver is returning the SERVFAIL RCODE from its cache.
 
 
 
@@ -364,7 +364,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
    blacklisted as requested by the client.  Functionally, this amounts
    to "you requested that we filter domains like this one."
 
-3.19.  Extended DNS Error Code 17 - Prohibited
+3.19.  Extended DNS Error Code 18 - Prohibited
 
    An authoritative or recursive resolver that receives a query from an
    "unauthorized" client can annotate its REFUSED message with this
@@ -376,9 +376,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
    The resolver was unable to resolve an answer within its configured
    time limits and decided to answer with a previously cached NXDOMAIN
-   answer instead of answering with an error.  This is typically caused
-   by problems communicating with an authoritative server, possibly as
-   result of a DoS attack against another network.
+   answer instead of answering with an error.  This is may be caused,
+   for example, by problems communicating with an authoritative server,
+   possibly as result of a DoS attack against another network.
 
 3.21.  Extended DNS Error Code 20 - Not Authoritative
 
@@ -396,7 +396,7 @@ Kumari, et al.           Expires March 30, 2020                 [Page 7]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
-3.22.  Extended DNS Error Code 21 - Deprecated
+3.22.  Extended DNS Error Code 21 - Not Supported
 
    The requested operation or query is not supported as its use has been
    deprecated.
@@ -548,7 +548,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
    Reference:  Section 3.21
 
    INFO-CODE:  21
-   Purpose:  Deprecated
+   Purpose:  Not Supported
    Reference:  Section 3.22
 
    INFO-CODE:  22

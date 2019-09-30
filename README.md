@@ -7,18 +7,18 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Standards Track                                 E. Hunt
-Expires: March 30, 2020                                              ISC
+Expires: April 2, 2020                                               ISC
                                                                R. Arends
                                                                    ICANN
                                                              W. Hardaker
                                                                  USC/ISI
                                                              D. Lawrence
                                                             Oracle + Dyn
-                                                      September 27, 2019
+                                                      September 30, 2019
 
 
                           Extended DNS Errors
-                   draft-ietf-dnsop-extended-error-10
+                   draft-ietf-dnsop-extended-error-11
 
 Abstract
 
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on March 30, 2020.
+   This Internet-Draft will expire on April 2, 2020.
 
 Copyright Notice
 
@@ -55,7 +55,7 @@ Copyright Notice
 
 
 
-Kumari, et al.           Expires March 30, 2020                 [Page 1]
+Kumari, et al.            Expires April 2, 2020                 [Page 1]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
@@ -111,7 +111,7 @@ Table of Contents
 
 
 
-Kumari, et al.           Expires March 30, 2020                 [Page 2]
+Kumari, et al.            Expires April 2, 2020                 [Page 2]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
@@ -167,7 +167,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
 
-Kumari, et al.           Expires March 30, 2020                 [Page 3]
+Kumari, et al.            Expires April 2, 2020                 [Page 3]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
@@ -223,7 +223,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
 
-Kumari, et al.           Expires March 30, 2020                 [Page 4]
+Kumari, et al.            Expires April 2, 2020                 [Page 4]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
@@ -279,7 +279,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
 
-Kumari, et al.           Expires March 30, 2020                 [Page 5]
+Kumari, et al.            Expires April 2, 2020                 [Page 5]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
@@ -335,7 +335,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
 
-Kumari, et al.           Expires March 30, 2020                 [Page 6]
+Kumari, et al.            Expires April 2, 2020                 [Page 6]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
@@ -391,7 +391,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
 
-Kumari, et al.           Expires March 30, 2020                 [Page 7]
+Kumari, et al.            Expires April 2, 2020                 [Page 7]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
@@ -447,7 +447,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
 
-Kumari, et al.           Expires March 30, 2020                 [Page 8]
+Kumari, et al.            Expires April 2, 2020                 [Page 8]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
@@ -503,7 +503,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
 
-Kumari, et al.           Expires March 30, 2020                 [Page 9]
+Kumari, et al.            Expires April 2, 2020                 [Page 9]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
@@ -559,7 +559,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
 
-Kumari, et al.           Expires March 30, 2020                [Page 10]
+Kumari, et al.            Expires April 2, 2020                [Page 10]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
@@ -615,7 +615,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
 
-Kumari, et al.           Expires March 30, 2020                [Page 11]
+Kumari, et al.            Expires April 2, 2020                [Page 11]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
@@ -671,7 +671,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
 
-Kumari, et al.           Expires March 30, 2020                [Page 12]
+Kumari, et al.            Expires April 2, 2020                [Page 12]
 
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
@@ -727,5 +727,5 @@ Authors' Addresses
 
 
 
-Kumari, et al.           Expires March 30, 2020                [Page 13]
+Kumari, et al.            Expires April 2, 2020                [Page 13]
 ```

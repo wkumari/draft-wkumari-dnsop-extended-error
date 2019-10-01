@@ -174,7 +174,10 @@
       EDE codes and EXTRA-TEXT in all messages, including those with a
       NOERROR RCODE.  Applications MUST continue to follow
       requirements from applicable specs on how to process RCODEs no
-      matter what EDE values is also received.</t>
+      matter what EDE values is also received.  Senders MAY include
+      more than one EDE option and receivers MUST be able to accept
+      (but not necessarily process or act on) multiple EDE options in
+      a DNS message.</t>
 
       <section title="Requirements notation">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -184,7 +187,7 @@
       </section>
     </section>
 
-    <section title="Extended Error EDNS0 option format">
+    <section title="Extended DNS Error EDNS0 option format">
       <t>This draft uses an EDNS0 (<xref target="RFC2671" />) option to include
       Extended DNS Error (EDE) information in DNS messages. The option
       is structured as follows:</t>

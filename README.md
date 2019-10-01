@@ -74,7 +74,7 @@ Table of Contents
 
    1.  Introduction and background . . . . . . . . . . . . . . . . .   3
      1.1.  Requirements notation . . . . . . . . . . . . . . . . . .   4
-   2.  Extended Error EDNS0 option format  . . . . . . . . . . . . .   4
+   2.  Extended DNS Error EDNS0 option format  . . . . . . . . . . .   4
    3.  Defined Extended DNS Errors . . . . . . . . . . . . . . . . .   5
      3.1.  Extended DNS Error Code 0 - Other . . . . . . . . . . . .   5
      3.2.  Extended DNS Error Code 1 -
@@ -82,7 +82,7 @@ Table of Contents
      3.3.  Extended DNS Error Code 2 - Unsupported DS
            Digest Type . . . . . . . . . . . . . . . . . . . . . . .   5
      3.4.  Extended DNS Error Code 3 - Stale Answer  . . . . . . . .   5
-     3.5.  Extended DNS Error Code 4 - Forged Answer . . . . . . . .   5
+     3.5.  Extended DNS Error Code 4 - Forged Answer . . . . . . . .   6
      3.6.  Extended DNS Error Code 5 - DNSSEC Indeterminate  . . . .   6
      3.7.  Extended DNS Error Code 6 - DNSSEC Bogus  . . . . . . . .   6
      3.8.  Extended DNS Error Code 7 - Signature Expired . . . . . .   6
@@ -175,7 +175,10 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
    sense.  Receivers MUST be able to accept EDE codes and EXTRA-TEXT in
    all messages, including those with a NOERROR RCODE.  Applications
    MUST continue to follow requirements from applicable specs on how to
-   process RCODEs no matter what EDE values is also received
+   process RCODEs no matter what EDE values is also received.  Senders
+   MAY include more than one EDE option and receivers MUST be able to
+   accept (but not necessarily process or act on) multiple EDE options
+   in a DNS message.
 
 1.1.  Requirements notation
 
@@ -183,7 +186,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in [RFC2119].
 
-2.  Extended Error EDNS0 option format
+2.  Extended DNS Error EDNS0 option format
 
    This draft uses an EDNS0 ([RFC2671]) option to include Extended DNS
    Error (EDE) information in DNS messages.  The option is structured as
@@ -217,9 +220,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
       Errors" registry Section 4.1.
    o  EXTRA-TEXT, a variable length, UTF-8 encoded, text field that may
       hold additional textual information.  Note: EXTRA-TEXT may be zero
-      octets in length, indicating there is no EXTRA-TEXT included.
-      Care should be taken not to leak private information that an
-
 
 
 
@@ -228,6 +228,8 @@ Kumari, et al.            Expires April 2, 2020                 [Page 4]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
+      octets in length, indicating there is no EXTRA-TEXT included.
+      Care should be taken not to leak private information that an
       observer would not otherwise have access to, such as account
       numbers.
 
@@ -271,11 +273,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
    with an authoritative serever, possibly as result of a DoS attack
    against another network.
 
-3.5.  Extended DNS Error Code 4 - Forged Answer
 
-   For policy reasons (legal obligation, or malware filtering, for
-   instance), an answer was forged.  Note that this should be used when
-   an answer is still provided, not when failure codes are returned
+
+
 
 
 
@@ -284,6 +284,11 @@ Kumari, et al.            Expires April 2, 2020                 [Page 5]
 Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
 
 
+3.5.  Extended DNS Error Code 4 - Forged Answer
+
+   For policy reasons (legal obligation, or malware filtering, for
+   instance), an answer was forged.  Note that this should be used when
+   an answer is still provided, not when failure codes are returned
    instead.  See Blocked(15), Censored (16), and Filtered (17) for use
    when returning other response codes.
 
@@ -327,11 +332,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error      September 2019
    The resolver attempted to perform DNSSEC validation, but the
    requested data was missing and a covering NSEC or NSEC3 was not
    provided.
-
-
-
-
-
 
 
 

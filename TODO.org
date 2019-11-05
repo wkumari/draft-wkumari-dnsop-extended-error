@@ -2468,3 +2468,176 @@ I went to talk to quad9. Here is the reply they sent.
       being authoritative but won't serve data since its expired or
       otherwise bad.
     + reference adding
+* Dealing with forwarding
+  1. we could mandate that *no forwarding* of EDE happens
+  2. we could mandate that resolver/forwarders should *copy*
+  3. we could indicate they can *adjust the extra-text* field
+     + adds "src_address"
+  4. we could tracing elements to the packet -- *address it came from*
+     + *hop detection* (hard)
+     + one option is not tracing, but a *single source* identifier
+     + add *RECOMMENDED* to put your source information into the
+       *extra-info field*
+  5. we could add a *new EDE code for supplemental information* from
+     middle boxes -- IE, this EDE supplements the previous one
+  6. *make it experimental*, and publish now
+  7. *your idea here* - we'll discuss all options at singapore
+
+* stuff to do before singapore
+*** TODO what to do when packet gets to big - when truncation would occur
+*** TODO come up with slides for the above
+*** TODO the perfect is becoming the enemy of the good
+*** TODO convert range to 
+
+* forwarding discussion
+
+# Toggle inline images: c-c c-x c-v
+#+BEGIN_SRC dot :results output :file ede-forwarding.png
+
+  digraph "graphname" {
+
+  C [label="Client"];
+  R [label="Resolver"];
+  A [label="root"];
+  T [label="TLD"];
+  E [label="Example.com"];
+  F [label="Forwarder"];
+
+  C -> F;
+  F -> R;
+  R -> A;
+  R -> T;
+  R -> E;
+  }
+
+          #+END_SRC
+
+#+RESULTS:
+[[file:ede-forwarding.png]]
+
+
+*** supplimental
+
+    | Src  | code      | message                             |
+    |------+-----------+-------------------------------------|
+    | RES  | FORWARDED | I got everything below from TLD com |
+    | TLD  | BOGUS     | failed                              |
+    | root | diff prob | xxx                                 |
+    | RES  | FORWARD   |                                     |
+
+*** what types of identifiers might go in
+
+    + text
+    + binary - any length
+
+***** types of identifiers    
+
+      1. nsid
+      2. hostname (fqdn)
+      3. ip address
+      4. URL? (eg from doh)
+      5. ip:port
+      6. cert subject name
+
+      options:
+
+      + utf-8 string - operator printable/readable
+        + note: nsid is bytes / but assume it'll printed (possibly as
+          hex dump)
+      + type field, iana registry for what it is
+
+#+BEGIN_SRC text
+                                              1   1   1   1   1   1
+      0   1   2   3   4   5   6   7   8   9   0   1   2   3   4   5  
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+0:  |                            OPTION-CODE                        |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+2:  |                           OPTION-LENGTH                       |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+4:  | INFO-CODE                                                     |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+6:  | SRC_LENGTH                                                    |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+8:  / SRC_FIELD (which can be zero length)                          /
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+10: / EXTRA-TEXT (can be zero length)...                            /
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+
+#+END_SRC
+
+*** other
+
+    + near/far/unknown bits still desired by Petr
+
+* message to dnsop
+
+  After multiple discussions with dnsop members (including
+  implementers) on the mailing list and in person, we've come up with
+  a number of mechanisms that might work for passing EDE options
+  through a DNS forwarder or similar.  Though some of us already have
+  preferences, we're listing the ideas we have so far below.  We would
+  like to hold a discussion about the path forward in dnsop in
+  Singapore.
+
+  Options for how to deal with EDE forwarding:
+
+  1. We could mandate that no forwarding of EDE happens
+  2. We could mandate that resolver/forwarders should copy from one
+     packet to the next
+  3. We could indicate they can adjust the extra-text field to add
+     additional information, such as adding where it came from.
+  4. We could tracing elements to the packet -- like the address where
+     it came from
+     a. A single source added by the entity generating the EDE option.
+        See below.
+     b. Multiple sources, with each box adding another one as it
+        traverses (note: significantly more complex)
+     c. We could RECOMMEND putting a source indication into the
+        extra-info field
+  5. We could add a new EDE code for supplemental information to be
+     added after a previous one, indicating a chain.  But this
+     requires order preservation which is probably not a good idea
+     since EDNS0 doesn't require order preservation.
+  6. Make the document experimental, and publish as it is now and deal
+     with it after deployment experience has been obtained.
+  7. Your idea here - we'll discuss all options at singapore
+
+Additional information for adding source information for part 4a/b: we
+need to specify how to indicate what to add as a source field format.
+We expect any option to need to include a NSID value as a likely good
+choice.  There are a number of other types that we came up with that
+might be source indicators:
+
+    1. nsid
+    2. hostname (fqdn)
+    3. ip address
+    4. URL (eg from doh)
+    5. ip:port
+    6. cert subject name
+    7. ...
+
+We are, again, listing all options for completeness though we have
+personal views on which might be best.  We note that NSID is already
+listed as a binary field, and thus to a large extent the rest of these
+could, technically, be NSID values already anyway.  We could leave it
+free-form, or we could (adding complexity) add a source type field
+(and another IANA registry).
+
+The resulting packet format would look something like this:
+
+
+                                              1   1   1   1   1   1
+      0   1   2   3   4   5   6   7   8   9   0   1   2   3   4   5  
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+0:  |                            OPTION-CODE                        |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+2:  |                           OPTION-LENGTH                       |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+4:  | INFO-CODE                                                     |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+6:  | SRC_LENGTH                                                    |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+8:  / SRC_FIELD (which can be zero length)                          /
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+10: / EXTRA-TEXT (can be zero length)...                            /
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+

@@ -2484,10 +2484,22 @@ I went to talk to quad9. Here is the reply they sent.
   7. *your idea here* - we'll discuss all options at singapore
 
 * stuff to do before singapore
-*** TODO what to do when packet gets to big - when truncation would occur
-*** TODO come up with slides for the above
-*** TODO the perfect is becoming the enemy of the good
-*** TODO convert range to 
+*** DONE what to do when packet gets to big - when truncation would occur
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-11-05 Tue 14:20]
+    :END:
+*** TODO come up with slides for everything:
+***** FCFS
+***** too big
+***** forwarding
+*** DONE the perfect is becoming the enemy of the ugood
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-11-05 Tue 12:32]
+    :END:
+*** DONE convert iana section to FCFS with private
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-11-05 Tue 12:32]
+    :END:
 
 * forwarding discussion
 

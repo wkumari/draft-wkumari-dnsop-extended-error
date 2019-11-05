@@ -246,6 +246,12 @@
       the IANA registry to allow additional error and information
       codes to be defined in the future.</t>
 
+      <t>When the response grows beyond the requestor's UDP payload
+      size <xref target="RFC6891" />, servers SHOULD truncate messages
+      by dropping EDE options before dropping other data from
+      packets.  Implementations SHOULD set the truncation bit when
+      dropping EDE options.</t>
+
     </section>
 
     <section title="Defined Extended DNS Errors">

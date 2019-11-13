@@ -220,8 +220,8 @@
           <t>OPTION-LENGTH, 2-octets/16-bits ((defined in <xref
           target="RFC6891" />]) contains
           the length of the payload (everything after OPTION-LENGTH)
-          in octets and should be 4 plus the length of the EXTRA-TEXT
-          section (which may be a zero-length string).</t>
+          in octets and should be 2 plus the length of the EXTRA-TEXT
+          field (which may be a zero-length string).</t>
 
           <t>INFO-CODE, 16-bits, which is the principal contribution
           of this document.  This 16-bit value, encoded in network

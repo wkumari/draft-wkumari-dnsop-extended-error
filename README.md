@@ -90,7 +90,7 @@ Table of Contents
      3.10. Extended DNS Error Code 9 - DNSKEY Missing  . . . . . . .   6
      3.11. Extended DNS Error Code 10 - RRSIGs Missing . . . . . . .   6
      3.12. Extended DNS Error Code 11 - No Zone Key Bit Set  . . . .   6
-     3.13. Extended DNS Error Code 12 - NSEC Missing . . . . . . . .   6
+     3.13. Extended DNS Error Code 12 - NSEC Missing . . . . . . . .   7
      3.14. Extended DNS Error Code 13 - Cached Error . . . . . . . .   7
      3.15. Extended DNS Error Code 14 - Not Ready  . . . . . . . . .   7
      3.16. Extended DNS Error Code 15 - Blocked  . . . . . . . . . .   7
@@ -105,7 +105,7 @@ Table of Contents
      3.25. Extended DNS Error Code 24 - Invalid Data . . . . . . . .   8
    4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
      4.1.  A New Extended DNS Error Code EDNS Option . . . . . . . .   8
-     4.2.  New Registry Table for Extended DNS Error Codes . . . . .   8
+     4.2.  New Registry Table for Extended DNS Error Codes . . . . .   9
    5.  Security Considerations . . . . . . . . . . . . . . . . . . .  11
    6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  11
 
@@ -188,7 +188,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 2.  Extended DNS Error EDNS0 option format
 
-   This draft uses an EDNS0 ([RFC2671]) option to include Extended DNS
+   This draft uses an EDNS0 ([RFC6891]) option to include Extended DNS
    Error (EDE) information in DNS messages.  The option is structured as
    follows:
 
@@ -211,7 +211,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
       IANA.]
    o  OPTION-LENGTH, 2-octets/16-bits ((defined in [RFC6891]]) contains
       the length of the payload (everything after OPTION-LENGTH) in
-      octets and should be 4 plus the length of the EXTRA-TEXT section
+      octets and should be 2 plus the length of the EXTRA-TEXT field
       (which may be a zero-length string).
    o  INFO-CODE, 16-bits, which is the principal contribution of this
       document.  This 16-bit value, encoded in network (MSB) byte order,
@@ -239,6 +239,11 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
    initial codepoints (and requests to the IANA to add them to the
    registry), but is extensible via the IANA registry to allow
    additional error and information codes to be defined in the future.
+
+   When the response grows beyond the requestor's UDP payload size
+   [RFC6891], servers SHOULD truncate messages by dropping EDE options
+   before dropping other data from packets.  Implementations SHOULD set
+   the truncation bit when dropping EDE options.
 
 3.  Defined Extended DNS Errors
 
@@ -270,11 +275,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
    The resolver was unable to resolve answer within its time limits and
    decided to answer with previously cached data instead of answering
    with an error.  This is typically caused by problems communicating
-   with an authoritative serever, possibly as result of a DoS attack
-   against another network.
-
-
-
 
 
 
@@ -283,6 +283,9 @@ Kumari, et al.            Expires April 3, 2020                 [Page 5]
 
 Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
+
+   with an authoritative serever, possibly as result of a DoS attack
+   against another network.
 
 3.5.  Extended DNS Error Code 4 - Forged Answer
 
@@ -327,11 +330,8 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
    The resolver attempted to perform DNSSEC validation, but no Zone Key
    Bit was set in a DNSKEY.
 
-3.13.  Extended DNS Error Code 12 - NSEC Missing
 
-   The resolver attempted to perform DNSSEC validation, but the
-   requested data was missing and a covering NSEC or NSEC3 was not
-   provided.
+
 
 
 
@@ -339,6 +339,12 @@ Kumari, et al.            Expires April 3, 2020                 [Page 6]
 
 Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
+
+3.13.  Extended DNS Error Code 12 - NSEC Missing
+
+   The resolver attempted to perform DNSSEC validation, but the
+   requested data was missing and a covering NSEC or NSEC3 was not
+   provided.
 
 3.14.  Extended DNS Error Code 13 - Cached Error
 
@@ -381,12 +387,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
    The resolver was unable to resolve an answer within its configured
    time limits and decided to answer with a previously cached NXDOMAIN
    answer instead of answering with an error.  This is may be caused,
-   for example, by problems communicating with an authoritative server,
-   possibly as result of a DoS attack against another network.
-
-
-
-
 
 
 
@@ -395,6 +395,9 @@ Kumari, et al.            Expires April 3, 2020                 [Page 7]
 
 Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
+
+   for example, by problems communicating with an authoritative server,
+   possibly as result of a DoS attack against another network.
 
 3.21.  Extended DNS Error Code 20 - Not Authoritative
 
@@ -439,11 +442,8 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
    -----  ----------------     ------    ------------------
     TBD   Extended DNS Error    TBD       [ This document ]
 
-4.2.  New Registry Table for Extended DNS Error Codes
 
-   This document defines a new IANA registry table, where the index
-   value is the INFO-CODE from the "Extended DNS Error" EDNS option
-   defined in this document.  The IANA is requested to create and
+
 
 
 
@@ -452,12 +452,16 @@ Kumari, et al.            Expires April 3, 2020                 [Page 8]
 Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 
-   maintain this "Extended DNS Error" codes registry.  The code-point
-   space for the INFO-CODE index is to be broken into 3 ranges:
+4.2.  New Registry Table for Extended DNS Error Codes
 
-   o  0 - 32767: Expert Review [RFC2434].
-   o  32768 - 49151: First come, first served.
-   o  49152 - 65535: Experimental / Private use.
+   This document defines a new IANA registry table, where the index
+   value is the INFO-CODE from the "Extended DNS Error" EDNS option
+   defined in this document.  The IANA is requested to create and
+   maintain this "Extended DNS Error" codes registry.  The code-point
+   space for the INFO-CODE index is to be broken into 2 ranges:
+
+   o  0 - 49151: First come, first served.
+   o  49152 - 65280: Private use.
 
    A starting set of entries, based on the contents of this document, is
    as follows:
@@ -496,10 +500,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
    INFO-CODE:  8
    Purpose:  Signature Not Yet Valid
-   Reference:  Section 3.9
-
-   INFO-CODE:  9
-   Purpose:  DNSKEY Missing
 
 
 
@@ -508,6 +508,10 @@ Kumari, et al.            Expires April 3, 2020                 [Page 9]
 Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 
+   Reference:  Section 3.9
+
+   INFO-CODE:  9
+   Purpose:  DNSKEY Missing
    Reference:  Section 3.10
 
    INFO-CODE:  10
@@ -552,10 +556,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
    INFO-CODE:  20
    Purpose:  Not Authoritative
-   Reference:  Section 3.21
-
-   INFO-CODE:  21
-   Purpose:  Not Supported
 
 
 
@@ -564,6 +564,10 @@ Kumari, et al.            Expires April 3, 2020                [Page 10]
 Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 
+   Reference:  Section 3.21
+
+   INFO-CODE:  21
+   Purpose:  Not Supported
    Reference:  Section 3.22
 
    INFO-CODE:  22
@@ -608,10 +612,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
    Sood, Petr Spacek, Ondrej Sury, John Todd, Loganaden Velvindron, and
    Paul Vixie.  They also vaguely remember discussing this with a number
    of people over the years, but have forgotten who all they were -- if
-   you were one of them, and are not listed, please let us know and
-   we'll acknowledge you.
-
-
 
 
 
@@ -619,6 +619,9 @@ Kumari, et al.            Expires April 3, 2020                [Page 11]
 
 Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
+
+   you were one of them, and are not listed, please let us know and
+   we'll acknowledge you.
 
    One author also wants to thank the band "Infected Mushroom" for
    providing a good background soundtrack (and to see if he can get away
@@ -633,26 +636,22 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
    [I-D.ietf-dnsop-serve-stale]
               Lawrence, D., Kumari, W., and P. Sood, "Serving Stale Data
               to Improve DNS Resiliency", draft-ietf-dnsop-serve-
-              stale-08 (work in progress), September 2019.
+              stale-09 (work in progress), October 2019.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
               editor.org/info/rfc2119>.
 
-   [RFC2434]  Narten, T. and H. Alvestrand, "Guidelines for Writing an
-              IANA Considerations Section in RFCs", RFC 2434,
-              DOI 10.17487/RFC2434, October 1998, <https://www.rfc-
-              editor.org/info/rfc2434>.
-
-   [RFC2671]  Vixie, P., "Extension Mechanisms for DNS (EDNS0)",
-              RFC 2671, DOI 10.17487/RFC2671, August 1999,
-              <https://www.rfc-editor.org/info/rfc2671>.
-
    [RFC4035]  Arends, R., Austein, R., Larson, M., Massey, D., and S.
               Rose, "Protocol Modifications for the DNS Security
               Extensions", RFC 4035, DOI 10.17487/RFC4035, March 2005,
               <https://www.rfc-editor.org/info/rfc4035>.
+
+   [RFC5226]  Narten, T. and H. Alvestrand, "Guidelines for Writing an
+              IANA Considerations Section in RFCs", RFC 5226,
+              DOI 10.17487/RFC5226, May 2008, <https://www.rfc-
+              editor.org/info/rfc5226>.
 
    [RFC6891]  Damas, J., Graff, M., and P. Vixie, "Extension Mechanisms
               for DNS (EDNS(0))", STD 75, RFC 6891,
@@ -665,6 +664,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
               IANA, "A quick review of DNSSEC Validation in today's
               Internet", June 2016, <http://www.potaroo.net/
               presentations/2016-06-27-dnssec.pdf>.
+
 
 
 

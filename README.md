@@ -7,18 +7,18 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Standards Track                                 E. Hunt
-Expires: April 3, 2020                                               ISC
+Expires: June 20, 2020                                               ISC
                                                                R. Arends
                                                                    ICANN
                                                              W. Hardaker
                                                                  USC/ISI
                                                              D. Lawrence
                                                             Oracle + Dyn
-                                                        October 01, 2019
+                                                       December 18, 2019
 
 
                           Extended DNS Errors
-                   draft-ietf-dnsop-extended-error-12
+                   draft-ietf-dnsop-extended-error-13
 
 Abstract
 
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 3, 2020.
+   This Internet-Draft will expire on June 20, 2020.
 
 Copyright Notice
 
@@ -55,9 +55,9 @@ Copyright Notice
 
 
 
-Kumari, et al.            Expires April 3, 2020                 [Page 1]
+Kumari, et al.            Expires June 20, 2020                 [Page 1]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
+Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -111,9 +111,9 @@ Table of Contents
 
 
 
-Kumari, et al.            Expires April 3, 2020                 [Page 2]
+Kumari, et al.            Expires June 20, 2020                 [Page 2]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
+Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  12
@@ -167,9 +167,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 
 
-Kumari, et al.            Expires April 3, 2020                 [Page 3]
+Kumari, et al.            Expires June 20, 2020                 [Page 3]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
+Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
    extended error codes MUST NOT assume that a combination will make
@@ -223,9 +223,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 
 
-Kumari, et al.            Expires April 3, 2020                 [Page 4]
+Kumari, et al.            Expires June 20, 2020                 [Page 4]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
+Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
    o  EXTRA-TEXT, a variable length, UTF-8 encoded, text field that may
@@ -279,9 +279,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 
 
-Kumari, et al.            Expires April 3, 2020                 [Page 5]
+Kumari, et al.            Expires June 20, 2020                 [Page 5]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
+Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
 4.2.  Extended DNS Error Code 1 - Unsupported DNSKEY Algorithm
@@ -335,9 +335,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 
 
-Kumari, et al.            Expires April 3, 2020                 [Page 6]
+Kumari, et al.            Expires June 20, 2020                 [Page 6]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
+Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
 4.10.  Extended DNS Error Code 9 - DNSKEY Missing
@@ -391,9 +391,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 
 
-Kumari, et al.            Expires April 3, 2020                 [Page 7]
+Kumari, et al.            Expires June 20, 2020                 [Page 7]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
+Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
 4.19.  Extended DNS Error Code 18 - Prohibited
@@ -447,9 +447,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 
 
-Kumari, et al.            Expires April 3, 2020                 [Page 8]
+Kumari, et al.            Expires June 20, 2020                 [Page 8]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
+Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
 5.  IANA Considerations
@@ -503,9 +503,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 
 
-Kumari, et al.            Expires April 3, 2020                 [Page 9]
+Kumari, et al.            Expires June 20, 2020                 [Page 9]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
+Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
    INFO-CODE:  5
@@ -559,9 +559,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 
 
-Kumari, et al.            Expires April 3, 2020                [Page 10]
+Kumari, et al.            Expires June 20, 2020                [Page 10]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
+Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
    INFO-CODE:  17
@@ -615,9 +615,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 
 
-Kumari, et al.            Expires April 3, 2020                [Page 11]
+Kumari, et al.            Expires June 20, 2020                [Page 11]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
+Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
    Error into a packet could instead simply reply with a fictitious
@@ -671,9 +671,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 
 
-Kumari, et al.            Expires April 3, 2020                [Page 12]
+Kumari, et al.            Expires June 20, 2020                [Page 12]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
+Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
 8.2.  Informative References
@@ -727,9 +727,9 @@ Authors' Addresses
 
 
 
-Kumari, et al.            Expires April 3, 2020                [Page 13]
+Kumari, et al.            Expires June 20, 2020                [Page 13]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
+Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
    Wes Hardaker
@@ -783,5 +783,5 @@ Internet-Draft       draft-ietf-dnsop-extended-error        October 2019
 
 
 
-Kumari, et al.            Expires April 3, 2020                [Page 14]
+Kumari, et al.            Expires June 20, 2020                [Page 14]
 ```

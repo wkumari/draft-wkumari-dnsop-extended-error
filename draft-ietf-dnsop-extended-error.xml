@@ -248,7 +248,7 @@
 
     </section>
 
-    <section title="Extended Error Processing">
+    <section title="Extended DNS Error Processing">
       <t>When the response grows beyond the requestor's UDP payload
       size <xref target="RFC6891" />, servers SHOULD truncate messages
       by dropping EDE options before dropping other data from

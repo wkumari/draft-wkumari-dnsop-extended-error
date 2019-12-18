@@ -246,12 +246,24 @@
       the IANA registry to allow additional error and information
       codes to be defined in the future.</t>
 
+    </section>
+
+    <section title="Extended Error Processing">
       <t>When the response grows beyond the requestor's UDP payload
       size <xref target="RFC6891" />, servers SHOULD truncate messages
       by dropping EDE options before dropping other data from
       packets.  Implementations SHOULD set the truncation bit when
       dropping EDE options.</t>
 
+      <t>When a resolver or forwarder receives an EDE option, whether
+      or not (and how) to pass along EDE information on to their
+      original client is implementation dependent. Implementations MAY
+      choose to not forward information, or they MAY choose to create
+      a new EDE option(s) that conveys the information encoded in the
+      received EDE.  When doing so, care should be taken to ensure any
+      information is properly attributed since an EDNS0 option
+      received by the original client will be perceived only to have
+      come from the resolver or forwarder sending it.</t>
     </section>
 
     <section title="Defined Extended DNS Errors">

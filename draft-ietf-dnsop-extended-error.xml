@@ -468,7 +468,7 @@
       <section title="A New Extended DNS Error Code EDNS Option" anchor="IANA">
 
         <t>This document defines a new EDNS(0) option, entitled
-        "Extended DNS Error", assigned a value of TBD1 from the "DNS
+        "Extended DNS Error", assigned a value of TBD from the "DNS
         EDNS0 Option Codes (OPT)" registry [to be removed upon
         publication:
         [http://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-11]</t>

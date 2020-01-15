@@ -77,7 +77,7 @@ Table of Contents
    2.  Extended DNS Error EDNS0 option format  . . . . . . . . . . .   4
    3.  Extended DNS Error Processing . . . . . . . . . . . . . . . .   5
    4.  Defined Extended DNS Errors . . . . . . . . . . . . . . . . .   5
-     4.1.  Extended DNS Error Code 0 - Other . . . . . . . . . . . .   5
+     4.1.  Extended DNS Error Code 0 - Other . . . . . . . . . . . .   6
      4.2.  Extended DNS Error Code 1 -
            Unsupported DNSKEY Algorithm  . . . . . . . . . . . . . .   6
      4.3.  Extended DNS Error Code 2 - Unsupported DS
@@ -87,7 +87,7 @@ Table of Contents
      4.6.  Extended DNS Error Code 5 - DNSSEC Indeterminate  . . . .   6
      4.7.  Extended DNS Error Code 6 - DNSSEC Bogus  . . . . . . . .   6
      4.8.  Extended DNS Error Code 7 - Signature Expired . . . . . .   6
-     4.9.  Extended DNS Error Code 8 - Signature Not Yet Valid . . .   6
+     4.9.  Extended DNS Error Code 8 - Signature Not Yet Valid . . .   7
      4.10. Extended DNS Error Code 9 - DNSKEY Missing  . . . . . . .   7
      4.11. Extended DNS Error Code 10 - RRSIGs Missing . . . . . . .   7
      4.12. Extended DNS Error Code 11 - No Zone Key Bit Set  . . . .   7
@@ -96,14 +96,14 @@ Table of Contents
      4.15. Extended DNS Error Code 14 - Not Ready  . . . . . . . . .   7
      4.16. Extended DNS Error Code 15 - Blocked  . . . . . . . . . .   7
      4.17. Extended DNS Error Code 16 - Censored . . . . . . . . . .   7
-     4.18. Extended DNS Error Code 17 - Filtered . . . . . . . . . .   7
+     4.18. Extended DNS Error Code 17 - Filtered . . . . . . . . . .   8
      4.19. Extended DNS Error Code 18 - Prohibited . . . . . . . . .   8
      4.20. Extended DNS Error Code 19 - Stale NXDOMAIN Answer  . . .   8
      4.21. Extended DNS Error Code 20 - Not Authoritative  . . . . .   8
      4.22. Extended DNS Error Code 21 - Not Supported  . . . . . . .   8
      4.23. Extended DNS Error Code 22 - No Reachable Authority . . .   8
      4.24. Extended DNS Error Code 23 - Network Error  . . . . . . .   8
-     4.25. Extended DNS Error Code 24 - Invalid Data . . . . . . . .   8
+     4.25. Extended DNS Error Code 24 - Invalid Data . . . . . . . .   9
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
      5.1.  A New Extended DNS Error Code EDNS Option . . . . . . . .   9
      5.2.  New Registry Table for Extended DNS Error Codes . . . . .   9
@@ -247,16 +247,20 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
    When the response grows beyond the requestor's UDP payload size
    [RFC6891], servers SHOULD truncate messages by dropping EDE options
    before dropping other data from packets.  Implementations SHOULD set
-   the truncation bit when dropping EDE options.
+   the truncation bit when dropping EDE options.  Long EXTRA-TEXT fields
+   may trigger truncation, which is usually undesirable for the
+   supplemental nature of EDE.  Implementers and operators creating EDE
+   options SHOULD avoid setting unnecessarily long EXTRA-TEXT contents
+   to avoid truncation.
 
    When a resolver or forwarder receives an EDE option, whether or not
    (and how) to pass along EDE information on to their original client
    is implementation dependent.  Implementations MAY choose to not
    forward information, or they MAY choose to create a new EDE option(s)
    that conveys the information encoded in the received EDE.  When doing
-   so, care should be taken to ensure any information is properly
-   attributed since an EDNS0 option received by the original client will
-   be perceived only to have come from the resolver or forwarder sending
+   so, the source of the error SHOULD be attributed in the EXTRA-TEXT
+   field, since an EDNS0 option received by the original client will be
+   perceived only to have come from the resolver or forwarder sending
    it.
 
 4.  Defined Extended DNS Errors
@@ -268,11 +272,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
    the "Extended DNS Error" IANA registry, the initial values for which
    are defined in the following sub-sections.
 
-4.1.  Extended DNS Error Code 0 - Other
 
-   The error in question falls into a category that does not match known
-   extended error codes.  Implementations SHOULD include a EXTRA-TEXT
-   value to augment this error code with additional information.
 
 
 
@@ -283,6 +283,12 @@ Kumari, et al.            Expires June 20, 2020                 [Page 5]
 
 Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
+
+4.1.  Extended DNS Error Code 0 - Other
+
+   The error in question falls into a category that does not match known
+   extended error codes.  Implementations SHOULD include a EXTRA-TEXT
+   value to augment this error code with additional information.
 
 4.2.  Extended DNS Error Code 1 - Unsupported DNSKEY Algorithm
 
@@ -325,12 +331,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
    The resolver attempted to perform DNSSEC validation, but no
    signatures are presently valid and some (often all) are expired.
 
-4.9.  Extended DNS Error Code 8 - Signature Not Yet Valid
-
-   The resolver attempted to perform DNSSEC validation, but but no
-   signatures are presently valid and at least some are not yet valid.
-
-
 
 
 
@@ -339,6 +339,11 @@ Kumari, et al.            Expires June 20, 2020                 [Page 6]
 
 Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
+
+4.9.  Extended DNS Error Code 8 - Signature Not Yet Valid
+
+   The resolver attempted to perform DNSSEC validation, but but no
+   signatures are presently valid and at least some are not yet valid.
 
 4.10.  Extended DNS Error Code 9 - DNSKEY Missing
 
@@ -383,11 +388,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
    to by an external requirement.  Note that how the imposed policy is
    applied is irrelevant (in-band DNS filtering, court order, etc).
 
-4.18.  Extended DNS Error Code 17 - Filtered
-
-   The server is unable to respond to the request because the domain is
-   blacklisted as requested by the client.  Functionally, this amounts
-   to "you requested that we filter domains like this one."
 
 
 
@@ -395,6 +395,12 @@ Kumari, et al.            Expires June 20, 2020                 [Page 7]
 
 Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
+
+4.18.  Extended DNS Error Code 17 - Filtered
+
+   The server is unable to respond to the request because the domain is
+   blacklisted as requested by the client.  Functionally, this amounts
+   to "you requested that we filter domains like this one."
 
 4.19.  Extended DNS Error Code 18 - Prohibited
 
@@ -435,12 +441,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
    An unrecoverable error occurred while communicating with another
    server.
 
-4.25.  Extended DNS Error Code 24 - Invalid Data
-
-   An authoritative server that cannot answer with data for a zone it is
-   otherwise configured to support.  This may occur because its most
-   recent zone is too old, or has expired, for example.
-
 
 
 
@@ -452,12 +452,18 @@ Kumari, et al.            Expires June 20, 2020                 [Page 8]
 Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
+4.25.  Extended DNS Error Code 24 - Invalid Data
+
+   An authoritative server that cannot answer with data for a zone it is
+   otherwise configured to support.  This may occur because its most
+   recent zone is too old, or has expired, for example.
+
 5.  IANA Considerations
 
 5.1.  A New Extended DNS Error Code EDNS Option
 
    This document defines a new EDNS(0) option, entitled "Extended DNS
-   Error", assigned a value of TBD1 from the "DNS EDNS0 Option Codes
+   Error", assigned a value of TBD from the "DNS EDNS0 Option Codes
    (OPT)" registry [to be removed upon publication:
    [http://www.iana.org/assignments/dns-parameters/dns-
    parameters.xhtml#dns-parameters-11]
@@ -494,12 +500,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
    INFO-CODE:  3
    Purpose:  Stale Answer
-   Reference:  Section 4.4, [I-D.ietf-dnsop-serve-stale]
-
-   INFO-CODE:  4
-   Purpose:  Forged Answer
-   Reference:  Section 4.5
-
 
 
 
@@ -507,6 +507,12 @@ Kumari, et al.            Expires June 20, 2020                 [Page 9]
 
 Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
+
+   Reference:  Section 4.4, [I-D.ietf-dnsop-serve-stale]
+
+   INFO-CODE:  4
+   Purpose:  Forged Answer
+   Reference:  Section 4.5
 
    INFO-CODE:  5
    Purpose:  DNSSEC Indeterminate
@@ -550,12 +556,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
    INFO-CODE:  15
    Purpose:  Blocked
-   Reference:  Section 4.16
-
-   INFO-CODE:  16
-   Purpose:  Censored
-   Reference:  Section 4.17
-
 
 
 
@@ -563,6 +563,12 @@ Kumari, et al.            Expires June 20, 2020                [Page 10]
 
 Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
+
+   Reference:  Section 4.16
+
+   INFO-CODE:  16
+   Purpose:  Censored
+   Reference:  Section 4.17
 
    INFO-CODE:  17
    Purpose:  Filtered
@@ -605,13 +611,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
    in their list, and thus don't get any of the protections which DNSSEC
    should provide.
 
-   This information is unauthenticated information, and an attacker (e.g
-   a MITM or malicious recursive server) could insert an extended error
-   response into already untrusted data -- ideally clients and resolvers
-   would not trust any unauthenticated information, but until we live in
-   an era where all DNS answers are authenticated via DNSSEC or other
-   mechanisms [RFC2845] [RFC8094], there are some tradeoffs.  As an
-   example, an attacker who is able to insert the DNSSEC Bogus Extended
+
 
 
 
@@ -620,6 +620,13 @@ Kumari, et al.            Expires June 20, 2020                [Page 11]
 Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
 
+   This information is unauthenticated information, and an attacker (e.g
+   a MITM or malicious recursive server) could insert an extended error
+   response into already untrusted data -- ideally clients and resolvers
+   would not trust any unauthenticated information, but until we live in
+   an era where all DNS answers are authenticated via DNSSEC or other
+   mechanisms [RFC2845] [RFC8094], there are some tradeoffs.  As an
+   example, an attacker who is able to insert the DNSSEC Bogus Extended
    Error into a packet could instead simply reply with a fictitious
    address (A or AAAA) record.  Note that DNS Response Codes also
    contain no authentication and can be just as easily manipulated.
@@ -662,19 +669,17 @@ Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
               Extensions", RFC 4035, DOI 10.17487/RFC4035, March 2005,
               <https://www.rfc-editor.org/info/rfc4035>.
 
-   [RFC6891]  Damas, J., Graff, M., and P. Vixie, "Extension Mechanisms
-              for DNS (EDNS(0))", STD 75, RFC 6891,
-              DOI 10.17487/RFC6891, April 2013,
-              <https://www.rfc-editor.org/info/rfc6891>.
-
-
-
 
 
 Kumari, et al.            Expires June 20, 2020                [Page 12]
 
 Internet-Draft       draft-ietf-dnsop-extended-error       December 2019
 
+
+   [RFC6891]  Damas, J., Graff, M., and P. Vixie, "Extension Mechanisms
+              for DNS (EDNS(0))", STD 75, RFC 6891,
+              DOI 10.17487/RFC6891, April 2013,
+              <https://www.rfc-editor.org/info/rfc6891>.
 
 8.2.  Informative References
 
@@ -717,11 +722,6 @@ Authors' Addresses
    ICANN
 
    Email: roy.arends@icann.org
-
-
-
-
-
 
 
 

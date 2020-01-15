@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="std" docName="draft-ietf-dnsop-extended-error-13"
+<rfc category="std" docName="draft-ietf-dnsop-extended-error-14"
      ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -110,7 +110,7 @@
       </address>
     </author>
 
-    <date day="18" month="December" year="2019"/>
+    <date day="15" month="January" year="2019"/>
 
     <abstract>
       <t>This document defines an extensible method to return

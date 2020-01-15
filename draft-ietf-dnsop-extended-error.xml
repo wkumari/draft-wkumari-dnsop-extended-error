@@ -251,17 +251,21 @@
     <section title="Extended DNS Error Processing">
       <t>When the response grows beyond the requestor's UDP payload
       size <xref target="RFC6891" />, servers SHOULD truncate messages
-      by dropping EDE options before dropping other data from
-      packets.  Implementations SHOULD set the truncation bit when
-      dropping EDE options.</t>
+      by dropping EDE options before dropping other data from packets.
+      Implementations SHOULD set the truncation bit when dropping EDE
+      options.  Long EXTRA-TEXT fields may trigger truncation, which
+      is usually undesirable for the supplemental nature of
+      EDE. Implementers and operators creating EDE options SHOULD avoid
+      setting unnecessarily long EXTRA-TEXT contents to avoid
+      truncation.</t>
 
       <t>When a resolver or forwarder receives an EDE option, whether
       or not (and how) to pass along EDE information on to their
       original client is implementation dependent. Implementations MAY
       choose to not forward information, or they MAY choose to create
       a new EDE option(s) that conveys the information encoded in the
-      received EDE.  When doing so, care should be taken to ensure any
-      information is properly attributed since an EDNS0 option
+      received EDE.  When doing so, the source of the error SHOULD be
+      attributed in the EXTRA-TEXT field, since an EDNS0 option
       received by the original client will be perceived only to have
       come from the resolver or forwarder sending it.</t>
     </section>

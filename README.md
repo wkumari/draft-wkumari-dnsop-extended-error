@@ -176,7 +176,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
    sense.  Receivers MUST be able to accept EDE codes and EXTRA-TEXT in
    all messages, including those with a NOERROR RCODE.  Applications
    MUST continue to follow requirements from applicable specs on how to
-   process RCODEs no matter what EDE values is also received.  Senders
+   process RCODEs no matter what EDE values are also received.  Senders
    MAY include more than one EDE option and receivers MUST be able to
    accept (but not necessarily process or act on) multiple EDE options
    in a DNS message.
@@ -305,7 +305,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
    The resolver was unable to resolve answer within its time limits and
    decided to answer with previously cached data instead of answering
    with an error.  This is typically caused by problems communicating
-   with an authoritative serever, possibly as result of a DoS attack
+   with an authoritative server, possibly as result of a DoS attack
    against another network.
 
 4.5.  Extended DNS Error Code 4 - Forged Answer
@@ -606,7 +606,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
    Though DNSSEC continues to be deployed, unfortunately a significant
    number of clients (~11% according to [GeoffValidation]) that receive
-   a SERVFAIL from a validating resolver because of a DNSSEC validaion
+   a SERVFAIL from a validating resolver because of a DNSSEC validation
    issue will simply ask the next (potentially non-validating) resolver
    in their list, and thus don't get any of the protections which DNSSEC
    should provide.

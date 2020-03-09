@@ -174,7 +174,7 @@
       EDE codes and EXTRA-TEXT in all messages, including those with a
       NOERROR RCODE.  Applications MUST continue to follow
       requirements from applicable specs on how to process RCODEs no
-      matter what EDE values is also received.  Senders MAY include
+      matter what EDE values are also received.  Senders MAY include
       more than one EDE option and receivers MUST be able to accept
       (but not necessarily process or act on) multiple EDE options in
       a DNS message.</t>
@@ -306,7 +306,7 @@
           limits and decided to answer with previously cached data
           instead of answering with an error.  This is typically
           caused by problems communicating with an authoritative
-          serever, possibly as result of a DoS attack against another
+          server, possibly as result of a DoS attack against another
           network.</t>
         </section>
 
@@ -659,7 +659,7 @@
       <t>Though DNSSEC continues to be deployed, unfortunately a
       significant number of clients (~11% according to <xref
       target="GeoffValidation"/>) that receive a SERVFAIL from a
-      validating resolver because of a DNSSEC validaion issue will
+      validating resolver because of a DNSSEC validation issue will
       simply ask the next (potentially non-validating) resolver in
       their list, and thus don't get any of the protections which
       DNSSEC should provide.</t>

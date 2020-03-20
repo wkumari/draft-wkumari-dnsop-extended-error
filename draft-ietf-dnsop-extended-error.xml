@@ -138,7 +138,7 @@
       What error messages should be presented to the user or logged
       under these conditions?</t>
 
-      <t>A good example of issues that would benefit by additional
+      <t>A good example of issues that would benefit from additional
       error information are errors caused by DNSSEC validation
       issues. When a stub resolver queries a name which is DNSSEC
       bogus (using a validating resolver), the stub resolver receives
@@ -157,8 +157,8 @@
 
       <t>This document specifies a mechanism to extend DNS errors to
       provide additional information about the cause of an error.
-      These extended DNS error codes described in this document and can be
-      used by any system that sends DNS queries and receives a
+      These extended DNS error codes are described in this document
+      and can be used by any system that sends DNS queries and receives a
       response containing an EDE option. Different codes are useful
       in different circumstances, and thus different systems (stub
       resolvers, recursive resolvers, and authoritative resolvers)
@@ -180,10 +180,11 @@
       a DNS message.</t>
 
       <section title="Requirements notation">
-        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-        "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-        document are to be interpreted as described in <xref
-        target="RFC2119"/>.</t>
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+      NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
+      "MAY", and "OPTIONAL" in this document are to be interpreted as
+      described in BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/>
+      when, and only when, they appear in all capitals, as shown here.</t>
       </section>
     </section>
 
@@ -195,7 +196,7 @@
       <figure>
         <artwork align="left"><![CDATA[
                                              1   1   1   1   1   1
-     0   1   2   3   4   5   6   7   8   9   0   1   2   3   4   5  
+     0   1   2   3   4   5   6   7   8   9   0   1   2   3   4   5
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 0: |                            OPTION-CODE                        |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
@@ -231,9 +232,10 @@
           target="IANA" />.</t>
 
           <t>EXTRA-TEXT, a variable length, UTF-8 encoded, text field
-          that may hold additional textual information.  Note:
-          EXTRA-TEXT may be zero octets in length, indicating there is
-          no EXTRA-TEXT included.  Care should be taken not to leak
+          that may hold additional textual information. This information
+          is intended for human consumption (not automated parsing).
+          Note: EXTRA-TEXT may be zero octets in length, indicating that
+          there is no EXTRA-TEXT included.  Care should be taken not to leak
           private information that an observer would not otherwise
           have access to, such as account numbers.</t>
         </list></t>
@@ -302,7 +304,7 @@
 
         <section anchor="stalenoerror"
 	         title="Extended DNS Error Code 3 - Stale Answer">
-          <t>The resolver was unable to resolve answer within its time
+          <t>The resolver was unable to resolve an answer within its time
           limits and decided to answer with previously cached data
           instead of answering with an error.  This is typically
           caused by problems communicating with an authoritative
@@ -395,9 +397,9 @@
 
         <section anchor="errcensored"
 	         title="Extended DNS Error Code 16 - Censored">
-          <t>The server is unable to respond to the request because the
-          domain is blacklisted by a security policy imposed upon the
-          server being talked to by an external requirement. Note that
+          <t>The server is unable to respond to the request because the domain
+          is blacklisted due to an external requirement imposed on the operator
+          of the server being directly talked to. Note that
           how the imposed policy is applied is irrelevant (in-band DNS
           filtering, court order, etc).</t>
         </section>
@@ -424,7 +426,7 @@
           <t>The resolver was unable to resolve an answer within its
           configured time limits and decided to answer with a
           previously cached NXDOMAIN answer instead of answering with
-          an error. This is may be caused, for example, by problems
+          an error. This may be caused, for example, by problems
           communicating with an authoritative server, possibly as
           result of a DoS attack against another network.</t>
 
@@ -432,10 +434,10 @@
 
 	<section anchor="errlame"
 	         title="Extended DNS Error Code 20 - Not Authoritative">
-          <t>An authoritative server that receives a query (with the RD bit clear,
-         or when not configured for recursion) for a domain for which it is
+          <t>An authoritative server that receives a query with the RD bit clear,
+         or when it is not configured for recursion for a domain for which it is
          not authoritative SHOULD include this EDE code in the REFUSED
-         response.  A resolver that receives a query (with the RD bit clear)
+         response.  A resolver that receives a query with the RD bit clear
          SHOULD include this EDE code in the REFUSED response.</t>
         </section>
 
@@ -459,12 +461,12 @@
 
         <section anchor="invaliddata"
                  title="Extended DNS Error Code 24 - Invalid Data">
-          <t>An authoritative server that cannot answer with data for
-          a zone it is otherwise configured to support.  This may
-          occur because its most recent zone is too old, or has
-          expired, for example.</t>
+          <t>The authoritative server cannot answer with data for
+          a zone it is otherwise configured to support.  Examples of
+          this include its most recent zone being too old, or having
+          expired.</t>
         </section>
-        
+
 
       </section>
 
@@ -591,7 +593,7 @@
     <t hangText="Purpose:">Not Ready.</t>
     <t hangText="Reference:"><xref target="notready" /></t>
     </list></t>
-    
+
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">15</t>
     <t hangText="Purpose:">Blocked</t>
@@ -669,7 +671,7 @@
       response into already untrusted data &mdash; ideally clients and
       resolvers would not trust any unauthenticated information, but until we
       live in an era where all DNS answers are authenticated via DNSSEC or
-      other mechanisms <xref target="RFC2845" /> <xref target="RFC8094" />, 
+      other mechanisms <xref target="RFC2845" /> <xref target="RFC8094" />,
       there are some tradeoffs. As an example, an attacker
       who is able to insert the DNSSEC Bogus Extended Error into a packet
       could instead simply reply with a fictitious address (A or AAAA)
@@ -693,7 +695,7 @@
 
       <t>One author also wants to thank the band "Infected Mushroom"
       for providing a good background soundtrack (and to see if he can
-      get away with this in an RFC!)  Another author would like to
+      get away with this in an RFC!). Another author would like to
       thank the band "Mushroom Infectors". This was funny at the time
       we wrote it, but we cannot remember why...</t>
     </section>
@@ -704,6 +706,7 @@
       <?rfc include='reference.RFC.2119'?>
       <?rfc include='reference.RFC.4035'?>
       <?rfc include='reference.RFC.6891'?>
+      <?rfc include='reference.RFC.8174'?>
       <?rfc include="reference.I-D.ietf-dnsop-serve-stale"?>
     </references>
 

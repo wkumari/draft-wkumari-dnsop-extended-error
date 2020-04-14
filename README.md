@@ -118,7 +118,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  12
    8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  12
-     8.1.  Normative References  . . . . . . . . . . . . . . . . . .  12
+     8.1.  Normative References  . . . . . . . . . . . . . . . . . .  13
      8.2.  Informative References  . . . . . . . . . . . . . . . . .  13
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  14
 
@@ -634,13 +634,15 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
    [RFC8094].  An attacker (e.g a MITM or malicious recursive server)
    could insert an extended error response into untrusted data --
    although ideally clients and resolvers would not trust any
-   unauthenticated information.  Until all DNS answers are authenticated
-   via DNSSEC or the other mechanisms mentioned above, there are some
-   tradeoffs.  As an example, an attacker who is able to insert the
-   DNSSEC Bogus Extended Error into a DNS message could instead simply
-   reply with a fictitious address (A or AAAA) record.  Note that DNS
-   Response Codes (RCODEs) also contain no authentication and can be
-   just as easily manipulated.
+   unauthenticated information.  As such, EDE content should be treated
+   only as diagnostic information and MUST NOT alter DNS protocol
+   processing.  Until all DNS answers are authenticated via DNSSEC or
+   the other mechanisms mentioned above, there are some tradeoffs.  As
+   an example, an attacker who is able to insert the DNSSEC Bogus
+   Extended Error into a DNS message could instead simply reply with a
+   fictitious address (A or AAAA) record.  Note that DNS Response Codes
+   (RCODEs) also contain no authentication and can be just as easily
+   manipulated.
 
 7.  Acknowledgements
 
@@ -663,8 +665,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
 8.  References
 
-8.1.  Normative References
-
 
 
 
@@ -675,6 +675,8 @@ Kumari, et al.            Expires July 18, 2020                [Page 12]
 
 Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
+
+8.1.  Normative References
 
    [I-D.ietf-dnsop-serve-stale]
               Lawrence, D., Kumari, W., and P. Sood, "Serving Stale Data
@@ -720,8 +722,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
               Transport Layer Security (DTLS)", RFC 8094,
               DOI 10.17487/RFC8094, February 2017,
               <https://www.rfc-editor.org/info/rfc8094>.
-
-
 
 
 

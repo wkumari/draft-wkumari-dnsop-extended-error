@@ -124,7 +124,7 @@
   </front>
 
   <middle>
-    <section title="Introduction and background">
+    <section title="Introduction and background" anchor="intro">
       <t>There are many reasons that a DNS query may fail, some of
       them transient, some permanent; some can be resolved by querying
       another server, some are likely best handled by stopping
@@ -674,17 +674,19 @@
 
       <t>EDE information is unauthenticated information, unless
       secured by a form of secured DNS transaction such as <xref
-      target="RFC2845"/>, <xref target="RFC2931"/> or <xref target="RFC8094"/>. An attacker (e.g
-      a MITM or malicious recursive server) could insert an extended error
-      response into untrusted data &mdash; although ideally clients and
-      resolvers would not trust any unauthenticated information. Until 
-      all DNS answers are authenticated via DNSSEC or
-      the other mechanisms mentioned above,
-      there are some tradeoffs. As an example, an attacker
-      who is able to insert the DNSSEC Bogus Extended Error into a DNS message
-      could instead simply reply with a fictitious address (A or AAAA)
-      record.  Note that DNS Response Codes (RCODEs) also contain no
-      authentication and can be just as easily manipulated.
+      target="RFC2845"/>, <xref target="RFC2931"/> or <xref
+      target="RFC8094"/>. An attacker (e.g a MITM or malicious
+      recursive server) could insert an extended error response into
+      untrusted data &mdash; although ideally clients and resolvers
+      would not trust any unauthenticated information.  As such, EDE
+      content should be treated only as diagnostic information and
+      MUST NOT alter DNS protocol processing.  Until all DNS answers
+      are authenticated via DNSSEC or the other mechanisms mentioned
+      above, there are some tradeoffs. As an example, an attacker who
+      is able to insert the DNSSEC Bogus Extended Error into a DNS
+      message could instead simply reply with a fictitious address (A
+      or AAAA) record.  Note that DNS Response Codes (RCODEs) also
+      contain no authentication and can be just as easily manipulated.
       </t>
     </section>
 

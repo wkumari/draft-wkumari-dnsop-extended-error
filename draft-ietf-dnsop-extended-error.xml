@@ -723,6 +723,7 @@
       <?rfc include='reference.RFC.4035'?>
       <?rfc include='reference.RFC.6891'?>
       <?rfc include='reference.RFC.8174'?>
+      <?rfc include='reference.RFC.8499' ?>
       <?rfc include="reference.I-D.ietf-dnsop-serve-stale"?>
     </references>
 
@@ -730,7 +731,6 @@
       <?rfc include='reference.RFC.2845' ?>
       <?rfc include='reference.RFC.2931'?>
       <?rfc include='reference.RFC.8094' ?>
-      <?rfc include='reference.RFC.8499' ?>
 
       <reference anchor="GeoffValidation"
                  target="http://www.potaroo.net/presentations/2016-06-27-dnssec.pdf">

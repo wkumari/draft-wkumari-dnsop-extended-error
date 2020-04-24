@@ -688,6 +688,11 @@
       or AAAA) record.  Note that DNS Response Codes (RCODEs) also
       contain no authentication and can be just as easily manipulated.
       </t>
+
+      <t>By design, EDE potentially exposes additional information
+      DNS resolution processes that may leak information.  An example
+      of this is the Prohibited EDE code (18), which may leak the contents
+      of a network's blacklist.</t>
     </section>
 
     <section title="Acknowledgements">

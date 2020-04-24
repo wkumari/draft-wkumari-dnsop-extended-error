@@ -141,13 +141,14 @@
       <t>A good example of issues that would benefit from additional
       error information are errors caused by DNSSEC validation
       issues. When a stub resolver queries a name which is DNSSEC
-      bogus (using a validating resolver), the stub resolver receives
-      only a SERVFAIL in response. Unfortunately, the SERVFAIL
-      Response Code (RCODE) is used to signal many sorts of DNS
-      errors, and so the stub resolvers only option is to ask the next
-      configured DNS resolver. The result of trying the next resolver
-      is one of two outcomes: either the next resolver also validates,
-      and a SERVFAIL is returned again or the next resolver is not a
+      bogus <xref target="RFC8499" /> (using a validating resolver),
+      the stub resolver receives only a SERVFAIL in
+      response. Unfortunately, the SERVFAIL Response Code (RCODE) is
+      used to signal many sorts of DNS errors, and so the stub
+      resolvers only option is to ask the next configured DNS
+      resolver. The result of trying the next resolver is one of two
+      outcomes: either the next resolver also validates, and a
+      SERVFAIL is returned again or the next resolver is not a
       validating resolver, and the user is returned a potentially
       harmful result.  With an Extended DNS Error (EDE) option
       enclosed in the response message, the resolver is able to return
@@ -729,6 +730,7 @@
       <?rfc include='reference.RFC.2845' ?>
       <?rfc include='reference.RFC.2931'?>
       <?rfc include='reference.RFC.8094' ?>
+      <?rfc include='reference.RFC.8499' ?>
 
       <reference anchor="GeoffValidation"
                  target="http://www.potaroo.net/presentations/2016-06-27-dnssec.pdf">

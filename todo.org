@@ -1,47 +1,2655 @@
-* DONE write dnsop with options:
-  :LOGBOOK:
-  - State "DONE"       from "TODO"       [2018-06-28 Thu 14:31]
-  :END:
-  1. individual codes, per existing doc
-  2. 16 bit code field, with 16 bit lookup field based on rcode
-  3. 32 bit code field, repeating rcode from elsewhere in the packet
-  4. integer ranges where NNYY indicates the NN integer rcode and YY
-     indicates the sub-code.  Note that this needs a 32 bit field too
-* DONE can we include more than one error code?
-  :LOGBOOK:
-  - State "DONE"       from "TODO"       [2018-06-29 Fri 21:49]
-  :END:
-  + [X] more than one edns0 rr, should be able to
-  + [X] more than one odns0 sub-option; don't know
-* TODO what would a forwarding server do?
-  1. always send back edns0?
-  2. never send back edns0
-  3. send if server believes client can receive it
-* TODO informative code to add: type ANY only one type of data
-  + is this useful?
-* DONE set the 1 bit as a flag and reserve the other 15 bits are unused...
-  :LOGBOOK:
-  - State "DONE"       from "TODO"       [2017-10-16 Mon 14:45]
-  :END:
-  + but not necessarily flags
-* TODO unauthenticated errors?  see Paul Wouters
-  + can we secure them?
-  + it doesn't matter anyway
-  + they're just informational
+* Multiple people                                                  :noexport:
+*** TODO Implementations required
+    + Shane Kerr and Peter Spacek pointed out new dnsop convention is to
+      have implementations.
 
-* TODO [[https://datatracker.ietf.org/meeting/100/materials/slides-100-dnsop-sessa-draft-ietf-dnsop-extended-error-00][review presentation]] and [[https://datatracker.ietf.org/meeting/100/materials/minutes-100-dnsop-00][meeting minute notes ]]
-  Four choices for how to create the full error code
-          Paul Hoffman: This didn't work well in HTTP, use choice 4
-          Stephane: There might be errors that would cross mulitple categories
-          Joe: First three need additional processing, so fourth is the only reasonable one
-          Ralf Weber: Copying information we already have in the packet isn't a good idea
-          Alex: IANA registry could also have the list of which RCODEs could be used together
-  Stefan: For security, use DNS-over-TLS
-  Eric: Security concern: it's OK as long as you think about what will cause an action based on error
-          Don't use transport security
-  Robert Story: Maybe use flags instead of code
-          Wes: It could get really long
-  Joe: This is definitely transport, not objects
-          Codes are about transport
-          Wes: Are we only doing things that are transport-specific?
-  Stephane: Open question about whether to have informational messages
+* Shane Kerr's review
+
+    Dear DNS colleagues,
+
+    I definitely agree with George that last call seems a bit
+    premature. As he points out, section 6 is a large open question. We
+    need to either change EDNS behavior to allow an unsolicited EDNS
+    option in a response or change this draft to include an appropriate
+    EDNS option when it queries. Personally I think the draft should
+    specify that the query should include an empty version of this EDNS
+    option to indicate support (this is actually helpful, as it doesn't
+    make too much sense sending back extra information that clients will
+    ignore, decades of BIND adding useless ADDITIONAL section data
+    notwithstanding).
+
+*** DONE Plus there's also this odd bit of stray text laying around:
+    :LOGBOOK:  
+    - State "DONE"       from ""           [2018-12-17 Mon 16:09]
+    :END:      
+
+     Here is a reference to an "external" (non-RFC / draft) thing:
+     ([IANA.AS_Numbers]).  And this is a link to an
+     ID:[I-D.ietf-sidr-iana-objects].
+
+     + Result: removed
+
+*** DONE Also is this correct:
+    :LOGBOOK:  
+    - State "DONE"       from ""           [2018-12-17 Mon 16:09]
+    :END:      
+
+       	 o  OPTION-LENGTH, 2 octets ((defined in [RFC6891]) contains the
+            length of the payload (everything after OPTION-LENGTH) in octets
+            and should be 4.
+
+      If I am correct there are at least 6 octets after the OPTION-LENGTH
+      and possibly more if EXTRA-TEXT is present.
+
+      + Result: fixed text to say "OPTION-LENGTH, 2 octets ((defined
+        in [RFC6891]) contains the length of the payload (everything
+        after OPTION-LENGTH) in octets and should be 6 plus the length
+        of the EXTRA-TEXT section (which may be a zero-length
+        string)."
+
+*** DONE Also, this text seems a bit unclear:
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-17 Mon 16:24]
+    :END:      
+
+       	 R - Retry  The R (or Retry) flag provides a hint to the receiver that
+            it should retry the query, probably by querying another server.
+            If the R bit is set (1), the sender believes that retrying the
+            query may provide a successful answer next time; if the R bit is
+            clear (0), the sender believes that it should not ask another
+            server.
+
+      The "probably by querying another server" is odd. In my mind it should
+      explicitly apply to querying another server ONLY.
+
+      + Result: that's fair.  Changed it to " it should retry the
+        query to another server."
+
+*** DONE EXTRA-TEXT and EXTRA-INFO duplication
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-17 Mon 16:11]
+    :END:      
+
+      The draft refers to EXTRA-TEXT twice, and EXTRA-INFO once which is
+      presumably meant to be the same thing. 
+
+      + Result: switched to all EXTRA-TEXT
+
+*** DONE encoding of the EXTRA-TEXT field
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-18 Tue 10:32]
+    :END:      
+
+      In any case, I think the encoding of this field should be
+      specified as either ASCII or UTF-8. I prefer UTF-8, because
+      otherwise I won't be able to send back 🤯 emoji in error messages
+      (and the authors won't be able to use the 🍄 emoji that they
+      clearly want).
+
+      + Resolution: we're proposing ASCII to keep the protocol simple
+        and to match TXT records.  These are not intended to be end
+        user messages but rather administrative hints for operators.
+        + Update <2019-01-02 Wed>: later in the mailing list, people
+          agreed on UTF-8.  -- document updated
+
+      + resulting text:
+
+          A variable length, ASCII encoded, EXTRA-TEXT field
+          holding additional textual information. It may be zero
+          length when no additional textual information is
+          included.
+
+
+*** DONE I am not sure I agree with these recommendations:
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-18 Tue 10:33]
+    :END:      
+
+      4.1.5.  Extended DNS Error Code 5 - Unsupported DNSKEY Algorithm
+
+       	 The resolver attempted to perform DNSSEC validation, but a DNSKEY
+       	 RRSET contained only unknown algorithms.  The R flag should not be
+       	 set.
+
+      4.1.6.  Extended DNS Error Code 6 - Unsupported DS Algorithm
+
+       	 The resolver attempted to perform DNSSEC validation, but a DS RRSET
+       	 contained only unknown algorithms.  The R flag should not be set.
+
+      This seems like a case where a stub resolver may want to try another
+      full-service resolver that may support more algorithms, so perhaps the
+      text "The R flag should not be set" should be removed.
+
+      + Resolution: we agree; text changed
+
+*** DONE How to add multiple EDE
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-20 Thu 14:53]
+    :END:      
+
+      While the draft suggests that it is possible to add multiple EDE to a
+      message:
+
+       	 o  RESPONSE-CODE, 2 octets: this SHOULD be a copy of the RCODE from
+            the primary DNS packet.  When including multiple extended error
+            EDNS0 records in a response in order to provide additional error
+            information, the RESPONSE-CODE MAY be a different RCODE.
+
+      It is not explicit about how this is done. If the intention is for a
+      resolver to forward this back to a stub resolver, then it needs to be
+      mentioned, probably in section 3, something like this. However, then
+      we also need some text describing how a client behaves when presented
+      with multiple EDE.
+
+      + Tried to clean this up with new text about multiple inserts.
+        Please see what you think!
+
+*** CANCELED Implementation required
+
+      Finally, do we have any implementations of this draft? It seems pretty
+      straightforward, but I don't actually think that it's possible to
+      develop interoperable code with the draft as it stands today. I
+      vaguely recall that we wanted running code going forward to try to
+      starve the DNS camel...
+
+      + issue response moved to a generic multiple-people issue
+
+* Peter Spacek
+  I believe the document is not ready for multiple reasons:
+
+*** DONE EDNS handling as mentioned elsewhere in this thread
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-18 Tue 10:38]
+    :END:      
+
+    + Response: we believe we have handled all other issues; please
+      let us know if you disagree.
+
+*** CANCELED lack of implementation reports
+
+  With my implementer hat on, this might not be as easy to implement as we
+  would like. An actual implementation might uncover various weird corner
+  cases so I'm against advacing this document before there are
+  implementations for *real* resolvers/DNSSEC validators.
+
+      + issue response moved to a generic multiple-people issue
+
+* Joe Abley
+
+*** DONE Fix IANA registry template
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-20 Thu 14:52]
+    :END:      
+
+    >> With IANA registry requests, I may be wrong here, but I thought we had
+    >> some (boilerplate?) language about how IANA is asked to operate the
+    >> registry: what criteria judge acceptance. Is it like the OID and
+    >> basically open (hair oil) slather, or is it only at WG RFC documented
+    >> request?
+    > 
+    > If there is a better template, we'd certainly like to hear it.
+
+    RFC 8126 contains exactly the guidance you're looking for. When
+    creating a new registry you not only need to specify the schema and
+    the initial rows to populate the new table with (as you started in
+    section 5.2, although the formatting of the table is a bit
+    horrifying); you also need to specify the name of the registry,
+    required information for future additions and the registration policy.
+
+    Happy to contribute some text if that seems useful.
+
+    + Response: cleaned up and tried to make it pretty
+
+* Donald Eastlake
+
+I like the Extended Error Code using EDNS idea. This was effectively
+what was done with TSIG and TKEY that have an expanded Error field
+inside the RR. However:
+
+*** DONE two dimensional table is unneeded 
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-18 Tue 11:36]
+    :END:      
+
+     >> I don't see any reason for the complex two-dimensional table to
+    new error codes. Given that 16 bits is available for "INFO-CODE"
+    (which I think, to follow the DNS nomenclature used in TSIG and TKEY,
+    should just be called "Error"), I don't see why these extended error
+    codes, which provide more detail beyond the top level Error code
+    value, can't be from the single unified DNS error code table. That
+    way, wherever you get a DNS Error code (from RCODE or the EDNS
+    extended error field or the TSIG or TKEY error fields or wherever,
+    there is just one table to look it up in. For example, you could
+    Reserve 4096 through 8191 for this purpose, which is probably enough
+    values :-)
+
+    + response: this was discussed multiple times in previous working
+      group meetings and on the mailing list, and the general
+      consensus was to use a multiple-lookup table.  Continue reading
+      into the next issue for further information on a decent compromise:
+
+*** DONE rcodes are only 4 bits
+    :LOGBOOK:  
+    - State "DONE"       from "TODO"       [2018-12-20 Thu 14:53]
+    :END:      
+
+     >> Since RCODEs are 4 bits, I don't see why a 16-bit
+     RESPONSE-CODE field is required. Even if you want to be able to
+     provide additional information for the 12-bit error codes of
+     RCODE as extended by base EDNS, there is still enough room in the
+     previous 16-bit word which has 15 unused bits in it. Just move
+     the RESPONSE-CODE up into the previous word
+
+     + Response: you're right about the 4 bits of course.  Somehow our
+       initial remembrance of this got lost in the double table
+       issue.  So to simplify both this issue, and the previous, we've
+       decided to merge the two codes into a 4-bit RCODE value and a
+       12-bit INFO-CODE value.  This actually allows implementers to
+       treat it easily as two codes, if they'd prefer, or a single
+       16b-bit code if they'd rather handle it that way while
+       preserving interoperability between everything.
+
+*** DONE 
+    :LOGBOOK:  
+    - State "DONE"       from ""           [2019-01-02 Wed 14:19]
+    :END:      
+    His response to the above:
+
+    + While it is not exactly what I would want, I am satisfied with the
+    changes below and consider my comments resolved.
+* Vladimir Cunat
+
+*** DONE unsupported algorithm issues
+    :LOGBOOK:
+    - State "DONE"       from              [2019-01-07 Mon 12:31]
+    :END:
+    Hello!
+
+    Unsupported algorithms (4.1.5 + 4.1.6):
+    I'm a bit confused why these conditions are meant for SERVFAIL.  Has
+    something changed?
+    https://tools.ietf.org/html/rfc4035#section-5.2 (paragraph "If the
+    validator does not support...")
+
+    --Vladimir (knot-resolver)
+
+    + Response: that's correct...  and now fixed by moving to NOERROR
+* Stephane Bortzmeyer
+
+Now, the problems:
+
+*** DONE It seems to me that this draft is mostly for resolvers, most planned
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 18:44]
+    :END:
+  extended codes are useless for authoritative servers (except may be
+  REFUSED/Lame?).
+
+  I suggest to make that clear in the introduction:
+
+  These extended error codes are specially useful for resolvers, to
+  return to stub resolvers or to downstream resolvers. Authoritative
+  servers MAY use them but most error codes would make no sense for
+  them.
+
+  + Warren agrees
+
+  + Results: added, but modified to distinguish that you're really
+    referring to receiving codes, not sending them (auth servers may
+    need to send them, eg the block/prohibited one)
+
+*** DONE ref issue
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 18:44]
+    :END:
+  > Unless a protective transport mechanism (like TSIG [RFC2845] or TLS
+  > [RFC8094])
+
+  Why 8094, which does not have even one implementation, instead of
+  7858?
+
+  + warren: oversight
+  + results: added 7858
+
+*** DONE sig expired
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 18:45]
+    :END:
+  > 4.2.3.  SERVFAIL Extended DNS Error Code 3 - Signature Expired
+  >
+  >   The resolver attempted to perform DNSSEC validation, but the
+  >   signature was expired.
+
+  I suggest to replace "the signature was expired" by "a signature in
+  the validation chain was expired".
+
+  Rationale: which signature? What if a DS at the parent is sign with an
+  expired signature?
+
+  + Warren: LTGM
+  + Results: done
+
+*** DONE dnskey missing text
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 18:46]
+    :END:
+  > 4.2.5.  SERVFAIL Extended DNS Error Code 5 - DNSKEY missing
+  >
+  >   A DS record existed at a parent, but no DNSKEY record could be found
+  >   for the child.
+
+  I suggest to replace "no DNSKEY record could be found for the child"
+  by "no DNSKEY record for this specific key could be found for the
+  child".
+
+  Rationale : the current text seems to imply this code is only when
+  there is no DNSKEY at all.
+
+  + Warren: LTGM
+
+  + Brian disagrees
+
+  + Michael Sheldon also disagrees and suggests "No supported matching
+    DNSKEY record could be found for the child"
+
+  + Result: took Michael's text
+
+*** DONE blocked
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 18:52]
+    :END:
+  > 4.4.1.  NXDOMAIN Extended DNS Error Code 1 - Blocked
+  >
+  >   The resolver attempted to perfom a DNS query but the domain is
+  >   blacklisted due to a security policy.  The R flag should not be set.
+
+  The last sentence is touchy. If a stub is configured with two
+  resolvers, and one is fast but known for lying in some cases that you
+  disagree with, you may ask a cookie from the other parent (no, resolver).
+
+  + Warren agrees the bit should be flipped.
+  + Result: flipped
+
+*** DONE blocked 2
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 18:59]
+    :END:
+  > 4.4.1.  NXDOMAIN Extended DNS Error Code 1 - Blocked
+  >
+  >   The resolver attempted to perfom a DNS query but the domain is
+  >   blacklisted due to a security policy.
+
+  I tend to think it would be a good idea to separate the case where the
+  policy was decided by the resolver and the case where the policy came
+  from outside, typically from the local law (see RFC 7725 for a similar
+  case with HTTP).
+
+  Rationale: in the first case (local policy of the resolver), the user
+  may be interested in talking with the resolver admin if he or she
+  disagrees with the blocking. In the second case, this would be useless.
+
+  + Stephane adds:
+
+    I really think it is important to make the difference between:
+
+    * I blocked your request because that's _my_ policy
+    * I blocked your request because I'm compelled to do so, don't
+      complain, it would be useless.
+
+  + Jim Reed: why?  from the client's perspective no diff
+
+  + Stephane: cause it indicates if you should call someone or you
+    can't affect change
+
+  + Result: Seems like rough concensus to add, so i did.
+
+*** DONE forged answer
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 19:17]
+    :END:
+  Otherwise, I suggest to add an error code:
+
+  NOERROR Extended DNS Error Code 3 - Forged answer
+
+     For policy reasons (legal obligation, or malware filtering, for
+     instance), an answer was forged.  The R flag should not be set.
+
+  Rationale: there is "NXDOMAIN Extended DNS Error Code 1 - Blocked" but
+  policy-aware resolvers (lying resolvers, in plain english) do not
+  always forge NXDOMAIN, they can also forge A or AAAA answers.
+
+  See also the issue just before, about the need to differentiate
+  resolver policy from "upper" policy, law, for instance.
+
+  + Warren doesn't like forgged and wants a better word
+
+  + Stephane: "substituded answer" maybe?
+
+  + Result: took forged as I don't like any suggested replacement yet
+
+*** DONE new code for no reachable authorities
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 19:19]
+    :END:
+
+    Ooops, I forgot one:
+
+    SERVFAIL Extended DNS Error Code 8 - No reachable authority 
+
+       The resolver could not reach any of the authoritative name servers
+       (or they refused to reply).  The R flag should be set.
+
+    Rationale: in draft -04, all SERVFAIL extended error codes are for
+    DNSSEC issues. In my experience, SERVFAIL happens also (and quite
+    often) for routing issues (most zones have all their authoritative
+    name servers in only one AS, sometimes even one prefix or, worse, one
+    rack).
+
+    We set the R flag because another resolver may not have the same
+    routing issues, BGP not being consistent between all sites.
+
+    True, an extended error code could be added after the RFC is
+    published, through "Specification required" but 1) it is easier to do
+    it now 2) it gives to the people who will implement the RFC a wider
+    view of the possible uses.
+
+    + Result: added
+
+* Petr Spacek
+
+  Prelim: first of all I believe this is useful and suppor the work, but still
+
+*** TODO implementations needed
+
+    needs more work *and implementation experience* before going to LC.
+
+    Here is couple specific changes to version 04.
+
+    + results: I believe the WG agrees, and the draft will not likely
+      progress until implementations exist.
+
+     --- Minor changes/clarifications ---
+
+*** DONE reserved bits
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 21:22]
+    :END:
+
+     > 2.  Extended Error EDNS0 option format
+     >    o  The RESERVED bits, 15 bits: these bits are reserved for future
+     >       use, potentially as additional flags.  The RESERVED bits MUST be
+     >       set to 0 by the sender and MUST be ignored by the receiver.
+
+     IMHO "SHOULD be ignored" is asking for trouble. We just went through DNS
+     flag day to clean up implementations which insisted on some fields being
+     zero. Can we please use this instead?
+     set to 0 by the sender and MUST be ignored by the receiver.
+
+     + Result: that make sense. Done
+
+*** DONE EDNS option vs OPT Pseudo-RR
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-11 Mon 00:32]
+    :END:
+
+     > 3.  Use of the Extended DNS Error option
+     >    The Extended DNS Error (EDE) is an EDNS option.  It can be included
+     >    in any response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query that
+     >    includes an EDNS option.
+
+     Why "EDNS option" (at very end of the sentence) and not "OPT Pseudo-RR"?
+     AFAIK it is perfectly fine to send EDNS0 OPT without any options inside.
+     Proposed text (only the last line was changed):
+        The Extended DNS Error (EDE) is an EDNS option.  It can be included
+        in any response (SERVFAIL, NXDOMAIN, REFUSED, etc) to a query that
+        includes OPT Pseudo-RR [RFC 6891].
+
+     + Results: accepted; thanks for the text.
+
+*** DONE wording issues with the response-code field text
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-11 Mon 14:59]
+    :END:
+     > 3.2.  The RESPONSE-CODE field
+     >    This 4-bit value SHOULD be a copy of the RCODE from the primary DNS
+     >    packet.  Multiple EDNS0/EDE records may be included in the response.
+     >    When including multiple EDNS0/EDE records in a response in order to
+     >    provide additional error information, other RESPONSE-CODEs MAY use a
+     >    different RCODE.
+     This paragraph worries me for multiple reasons:
+
+      0) Terminology: EDE is an EDNS option, not record!
+      a) If I am an implementer, in what cases I might want to go against
+              "4-bit value SHOULD be a copy of the RCODE"?
+      b) Terminology: Where is a definition of "primary DNS packet"?
+      c) When I read this now, many months after the initial draft, I have
+              trouble understanding logic why we are duplicating RCODE here. There
+              might be a good reasons but we need to state them explicitly otherwise
+              it will get ignored (or misunderstood).
+
+              Unfortunatelly I have trouble understanding intent behind this
+              description so I'm not able to draft a better text.
+
+      + Response: 
+
+      We'll work on the wording, and I can hopefully address your
+      issue with the lack of clarity with the text and I thank you for
+      pointing out that it's not clear.
+
+      In the past, the WG has discussed (more than once) whether to
+      and how to divide up the error code range.  There are some
+      slides from past IETF meetings, as well as past conversations on
+      the mailing list (see the conversation with Donald Eastlake, for
+      example).  A few thoughts that came out of the discussions
+      centered around multiple points:
+
+      - the desire to include an organized set of error codes grouped
+        by RCODE
+      - most of the time, the extended error codes would be directly
+        related to a particular RCODE (you found an exception)
+      - There was a desire to include multiple extended error codes
+        within a response, and sometimes it may be beneficial to
+        return an error code associated with another RCODE as a
+        supplemental error code.
+      - If two RCODEs needed a similar extended error, there is no
+        reason you can't create two separate (likely identical)
+        extended error codes attached to two RCODE values.
+      - Packing it all into a single 16-bit integer/short width field
+        meant implementations could treat the combination as a
+        double-lookup table if they'd prefer, or as a single 16-bit
+        error code and it should work either way, providing
+        implementations greater flexibility.        
+
+      Hopefully that makes sense?  I've added your new proposed stale
+      codes, as mentioned below.
+
+      I've changed the text for RESPONSE-CODE and INFO-CODE in order
+      to hopefully help.  I'd love your thoughts and suggestions for
+      improvements though.
+
+*** NOCHANGE why an R flag in unsupported key/ds
+
+     > 4.1.1.  NOERROR Extended DNS Error Code 1 - Unsupported DNSKEY Algorithm
+     > 
+     >    The resolver attempted to perform DNSSEC validation, but a DNSKEY
+     >    RRSET contained only unknown algorithms.  The R flag should be set.
+     > 
+     > 4.1.2.  NOERROR Extended DNS Error Code 2 - Unsupported DS Algorithm
+     > 
+     >    The resolver attempted to perform DNSSEC validation, but a DS RRSET
+     >    contained only unknown algorithms.  The R flag should be set.
+
+     Why R flag? This is not an error, resolution suceeded, and there is
+     nothing to retry. I propose change both cases to
+     "The R flag should not be set."
+
+     + Stephane answered on list with this same answer as mentioned below
+
+     + Answer: Because other resolvers may understand DS and DNSKEY
+       algorithms.  So the client (stub resolver) should keep trying.
+
+*** DONE indeterminate should be NOERROR
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 22:48]
+    :END:
+
+     > 4.2.2.  SERVFAIL Extended DNS Error Code 2 - DNSSEC Indeterminate
+     > 
+     >    The resolver attempted to perform DNSSEC validation, but validation
+     >    ended in the Indeterminate state.  The R flag should not be set.
+
+     This should be in NOERROR category.
+
+     AFAIK Indeterminate state is not an error, it is most likely a
+     configuration choice on the resolver. E.g. DNSSEC-validating resolver
+     running without any trust anchor is in Indeterminate state.
+
+     + Result: You're right, it should be (according to 4033).
+
+
+     --- New code points ---
+
+     I propose to add couple more codes:
+
+*** DONE new code: NSEC missing
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 22:53]
+    :END:
+     + SERVFAIL Extended DNS Error Code 8 - NSEC Missing
+        The resolver attempted to perform DNSSEC validation, but the
+        requested data were missing and covering NSEC was not provided.
+        RETRY=0
+
+     + status: good idea and added.  I set the retry bit, though, as
+       another resolver may not have the same issues, or may have NSEC
+       data cached.
+
+*** DONE new code: Cached error
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 23:10]
+    :END:
+
+     + SERVFAIL Extended DNS Error Code 9 - Cached Error
+        The resolver has cached SERVFAIL for this query.
+        RETRY=1
+     Often the SERVFAIL comes from cache which is unlikely to contain
+     specific error details, but it is still useful to distinguish "proper"
+     cached SERVFAIL from other weird errors like running out of file
+     descriptors etc. Info text could contain remaining TTL ...
+
+     + status: added
+
+*** DONE new code: server not ready
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 23:10]
+    :END:
+     + SERVFAIL Extended DNS Error Code 10 - Server Not Ready
+         Server is not up and running (yet). RETRY=1
+
+     + status: added
+
+*** DONE new code: depricated
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-03-10 Sun 23:30]
+    :END:
+
+     + NOTIMP Extended DNS Error Code 1 - Deprecated
+     Requested operation or query is not supported because it was deprecated.
+     Retrying request elsewhere is unlikely to yield any other results.
+     RETRY=0
+     Intended use:
+     - OPCODE=IQUERY
+     - OPCODE=QUERY QTYPE={ANY, RRSIG, MAILA, MAILB} etc.
+
+     + status: Added.   Was tempted to set R=1 because other servers
+       may support it, but the reality is that if its deprecated it
+       shouldn't be used at all.
+
+     --- More adventurous proposals ---
+*** new flags 
+
+     a) Two more bits to implement "advice for user" (longer explanation can
+     be found in archives
+     https://mailarchive.ietf.org/arch/msg/dnsop/b3wtVj_aWm24PXyHr1M9NMj3LJ0)
+
+     I believe this will make the draft way more useful for everyone and not
+     just geeks.
+
+     Proposed addition to text:
+
+     > 2.  Extended Error EDNS0 option format
+           +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+        4: | R | N | F |                  RESERVED                         |
+           +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+proposal
+***** NOCHANGE NEAR flag
+
+        o  The NEAR flag, 1 bit; the NEAR bit (N) indicates a flag defined
+           for use in this specification.
+
+***** NOCHANGE FAR flag
+
+        o  The FAR flag, 1 bit; the FAR bit (F) indicates a flag defined
+           for use in this specification.
+
+     > 3.  Use of the Extended DNS Error option
+
+     3.2.  The N (Near) flag   The N (Near) flag indicates that the error
+     reported is likely caused
+        by conditions "near" the sender. Value 1 is a hint for user interface
+        that user should contact administrator responsible for local DNS.
+
+        For example, an DNS resolver running on CPE will set N=1 in its
+        error responses if it detects that all queries to upstream DNS
+        resolver timed out. This likely indicates a link problem and must be
+        fixed locally.
+
+        Another example is an DNSSEC-validator which detects that query
+        ". IN NS" fails DNSSEC validation because signature is expired
+        or not yet valid. This most likely indicates misconfigured system
+        time and needs to investigated and fixed locally.
+
+
+     3.3. The F (Far) flag
+        The F (Far) flag indicates that the error reported is likely caused
+        by conditions on the "far" end, i.e. typically authoritative side or
+        upstream forwarder. Value 1 is a hint for user interface to display
+        message suggesting user to contact operator of the "far end" because
+        it is unlikely that local operator can fix the problem.
+
+        For example, an DNS resolver might set F=1 if all authoritative
+        servers for a given domain are lame.
+
+
+***** NOCHANGE Response to both:     
+
+      These seem interesting on the face, and potentially useful for
+      receivers as you indicate.  However, they also seem subjective
+      and hard to be deterministic about when and how to set them.
+      Additionally, most errors should already give a hint as to
+      whether a given error is near or far based on the error itself
+      (even better hints might be put into the EXTRA-TEXT field).
+
+      I'd (we'd) love to hear other WG member opinions on this subject.
+
+*** NOCHANGE optional TTL to the option
+
+     b) Another thing to consider is adding optional TTL value to EDE option.
+     E.g. there is no point in retrying the query again and again until bogus
+     response is cached. It is much better to display error message "try
+     again in 10 seconds, if the problem persists call X" than just "try again".
+
+     What do you think?
+
+     + Result (Wes): So, I think this adds too much complexity to the
+       system that we're otherwise trying to keep simple.  If
+       particular errors are likely to be retried successfully after a
+       certain period of time, text could be added to the error
+       descriptions to hint at that instead.  Otherwise we're adding
+       another layer of caching, which spells a lot more code I'd think.
+
+*** DONE answer with stale data
+    :LOGBOOK:
+    - State "DONE"       from "NOCHANGE"   [2019-03-11 Mon 14:38]
+    :END:
+
+    Yet another code proposal:
+    * answer with stale data
+
+       The resolver was unable to resolve answer within its time limits and
+       decided to answer with stale data instead of answering with an error.
+       This is typically caused by problems on authoritative side, possibly
+       as result of an DoS attack. Retrying is likely to cause load and not
+       yield a fresh answer, RETRY=0.
+
+    Here is a problem that this code point is applicable to NOERROR as well
+    as NXDOMAIN answers so I'm not sure how to categorize it. This
+    reinforces my unanswered question why the draft proposes to copy RCODE
+    into EDE.
+
+    + Result: Added two codes, one per RCODE, per discussion above.
+
+
+* March 2019 - July 2019
+
+*** Puneet Sood
+
+My comments on the latest version.
+
+General: Thanks for writing this - it provides useful information for
+our public DNS resolver implementation.
+
+***** NOCHANGE > Section 1. Introduction and background
+      > Para 4. "Authoritative servers MAY parse and use them ..."
+      Comment: Why talk about auth servers parsing this since this field is
+      only meant to be present in responses?
+
+      + Response: because we are trying to specify what an
+        authoritative server *should* do when it receives one, even if
+        it doesn't expect them.  IE, the DNS protocol doesn't prohibit
+        clients from sending them so we should at least mention that
+        servers should be prepared to receive them (even if useless).
+
+***** DONE > Section 3.1 The R (retry) flag
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-09 Fri 21:50]
+      :END:
+       > Para  2. "implementations may receive EDE codes that it does not understand.
+       >   The R flag allows implementations to make a decision as to what to do
+       >   if it receives a response with an unknown code - retry or drop the
+       >   query."
+
+       Comment: It is unclear what should be done if a response contains
+       multiple EDE options and the R flag value is different across
+       them.
+
+       + Response: good question.  Due to popular request, the R bit
+         has now been dropped so this issue goes away.
+
+***** NOCHANGE multiple EDE vs single
+
+       Comment: On a related note, what is the reasoning for allowing
+       multiple instance of the EDE option in a response versus encoding all
+       the (Response-CODE, INFO-CODE, EXTRA-TEXT) tuples in a single EDE
+       option? A single EDE option would avoid having different values for
+       the R flag and any new flag in the future. 16-bit length field means
+       that total size of all EDE options should fit in a single option.
+
+       + Response: Implementations already need to parse multiple
+         extra EDE options (to avoid crashing, over-writing, etc).
+         And the parsing structure is significantly easier if they can
+         take the option record, pull off the 16 bit option and take
+         the rest as text.  If we added a length record for both the
+         number of options and the number of text fields (of different
+         lengths), this seems more complex to us than adding multiple
+         options instead.  Feel free to try to convince us otherwise,
+         or better get all the implementations to prefer it.
+
+***** DONE > Section 4.1.3 and 4.1.3.1 NOERROR Extended DNS Error Code 3 - Stale Answer
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 08:58]
+      :END:
+       Comment: 4.1.3.1 should be 4.1.3?
+
+       + Response: I (Wes) just rewrote that section and ensured
+         everything is consistent.  Thanks for the catch though.
+
+***** NOCHANGE DNSSEC bit
+       > Section 4.2 INFO-CODEs for use with RESPONSE-CODE: SERVFAIL(2)
+       Comment: There are a number of INFO-CODEs here for DNSSEC failures.
+       Over time it will be extra work for implementations to stay up to date
+       with new INFO-CODEs added for DNSSEC failures. The R bit signals
+       whether a resolution should be retried. Do we want also want a bit for
+       signalling DNSSEC validation failures? Only needed if some DNSSEC
+       related behavior needs to be different from the R bit value.
+
+       + Response: 1) we've now removed the R bit, and 2) interesting
+         idea...  It seems premature without a worked example/need.
+         Do you have an exact use case where this would prove beneficial. 
+
+***** NOCHANGE dnssec protection opts
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:00]
+      :END:
+       > Section 6. Security Considerations
+       > Para 2: "but until we live in
+       >   an era where all DNS answers are authenticated via DNSSEC or other
+       >   mechanisms, there are some tradeoffs."
+       Comment: Not clear how DNSSEC would help here since the OPT RR is not
+       protected by any DNSSEC mechanism.
+
+       + Response: Yes, that's true.  But the sentence is talking
+         generically, and refers to "other mechanisms" too...  DNSSEC
+         won't help with opt codes, you're right.  But I don't think
+         that was the point of the sentence.  If you have specific
+         text you'd like to propose, I'd love to see it!
+
+***** WONTDO > Appendix A.
+       Editorial: Missing diff summaries for new versions.
+
+       + Response: very true.  Sigh.  I'm (Wes) horrible at
+         remembering to write those, and I never put them in my drafts
+         in the first place.  With the advent of online diffs I don't
+         find them as useful either.  Since we're nearing last call
+         (again), I'll likely not try to go back and retrofit them.  
+
+*** Stephane Bortzmeyer
+
+       At the IETF 104 hackathon in Prague, Vladimír Čunát and myself
+       implemented it in the Knot resolver
+       <https://www.knot-resolver.cz/>. You can see the result in the git
+       merge request
+       <https://gitlab.labs.nic.cz/knot/knot-resolver/merge_requests/794>
+       (branch extended_error
+       <https://gitlab.labs.nic.cz/knot/knot-resolver/tree/extended_error>).
+
+***** DONE > 4.1.5.  SERVFAIL Extended DNS Error Code 5 - DNSSEC Indeterminate
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:30]
+      :END:
+       >   The resolver attempted to perform DNSSEC validation, but validation
+       >   ended in the Indeterminate state.  The R flag should not be set.
+
+       Isn't there an error here? 4.1 is the section for NOERROR. What
+       should be returned for DNSSEC Indeterminate? NOERROR or SERVFAIL? (In
+       the first case, change the text, in the second, move this paragraph to
+       4.2.)
+
+       Now, implementation experience. We tested with Wireshark and dig (did
+       not try to develop a client using the extended error code, just the server).
+
+       As expected, producing extended error codes is quite simple and the
+       draft is clear. The camel will be happy.
+
+      + Response: With the recent removal of the RCODE binding, I
+        think this problem goes away.  Correct?
+
+
+***** DONE The biggest issue is of course to find out what to put in the extended
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:30]
+      :END:
+       error code. On some resolvers (at least on Knot), the place where the
+       error is noticed can be quite far from the place where the answer is
+       built, with its EDNS options. In practice, we had to add data to the
+       request object, for the extended error information to be carried to
+       the module that emits the extended error code EDNS option. So, the
+       real difficulty is not in the draft, but in knowing and understanding
+       your resolver.
+
+      + Response: As agreed to in IETF105, we've removed the RCODE binding.
+
+       Some details:
+
+***** NOCHANGE * no resolver will use all the response-code/info-codes because some
+           are never reached for this resolver, or are mixed with other
+           issues. Generic errors (such as "SERVFAIL Extended DNS Error Code 1 -
+           DNSSEC Bogus") are useful for when you cannot reliably find the problem.
+
+      + Response: I'm not sure what change you're suggesting.  Removal
+        of the binding may help, and I don't think there is an
+        expectation that every implementation should be able to return
+        every code.  I'd expect the union of all implementations to
+        find the ability to return each code, but not each
+        implementation itself?
+
+***** DONE * the draft is silent about the laying out of bits in info-code. Not
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:33]
+      :END:
+           many IETF protocols have an integer field which is larger than a byte
+           but not byte-aligned.
+
+      + Response: Good point; added encoding rules (MSB)
+
+***** NOCHANGE * the draft has a passing mention that multiple extended error options
+           are allowed but I don't see how it could be used by the poor client
+           trying to figure out what happened. I suggest to disallow it.
+
+       + Response: Most clients should be logging the resulting
+         findings, or displaying them maybe.  We don't expect this
+         option to be used for anything other than debugging,
+         especially because its not authenticated.  The client also
+         has to be prepared to accept multiple options anyway, as not
+         doing so is equally as problematic (IE, assuming no one will
+         send you more than one option is a sure path to crashing or
+         other problem)
+
+***** NOCHANGE * the draft has (rightly so) two info-codes for NXDOMAIN/Blocked and
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:35]
+      :END:
+           NXDOMAIN/Censored but Knot cannot use it currently since the policy
+           module (written in Lua) has no way today to be configured to express
+           the difference. Not a problem in the draft but it will be probably a
+           common case that the resolver cannot make use of *all*
+           codes.
+
+      + Response: Yep, per above I suspect different implementations
+        may need to return different codes based on their
+        implementation needs.  The point is to turn the right code to
+        help users/debuggers.
+
+***** NOCHANGE Let's end with a few examples:
+
+           4.2.2.  SERVFAIL Extended DNS Error Code 2 - Signature Expired
+
+           % dig  @::1 -p 9053 A servfail.nl         
+           ...
+           ;; ->>HEADER<<- opcode: QUERY, status: SERVFAIL, id: 12100
+           ;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 1
+
+           ;; OPT PSEUDOSECTION:
+           ; EDNS: version: 0, flags: do; udp: 4096
+           ; OPT=65500: 00 00 20 02 44 4e 53 53 45 43 20 65 78 70 69 72 65 64 20
+           73 69 67 6e 61 74 75 72 65 73 (".. .DNSSEC expired signatures")
+           ...
+
+
+           4.2.7.  SERVFAIL Extended DNS Error Code 7 - No Reachable Authority
+
+           % dig  @::1 -p 9053 A brk.internautique.fr
+           ...
+           ;; ->>HEADER<<- opcode: QUERY, status: SERVFAIL, id: 38620
+           ;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 1
+
+           ;; OPT PSEUDOSECTION:
+           ; EDNS: version: 0, flags: do; udp: 4096
+           ; OPT=65500: 80 00 20 07 6e 6f 20 4e 53 20 77 69 74 68 20 61 6e 20 61
+           64 64 72 65 73 73 (".. .no NS with an address")
+           ...
+
+           (Not an ideal message but this is quite generic code in Knot.)
+
+
+           4.5.1.  NXDOMAIN Extended DNS Error Code 1 - Blocked
+
+           % dig  @::1 -p 9053 A googleanalytics.com 
+           ...
+           ;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 1189
+           ;; flags: qr aa rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 2
+
+           ;; OPT PSEUDOSECTION:
+           ; EDNS: version: 0, flags: do; udp: 4096
+           ; OPT=65500: 80 00 30 01 4e 6f 20 74 72 61 63 6b 69 6e 67 ("..0.No tracking")
+           ;; QUESTION SECTION:
+           ;googleanalytics.com.	IN A
+
+           ;; AUTHORITY SECTION:
+           googleanalytics.com.	10800 IN SOA googleanalytics.com. nobody.invalid. (
+           				1          ; serial
+           				3600       ; refresh (1 hour)
+           				1200       ; retry (20 minutes)
+           				604800     ; expire (1 week)
+           				10800      ; minimum (3 hours)
+           				)
+
+           ;; ADDITIONAL SECTION:
+           explanation.invalid.	10800 IN TXT "No tracking"
+
+*** Shane Kerr
+
+    Several folks have worked on implementing the
+    draft-ietf-dnsop-extended-error at the IETF Hackthon yesterday and
+    today. This is my own feedback on the draft based on trying to get it
+    added to dnsdist.
+
+    ----------------
+
+    Stéphane Bortzmeyer pointed out that it wasn't clear how to encode the
+    INFO-CODE into the 12 bits allocated to it. I think that the idea is
+    that it should be represented in network (MSB) order, but probably it
+    should be specified.
+
+    ----------------
+
+***** DONE Minor suggestion: text for the descriptions should be consistent
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:38]
+      :END:
+      regarding capitalization. So:
+
+      * Forged answer -> Forged Answer
+      * DNSKEY missing -> DNSKEY Missing
+      * RRSIGs missing -> RRSIGs Missing
+
+      ----------------
+
+      + Response: Good point, thanks!  done.
+
+***** NOCHANGE For some reason NXDOMAIN(3)-specific codes are listed after
+      NOTIMP(4)-specific and REFUSED(5)-specific codes in the draft. I think
+      it would make more sense to just include these in order.
+
+      + Response: Good point...  though because we removed
+        rcode-binding this sort of is resolved
+
+      ----------------
+
+***** DONE Numbering is a bit weird in section 4.1.3:
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:41]
+      :END:
+
+      4.1.3.  INFO-CODEs for use with RESPONSE-CODE: NOERROR(3)
+      4.1.3.1.  NOERROR Extended DNS Error Code 3 - Stale Answer
+
+      Probably the idea is just to have:
+
+      4.1.3. NOERROR Extended DNS Error Code 3 - Stale Answer
+
+      + Response: Yep.  Fixed in the latest version (and simplified)
+
+      ----------------
+
+***** DONE multiple RCODE issues
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:07]
+      :END:
+
+      + Response: The response code has been dropped, as  noted above
+
+         RESPONSE-CODE:  3 (NOERROR)
+         INFO-CODE:  3
+         Purpose:  Answering with stale/cached data
+         Reference:  Section 4.1.3.1
+      -> should be RESPONSE-CODE 0
+
+      ----------------
+
+         RESPONSE-CODE:  2 (SERVFAIL)
+         INFO-CODE:  7
+         Purpose:  No NSEC records could be obtained
+         Reference:  Section 4.2.8
+      -> should be "No Reachable Authority", 4.2.7
+
+      ----------------
+
+      This code is missing in the table:
+
+         RESPONSE-CODE:  2 (SERVFAIL)
+         INFO-CODE:  8
+         Purpose:  No NSEC records could be obtained
+         Reference:  Section 4.2.8
+
+      ----------------
+
+         RESPONSE-CODE:  4 (NOTIMP)
+         INFO-CODE:  1
+         Purpose:
+         Reference:  Section 4.4.2
+      -> should be "Deprecated"
+
+      ----------------
+
+***** NOCHANGE Finally, I note that the suggestion of requiring that the sender have
+      some signal indicating that it is interested in extended errors was
+      not adopted. I don't insist on it, but I think it would be useful to
+      avoid bloating packets unnecessarily. It's a bit like the useless
+      additional section data that lots of servers insist on appending to
+      answers... why send something that will not be seen?
+
+      OTOH I realize that having this information available may be useful
+      for humans debugging things, even if the sender does not ask for it.
+
+      + Response: If there sufficient support, we'd certainly add it.
+        This is primarily intended to be used for extreme cases and
+        only when problems/unusual are detected.  Most DNS messages
+        won't contain EDE options and when they do they'll likely fall
+        below the DNSSEC amplification factors that are out there.  We
+        think the benefit of including the extra information outweighs
+        the problems with sending it.  But we'd certainly love to hear
+        more feedback from the community to see if there is agreement
+        one way or another here. 
+
+***** DONE On the gripping hand, adding unasked-for information may have privacy
+      :LOGBOOK:
+      - State "DONE"       from "NOCHANGE"   [2019-08-30 Fri 16:22]
+      :END:
+      implications. Possibly adding a "Privacy Considerations" section would
+      be useful?
+
+      + response: What would you like us to add to such a section?
+        The question/answers section likely has most of the sensitive
+        information.  If you'd provide text to clarify your thinking,
+        we'd gladly include it.
+
+      + Shane:
+
+        I looked through RFC 6973 Section 7 - 
+        https://tools.ietf.org/html/rfc6973#section-7 - and didn't see
+        anything that stuck out obviously to me.
+
+        Possibly the only real concern is with extra text. It currently reads:
+
+           The UTF-8-encoded, EXTRA-TEXT field may be zero-length, or may hold
+           additional information useful to network operators.
+
+        Quad9's proposal to include various helpful information like how
+        dangerous a particular answer might be made me think that we should be
+        careful not to leak information in this channel. For example, a
+        response should not say something like, "daily query limit reached for
+        account 7452-54".
+
+        Possibly the description could be changed to something like:
+
+           The UTF-8-encoded, EXTRA-TEXT field may be zero-length, or may hold
+           additional information useful to network operators. Care should be
+           take not to leak private information that an observer would not
+           otherwise have access to, such as account numbers.
+
+
+
+*** Ralph Dolmans
+
+    I made an Extended DNS Errors implementation in Unbound during the
+    IETF104 hackathon. Implementing the code that handles the errors was
+    rather straightforward, the difficult part is (as Stéphane already
+    pointed out) finding the right locations in the code for the individual
+    errors. Some remarks regarding the draft:
+
+***** NOCHANGE Since it is possible to have multiple extended error options, is it
+    expected to return all errors that match the result, or only the most
+    specific one? For example: if a DNSSEC signatures is expired should both
+    the "DNSSEC bogus" (SERVFAIL/Extended error 1) and the "Signature
+    expired" (SERVFAIL/Extended error 2) be returned?
+
+      + Response: I'd return what seems to be the most appropriate
+        set, given the situation.  I think both of the above seem to
+        apply so the question is, would it be confusing to ever return
+        "too much".  I'm not sure we want to over-specify and
+        implementations should be free to pick what
+        debugging/info-codes they think is best to return.
+
+        IMHO, personally, I think sig expired is sufficient because it
+        implies the BOGUS code already.
+
+***** DONE I am not sure whether linking the info code to the rcode is a good idea.
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:09]
+      :END:
+    Some info codes can happen for different rcodes. It is in Unbound for
+    example possible to block a domain by sending a REFUSED rcode, while the
+    document list blocking only for the NXDOMAIN rcode. If the
+    rcode/info-code coupling will remain then I would like to have the same
+    info code for a specific error under different rcodes, for example
+    always use info-code 1 for blocking.
+
+      + Response: Per discussion at IETF105, the linking is now dropped.
+
+***** NOCHANGE Since EDNS is hop-by-hop, only error information from the resolver you
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:46]
+      :END:
+    are talking to is returned. There are cases when the interesting
+    information is not in the first resolver. For example: if a resolver
+    forwards queries to another one and the last one does DNSSEC validation
+    then the resolver you are talking to does not generate the interesting
+    information. Is it maybe an idea to add some text stating that extended
+    error-aware resolvers should forward the received EDNS option?
+
+    + We sort of discussed this at one point in various venues (both
+      physical and electronic).  I think the resolution was "lets
+      leave that for an update once we get more experience".  I think
+      picking when to forward and when it's meant "just for you"
+      becomes complex and harder to specify.
+
+***** DONE I think having the extra information provided by this document is useful
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-09 Fri 21:59]
+      :END:
+    for debugging, and only for that. This extra information should not be
+    used to make any DNS resolving decision, which makes the retry flag a
+    bad idea. At the moment I don't have to trust all my secondaries as long
+    as my zone is DNSSEC signed. The worst thing they can do is not return
+    my data or tamper with it, in which case the validating resolver will
+    ignore it and try another nameserver. Giving a nameserver the power to
+    instruct a resolver to not try at another nameserver gives them the
+    power to make my zone unavailable. This completely changes the current
+    trust model. Please remove the retry flag from the document.
+
+    + The R bit has been removed in the latest flag, due to your and
+      other people's requests :-)
+
+*** Evan Hunt 
+
+    Stephane Bortzmeyer worked on implementing EDE in Knot the hackathon in Prague,
+    and mentioned a few issues that came up:
+
+***** DONE 1. INFO-CODE bit layout was a bit ambiguous as it's a 12-bit field and "byte
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:51]
+      :END:
+        order" isn't meaningful. The packet layout diagram helps, but we could help
+        by specifing in the text that the combined response and info fields are two
+        octets in network byte order, and RESPONSE-CODE is the most significant
+        four bits and INFO-CODE is the least significant 12.
+
+      + Response: A few of us met in IETF105 and agree to drop the
+        RESPONSE-CODE.  And yes, network-byte order is critical and
+        has been specified in the most recent document.  Thanks!
+       
+***** TODO 2. He requested the addition of a generic error code for SERVFAIL responses
+        that don't fall into any defined category. For example, it's possible to
+        configure Knot to send SERVFAIL as a result of a policy decision, which
+        doesn't fall into any of the existing buckets, and it would seem silly to
+        add a specific bucket for that.
+       
+      + We're adding a "other" type error code and agree this is a
+        good suggestion.
+
+***** NOCHANGE 3. Finally, he recommended removal of the suggestion in section 3.2 that
+        multiple EDE records could be included with a response, and instead forbid
+        it. It makes parsing harder, and it's unclear what to do if different codes
+        contradict one another.
+
+        + The debugging codes shouldn't be used for decision making
+          process, and clients must not fail when they receive
+          multiple options anyway.  It would be better to specify that
+          you better expect it than have clients not be able to handle
+          them.  We expect most clients will log/display all errors
+          and "contradicting" doesn't make much sense from a
+          non-decision making logic tree.
+
+***** DONE 4. Incidental point that I noticed while checking the existing text: "The
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-08-02 Fri 09:54]
+      :END:
+        authors wish to thank...Evan
+        Hunt" looks weird if I'm one of authors...
+       
+
+      + Response: Ha.  Very true, thanks.  You've been removed!
+
+        (he laughs manically at the thought of Evan wondering
+        "wait.... from the acknowledgements or from the author
+        list???")
+
+    -------------------------------------------------------------------------------
+
+    You can view, comment on, or merge this pull request online at:
+
+      https://github.com/wkumari/draft-wkumari-dnsop-extended-error/pull/5
+
+    Commit Summary
+
+      * address some feedback from the IETF hackathon in Prague
+      * remove me from the thank you's, since I'm a coauthor
+      * add a "Not Specified" SERVFAIL code
+
+    File Changes
+
+      * M draft-ietf-dnsop-extended-error.xml (41)
+
+    Patch Links:
+
+      * https://github.com/wkumari/draft-wkumari-dnsop-extended-error/pull/5.patch
+      * https://github.com/wkumari/draft-wkumari-dnsop-extended-error/pull/5.diff
+
+* Aug 26 Shane Kerr
+
+*** 
+
+* Sep 4 Vittorio Bertola
+
+*** DONE Add another blocked error
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-09 Mon 20:43]
+    :END:
+
+    Given some recent discussions on the ADD list, I think that it could
+    make sense to add a third error code for DNS filtering. Currently, the
+    draft has these two:
+
+    4.16.  Extended DNS Error Code 15 - Blocked
+
+       The resolver attempted to perfom a DNS query but the domain is
+       blacklisted due to a security policy implemented on the server being
+       directly talked to.
+
+    4.17.  Extended DNS Error Code 16 - Censored
+
+       The resolver attempted to perfom a DNS query but the domain was
+       blacklisted by a security policy imposed upon the server being talked
+       to.  Note that how the imposed policy is applied is irrelevant (in-
+       band DNS somehow, court order, etc).
+
+
+    There is however a third case, which is "blocked by user request". The
+    three cases differ on who made the decision to filter, i.e.:
+    - code 15 is for when the recursor blocks stuff that its own operator dislikes;
+    - code 16 is for when the recursor blocks stuff that public authorities dislike;
+    - the third code would be for when the recursor blocks stuff that the
+    user (the entity that acquired the service) dislikes, e.g. for
+    parental control, destinations not suitable for work, etc.
+
+    + Response: I think the idea of a "you requested we block this"
+      makes sense, so I'll add that one
+
+*** WONTDO you requested blocking
+
+  There was also some discussion on whether these error codes could be
+  accompanied by a URL that the client device can use to display a
+  human-readable explanation to the user, which would be a cleaner
+  solution than the current practice of giving to the client a positive
+  response, but with the IP address of a local web server instead of the
+  original one (a practice that doesn't work well with HTTPS anyway).
+
+  This has many security caveats, and could only work with an
+  authenticated, trusted resolver (which is anyway true of the above
+  error codes in themselves, since an adversarial recursor could just
+  lie on the reason for blocking or even on the fact that it is actually
+  blocking something). It is really too early to say whether this could
+  work or whether it would actually be implemented, and also, on
+  transports other than DoH, I'm not sure if applications could ever
+  access this information. Still, perhaps a note on whether EXTRA-TEXT
+  could bear structured information for certain error codes, and how
+  this mechanism could be later defined, could be useful.
+
+  + Response: I don't think we want to get into how log messages
+    should be delivered.  If an implementation wants to put a URL in
+    the additional information, that certainly would make sense.
+    But the Web does not equal the internet, and figuring out how to
+    do it for everything is not easily possible.
+
+*** DONE ack
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-09 Mon 20:43]
+    :END:
+
+I went to talk to quad9. Here is the reply they sent.
+
+* TODO Loganaden Velvindron <loganaden@gmail.com>
+
+*** NOCHANGE pass-through
+
+  1) I see at least one more model that needs to be supported, which is
+  how to handle edns extended codes that are generated by a remote
+  server, i.e. passthrough. Layering multiple forwarding resolvers
+  behind each other is common, and some way to notify the end user that
+  the originating message was not generated by the first resolver would
+  be important.  I don't know if there needs to be some way to indicate
+  how "deep" the error was away from the end user; it seems just two
+  levels (locally generated or non-locally generated) would be
+  sufficient with only minor thought on it.
+
+  Re: 1) This is a good point, but implementation will likely run afoul
+  of existing standards or else require duplicative response codes or
+  use of an additional flag in the INFO-CODES section.
+  Perhaps a new flag type, similar to AA, which can be used to say that
+  this recursor will return this result reliably/deterministically.
+  Attempting to provide depth is perhaps unlikely, but flags for
+  stub/forwarder/recursive/intermediate recursive or a subset of those
+  might make sense.
+  Perhaps a non-descript flag such as 'DR' for Deterministic Response.
+  Obviously INFO-CODES can support many different flags, of which IR
+  (Intermediate Resolver) or such could be included
+  at the point of response generation, with the last server providing
+  actual data in the chain being the one to authoritatively set the
+  flag, which then must not be modified by further
+  downstream resolvers in the process of returning the response.
+
+  + Response: this has been discussed a few times, and the current
+    view (that at least I hold, and likely others based on past
+    discussions) is that it would be best to get this out as is,
+    without a pass-through model while we deploy it and get
+    operational experience with its use.  Pass-through is complex for
+    a bunch of reasons (NAT alone, eg), and it's unclear we can come
+    up with a solution for all the likely corner cases to appear.
+
+    TL;DR: we should definitely work on it, but in the future.
+
+*** DONE network error code needed beyond timeout
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-10 Tue 20:07]
+    :END:
+
+  2) SERVFAIL needs another error code to indicate the difference
+  between a network error (unexpected network response like ICMP, or TCP
+  error such as connection refused) versus timeout of the remote auth
+  server, as that is often a confusing issue.
+
+  + Response: looks like a reasonable idea, so it has been added to
+    the latest draft.  thank you!
+
+  Re: 2)  Specifics as an item in the below list.
+
+
+*** NOCHANGE 
+
+  3) Really, I'd like to see a definition of some of the EXTRA TEXT
+  strings here, since that will be almost immediately an issue that
+  would need to be sorted out before this could be useful. There have
+  been some discussions (sorry, don't know if it's a draft or just
+  talking) about browsers consuming "extra" data in DNS responses that
+  can do a number of things.  As an example that is important to Quad9
+  (or any blocking-based DNS service) it might be the case that upon
+  receiving a request for a "blocked" qname/qtype, we would hand back a
+  forged answer that leads to a splash page as the default result.
+  However, if the request was made from a resolver stack that had the
+  EDNS extensions, we might include the "real" result in the EXTRA TEXT
+  field, as well as a URL that points the user to an explanation of why
+  that particular qname/qtype was blocked.  Or we might add a risk
+  factor, or type of risk ("risk=100, risktype=phishing")  or the like.
+  This allows a single query to be digestable by "dumb" stacks that we
+  want to have do the most safe thing, but also allow "smart" resolver
+  stacks to present a set of options to the end user.
+
+  + Again, I suspect that the complexity associated with
+    standardizing on exactly a structure (including
+    internationalization) of extra-information in a machine
+    understandable and parsable mechanism is fraught with a very long
+    discussion period.  It might be worthy of future work, and I
+    certainly think it would be valuable, but (IMHO) it would be
+    better to get this out and work on that as a follow-on project
+    *if* we could achieve consensus on it (which, I'll be honesty,
+    will be either difficult or take a long time or both).
+
+  Re: 3) Seems reasonable.
+
+*** NOCHANGE blacked/censored/retry
+
+  4) I'm confused as to why a "blocked" or "censored" result would have
+  a retry as mandatory.   The resolver gave a canonical answer from the
+  point of policy.
+
+  + the retry flag is now gone.
+
+  Re: 4) See below notes.
+
+  Potential inclusions/Adjustments:
+
+*** NOCHANGE More retry case thoughts
+
+  4.1.3.1: A use case exists where a stale answer should attempt a
+  retry. A declarative setting for the Retry bit should not be specified
+  here, but instead guidance on whether or not the R bit should be set
+  should be included. For example, when using a front-end load balancer,
+  if the recursive backends are temporarily inaccessible but are
+  expected to recover in time to handle a subsequent query, it would be
+  prudent to include the R bit. No additional load would be generated
+  towards the Authoritatives in this case, and the Intermediate Recursor
+  may choose to set the R bit or not based on whether the failure mode
+  appears to be temporary.
+
+  4.1.5: Another area where guidance should be provided. Some recursive
+  resolvers process requests out of order, asynchronously, or will retry
+  alternative authoritatives post-processing as part of infrastructure
+  table management and thus may response to a subsequent query, where
+  the initial will fail, likely due to timeouts. In our specific case,
+  due to our use of multiple recursive backend technologies, a
+  subsequent query failing DNSSEC validation has a significant chance of
+  being answered by an alternative recursor. See also 4.2.1.
+
+  4.2.11: SERVFAIL - Network: The SERVFAIL response is being generated
+  due to what is clearly identifiable to the answering server as a
+  network issue. R bit should be set.
+
+  4.4.3: Abusive: The answering system considers the query in question
+  to be abusive for reasons other than load, indicating that the
+  specific requests are undesired. This could provide hints to Network
+  Operators or simply poorly configured client implementations that the
+  specific queries may be part of an amplification or other attack and
+  should be inspected.
+
+  4.4.4: Excessive: The answering system considers the query volume of
+  the client to be excessive, indicating that it is the volume and not
+  the content of the queries being refused and that it may be willing to
+  answer if volume is reduced. This could provide hints to Network
+  Operators or poorly configured client systems that they need to add
+  additional endpoints or reduce their request volume to restore
+  service.
+
+  4.4.5: Go Away: The answering system considers further queries from
+  the client/network to have to exceeded thresholds by large margins or
+  excessive durations, and further queries are likely to be dropped.
+  This message is an attempt to limit the continued use of resources
+  terminating queries which will not be answered. This may simply be a
+  sub-case of Abusive/Excessive, but also is not intended to be sent for
+  each query, but instead only intermittently, and to bypass the need
+  for lengthy troubleshooting efforts when drop rules cause a recursor
+  to seem to have vanished.
+
+  4.5.1: The R flag being set here implies that there are potentially
+  multiple policies in use and that a retry might receive an answer -
+  which should not be the case with a single intermediate recursive
+  service. A client, knowing that it has multiple recursive services
+  with differring policies might retry against a different recursive
+  service (ex: 8.8.8.8 instead of 9.9.9.9), but this effectively defeats
+  the policies of the initial recursor, rendering it ineffective. The
+  use of a specific server as a delineation is also confusing - it
+  should instead specify that the answering entity - be it a single
+  server or larger entity, has blocked this response. Also, blocked
+  should be further defined to avoid collision with the definition of
+  the Censored response code. Blocked in this case would be used as a
+  catch-all for anything not otherwise categorized.
+
+  4.5.2: See 4.5.1. Censoring is inherently a governmental action and
+  this should be reserved for that due to the severity and legal
+  repercussions of attempts to bypass. R bits should not be set.
+  Censored should be defined in the document to avoid confusion.
+
+  4.5.3: Filtered: Differentiated from Blocked/Censored in that this
+  content has been specifically redacted at the perceived behest of the
+  client - may include ad-blockers, dnsbl, or other specific cases -
+  intended to be used by those systems. Would potentially include
+  corporate IT policies.
+
+  4.5.4: Malicious: Differentiated from Blocked and Filtered in that the
+  answering server believes the response to be actively malicious and
+  harmful to the requesting systems or applications, and not merely
+  undesired or offensive. R bits should not be set.
+
+  4.5.5: Malicious Upstream - The upstream entity is considered
+  malicious by the answering server and thus a refusal to respond has
+  been returned. Details should be included within the INFO-CODE and
+  potentially EXTRA-TEXT. This is differentiated from Malicious in that
+  in this case, it is the actual upstream server that is having all
+  responses blocked, not the content itself - for instance a revoked or
+  unexpected certificate (such as due to a CAA record) - from which no
+  responses will be accepted. The R bit being set here depends on
+  whether the server believes that the specific path is compromised - if
+  all authoritatives are failed, then a retry will not help. If only one
+  is, then it will help to get to the non-compromised server. In the
+  absence of data, the R bit should be set.
+
+  It may make sense to create an extension of the R bit, via additional
+  flag or other field which adds additional context to the retry
+  declaration, such as that the request should retry the same recursor,
+  or should instead immediately move to and try the next available.
+
+*** TODO synthesized == forged
+
+  4.1.6: Synthesized Answer: This response could be considered a
+  sub-case of forged. An example of this would be the id.server or
+  version.bind queries, they cannot be considered forged, but also no
+  authority truly holds them.
+
+  + Response: I think this is worthy of further thought and I'd love to
+    hear opinions from others.  IMHO, I'm not sure we should get into
+    micro-error coding.  I would say forged, in your examples, still
+    fits.  But there are other cases where I think synthesized may
+    make sense.  Anyone else have thoughts?
+
+*** NOCHANGE finish categorizing
+
+  Other Notes:
+  INFO-CODE: It would seem that would be best to include a basic
+  recommendation for a standard DNS-specific RWhois/CRL-like endpoint
+  which could provide local (non-IANA) information about returned codes,
+  potentially at a well-known URI, or even within the DNS itself via TXT
+  records or even within the EXTRA-TEXT field itself.
+
+  + Response: per discussions with others too, which you've hopefully
+    read, there is a lot of desire for ways to potentially standardize
+    supplemental information within the EXTRA-TEXT field.  However,
+    for the time being the goal is to get this out and get experience
+    with how it is used and potentially standardize on the addition of
+    machine readable supplemental information (URLs being the other
+    common suggestion).  Publishing this first (as is) doesn't get in
+    the way of a future RFCs extending this specification.
+
+* DONE Paul Hoffman
+  :LOGBOOK:
+  - State "DONE"       from "TODO"       [2019-09-10 Tue 16:03]
+  :END:
+
+  Greetings again. The changes here generally help the document, but
+  they also highlight some of the deficiencies. A few comments on the
+  current draft:
+
+*** NOCHANGE what error codes?
+
+  - The spec does not say anything about the kinds of responses where it
+  is allowed to send particular extended error codes. For example, if a
+  response has an RCODE of NOERROR, what does it mean for it to also
+  have a EDE? Or if the RCODE is FORMERR, can it have an EDE that
+  relates to DNSSEC validation failure? The exact semantics for the
+  receiver need to be specified.
+
+  + The EDE was specifically meant to be an "addition" to an existing
+    reply of *any* RCODE, including NOERROR codes.  There is no
+    restriction about when you might include one.  Similarly, it
+    makes no sense for some codes to be returned for some RCODES, but
+    any good receiver shouldn't segfault either.  I don't think we can
+    specify all potential combinations in any meaningful way.
+
+  + Paul's response response:
+
+  Being silent on this is also bad. Proposed text for the introduction:
+
+  This document does not allow or prohibit any particular extended error
+  codes and information be matched with any particular RCODEs. Some
+  combinations of extended error codes and RCODEs may seem nonsensical
+  (such as resolver-specific extended error codes in responses from
+  authoritative servers), so systems interpreting the extended error
+  codes MUST NOT assume that a combination will make sense.
+
+  Having said that, I think not having restrictions on which EDE can be
+  used with which RCODE with systems in particular roles is actively
+  dangerous. We know that software developers *will* make such
+  assumptions, and attackers will use those wrong assumptions in the
+  future.
+
+  + Result: added his suggested paragraph
+
+*** DONE extend vs annotate
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-09 Mon 20:54]
+    :END:
+
+  - In the introduction, it says:
+     This document specifies a mechanism to extend (or annotate) DNS
+     errors to provide additional information about the cause of the
+     error.
+  "extend" and "annotate" have very different meanings. This is the crux
+  of the use of the mechanism, so it needs to be clearer.
+
+  + response: I've removed (or annotate)
+
+    (though it didn't bother me)
+
+*** DONE ...
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-09 Mon 21:00]
+    :END:
+
+  - In the introduction, it says:
+     These extended error codes are specially useful when received
+     by resolvers, to return to stub resolvers or to downstream resolvers.
+     Authoritative servers MAY parse and use them, but most error codes
+     would make no sense for them.  Authoritative servers may need to
+     generate extended error codes though.
+
+  This is confusing because many authoritative servers also send queries
+  when they are doing AXFR and so on. Instead, I propose:
+
+     These extended error codes described in this document can be used
+     by any system that sends DNS queries. Different codes are useful
+     in different circumstances, and thus different systems (stub
+     resolvers, recursive resolvers, and authoritative resolvers)
+     might receive and use them.
+
+  + Response: thanks for the text.  Adopted!
+
+*** DONE stop repeating yourself
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-09 Mon 21:04]
+    :END:
+
+  - Sections 3.1 and 3.2 repeat the information at the end of Section 2,
+  and thus should be eliminated. Instead, leave Section 2 as is, and
+  simply include the the first paragraph of Section 3, and then
+  eliminate Section 3 altogether.
+
+  + Good point; thanks.  It was a bit more work than that to 
+    combine them, but I've done so.
+
+*** DONE flippant language
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-09 Mon 20:59]
+    :END:
+
+  - There are many places where the document uses flippant language that
+  could confuse readers who don't understand English idioms. Although
+  they are somewhat humorous, these could lead to confusion and should
+  be removed.
+
+  + Response: I've removed the ones I found, and may remove more after
+    a final pass if I missed any in a skim.
+
+
+* IETF106 discussion
+
+  + EDE and RCODE binding
+    + all receivers shouldn't assume a binding
+    + can we state this
+    + what if receivers ignore an EDE?
+* Last Call Comments
+*** DONE Viktor Dukhovni 1
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-27 Fri 16:12]
+    :END:
+***** DONE Introduction 3rd paragraph (missing verb, extra period):
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 14:43]
+      :END:
+
+             [...] These extended DNS error codes [are?] described in this
+             document and can be used by any system that sends DNS queries
+             and receives a response containing an EDE option.. [...]
+***** DONE With respect to the much discussed caveat:
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 14:44]
+      :END:
+
+             This document does not allow or prohibit any particular extended
+             error codes and information be matched with any particular RCODEs.
+             Some combinations of extended error codes and RCODEs may seem
+             nonsensical (such as resolver-specific extended error codes in
+             responses from authoritative servers), so systems interpreting the
+             extended error codes MUST NOT assume that a combination will make
+             sense.  Receivers MUST be able to accept EDE codes and EXTRA-TEXT in
+             all messages, including even those with a NOERROR RCODE.
+
+          My take is that when the (12 bit EDNS) RCODE and new extended error
+          are in apparent conflict, I should treat the RCODE as definitive,
+          and ignore the extended error code.  That is, the extended error
+          can *refine* but not contradict the status indicated by the RCODE.
+          If that's correct, perhaps it should be stated explicitly.  If not
+          correct, then a clarification is perhaps still in order.
+
+          + Response: there seems to be consensus around this and I
+            adopted Paul's text to clarify this
+
+***** DONE Section 2, 3rd bullet:  s/index to/index into/
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 14:45]
+      :END:
+
+            The INFO-CODE serves as an index to the "Extended DNS
+            Errors" registry Section 4.1.
+
+
+***** DONE Section 2, 4th bullet: s/be take/be taken/
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 14:45]
+      :END:
+
+            Care should be take not to leak private information that an
+            observer would not otherwise have access to, such as account
+            numbers.
+
+***** NOCHANGE account numbers and privacy 
+      I find "such as account numbers" a bit of a non sequitur (what
+      account numbers?) I'd drop this, or produce a more transparent
+      example.
+
+      + Response: I agree, it's a bit of an unusual statement.  But it
+        was suggested by Shane Kerr in the summer and if you want to
+        suggest better text for replacing it, I need a real suggestion
+        as deleting it would delete his desire to have an example in
+        there (which I agree with, FWIW).  Maybe "account name" would
+        be a middle ground?
+
+***** DONE Section 3.2 (code 2), may warrant more guidance on when this is
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 15:09]
+      :END:
+      appropriate.  AFAIK, there is nothing wrong with all DNSKEY algorithms
+      being unsupported, provided the same holds for the DS RRset.  So,
+      while I see a use-case for code 3 (all DS unsupported, perhaps to
+      signal why the AD bit is not set, despite the non-empty DS RRset),
+      I don't understand when one would use code 2.
+
+      + Vladimír Čunát adds
+
+        I do fail to understand the split codes 1 and 2 for all DS/DNSKEY
+        algorithms being unsupported, and it actually makes me wonder how to
+        exactly write the resolver code that would set this pair.  For
+        validation I need at least one usable DS RR, i.e. one where *both* the
+        DS and DNSKEY algorithms are supported.  I believe that's the exact
+        condition to be able to extend the trust chain. (and that's how I
+        implemented it for Knot Resolver)  It may theoretically even happen that
+        there is a supported DS algorithm and a supported DNSKEY algorithm but
+        never paired together in the DS RRset - IIRC it's not perfectly correct
+        to generate such an RRset but that's probably not something a validator
+        should care for.
+
+      + Response: Error 1 (unsupported DNSKEY alg) could be included
+        in any message where the DNSKEY algorithm (say 1 RSA/MD5)
+        isn't supported. A servfail would be returned with EDE-1 as
+        well.
+
+        For DS unsupported, a similar case occurs when chaining from
+        the parent and a DS Digest Type of 1 (MD5) is hit that the
+        validator doesn't support.  I *think* the problem is that the
+        text should really say "Unsupported DS Digest Type", which
+        I'll go change it to.  Let me know if that's wrong.
+     
+***** DONE Section 3.6, code 6 (indeterminate answer) needs clarification,
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 15:13]
+      :END:
+    since there is no single defintion of "indeterminate" in DNSSEC.
+    In particular different definitions are given in RFCs 4034 and
+    4035 (as explained in <https://tools.ietf.org/html/rfc7672#section-2.1.1>).
+
+        My take is that with the root zone signed, the 4033 definition
+        is obsolete, and the correct one is 4035.  This should probably
+        be made explicit:
+
+        4035 "indeterminate":
+
+          An RRset for which the resolver is not able to determine whether
+          the RRset should be signed, as the resolver is not able to obtain
+          the necessary DNSSEC RRs.  This can occur when the security-aware
+          resolver is not able to contact security-aware name servers for
+          the relevant zones.
+
+        4033 "indeterminate":
+
+          There is no trust anchor that would indicate that a specific
+          portion of the tree is secure.
+
+      + Response: good point.  I'll use a reference to 4035.
+
+    
+***** DONE Section 3.8, the text reads:
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 15:17]
+      :END:
+
+           The resolver attempted to perform DNSSEC validation, but a signature
+           in the validation chain was expired.
+
+       However, there are recent observations of domain where each RRset was
+       accompanied by both expired *and* unexpired RRSIGs.
+
+           https://twitter.com/VDukhovni/status/1171170411712827393
+
+       So just *an* expired signature is not really a problem provided
+       another signature for the same RRset is not expired.  So I think
+       the text could more clearly read "but *all* signatures for an
+       RRset in the validation chain expired", or some such.
+
+       + Response: good point, changed
+
+       + Vladimír Čunát adds 
+
+       Nitpick: *if* we were diving into such details... each RRSIG might fail
+       for a different reason, for example.  That's the general problem with
+       providing reasons for validation failures: validation is defined in the
+       sense that you (may) succeed when at least one of various ways
+       succeeds.  A failure could typically be fixed by multiple different ways
+       (EDE codes).  Still, I'd hope that in most real-life cases the
+       implementations can "correctly" guess what's wrong.
+
+       + Response: That's true, and I think if you had sigs that were
+         both "early" and "late" but not "now" you'd return both codes
+         or more likely an "other" error code (0) with informational text.
+
+***** NOCHANGE Section 3.13: the text reads:
+
+             The resolver attempted to perform DNSSEC validation, but the
+             requested data was missing and a covering NSEC or NSEC3 was not
+             provided.
+
+         I think that "missing" can be misleading, it is not that the
+         answer is "missing" from the response, but rather that the
+         response affirmatively denies the existence of the requested
+         RRset.  So perhaps "but the response denies the existence of
+         the requested RRset" or something similar.
+
+         + I think you're misreading that section (or I'm not
+           following).  The point is that the validator *failed* to
+           get a NSEC or NSEC3 that proved the name doesn't exist to
+           match the NXDOMAIN.  So the validator changed all the way
+           down through keys and then got an NXDOMAIN with no NSEC for
+           'wwww'.
+
+***** DONE I find the two sections:
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 16:12]
+      :END:
+
+          3.16.  Extended DNS Error Code 15 - Blocked
+          3.17.  Extended DNS Error Code 16 - Censored
+
+      somewhat confusing, it seems that the resolver returning the answer
+      is reporting second-hand status from an upstream server, but the
+      language leaves me unsure.  Perhaps this can be stated more clearly.
+
+      + Response: Those three codes were supplied in a previous
+        comment round and they are supposed to indicate policies being
+        applied from different sources.  Can you check the new text of
+        them to see if they are more understandable now?
+
+*** DONE Loganaden Velvindron <loganaden@gmail.com>
+    :LOGBOOK:
+    - State "DONE"       from              [2019-09-27 Fri 14:14]
+    :END:
+
+    I'm ok with the latest revision. Just a small request: John Todd
+    from quad9 sent his feedback, so it's fair to credit him in the
+    next revision of the draft.
+
+    + Response: ah, whoops; thanks!
+
+*** DONE Stephane Bortzmeyer
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-27 Fri 16:11]
+    :END:
+
+    IMHO, the document is good. I like the fact there is no longer a
+    limitation of a given EDE to some RCODEs (it makes things simpler).
+
+    Some details, all editorial:
+
+**** DONE it could be a good idea to add more specific references for the
+     :LOGBOOK:
+     - State "DONE"       from "TODO"       [2019-09-27 Fri 15:22]
+     :END:
+    EDE. For instance, 3 "Stale Answer" could have a reference to
+    draft-ietf-dnsop-serve-stale.
+
+    + Rseponse that seems popular; I'll try to do this where I can.
+
+**** DONE I think that many people will be confused with 15, 16, 17 and 18.
+     :LOGBOOK:
+     - State "DONE"       from "TODO"       [2019-09-27 Fri 16:11]
+     :END:
+    Suggestions:
+
+      * remove 18, which is redundant with 15 (if the user chooses the
+      resolver, and he should have the right to do so, 15 and 18 are the
+      same). 18 is meaningful only if the user does have a simple way to
+      change this behaviour.
+      * Add to the definition of 15 "The policy was decided by the server
+    administrators"
+      * Add to the definition of 16 "This means that the policy was
+      not decided by the server administrators, and it is probably useless
+      to complain to them".
+
+      + Response: Those three codes were supplied in a previous
+        comment round and they are supposed to indicate policies being
+        applied from different sources.  Can you check the new text of
+        them to see if they are more understandable now?
+
+*** DONE Michael J. Sheldon" <msheldon@godaddy.com>
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-27 Fri 15:24]
+    :END:
+
+
+***** DONE In section 3.21
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 15:24]
+      :END:
+
+      3.21.  Extended DNS Error Code 20 - Lame
+
+         An authoritative server that receives a query (with the RD bit clear)
+         for a domain for which it is not authoritative SHOULD include this
+         EDE code in the SERVFAIL response.  A resolver that receives a query
+         (with the RD bit clear) SHOULD include this EDE code in the REFUSED
+         response.
+
+      The above case is not consistent with current authoritative server behavior.
+
+      The authoritative servers I have tested all return REFUSED, not
+      SERVFAIL, regardless of the query RD bit, when the server does not allow
+      recursion, and the server is not authoritative for the zone.
+
+      I would change to:
+
+      
+      3.21.  Extended DNS Error Code 20 - Not Authoritative
+
+         An authoritative server that receives a query (with the RD bit clear,
+         or when not configured for recursion) for a domain for which it is
+         not authoritative SHOULD include this EDE code in the REFUSED
+         response.  A resolver that receives a query (with the RD bit clear)
+         SHOULD include this EDE code in the REFUSED response.
+
+
+
+      IMO, while "lame" is a valid term, quite frankly, it's not nearly as
+      clear in meaning as just saying "not authoritative". To me, "lame" is at
+      the delegation (referring server), not the targeted server.
+
+      + Response: good catch and I like (and have put in) you
+        replacements.  I've never liked the "lame" name either, as I
+        don't think it's descriptive to someone that isn't in the
+        inner circle of DNS.
+
+*** TODO Puneet Sood
+      I got around to review the draft only recently and have made an
+      attempt to avoid points of discussion that have been resolved since
+      IETF Prague. Apologies in advance for any duplicates.
+
+****** DONE 1. Introduction and background
+       :LOGBOOK:
+       - State "DONE"       from "TODO"       [2019-09-27 Fri 15:25]
+       :END:
+      Para 2: "A good example of issues that would benefit ..."
+      Comment: The paragraph leads up to the conclusion that the EDE codes
+      will be helpful to a client to decide between retry and stopping.
+      Since the consensus is that the EDEs are purely diagnostic, it would
+      be good to reiterate that at the end of this paragraph.
+
+      + Response from Viktor: For the record, while that was
+      "diagnostic" was my take on the purpose of these codes, reading
+      other responses, I am not sure that's yet the consensus view...
+      I could also live with these being actionable, provided the text
+      is then more clear on how to do that correctly
+
+      If the actions based on these codes are arbitrary choices for each
+      implementation, with not even a clear correspondence with associated
+      RCODEs, that feels like too much rope to me...
+
+      Eric Orth's comment from Sept 17 is also relevant here (no one has
+      responded to it yet). Quoting the last bullet from his response here
+      for reference:
+      https://mailarchive.ietf.org/arch/msg/dnsop/GTg8wa7lQ-VoBFcp_P5tT4VuQhE
+      *Something like "applications MUST NOT act on EDE" or "applications
+      MUST NOT change rcode processing" does not seem reasonable to me.  Way
+      too unclear what "diagnostic" processing is reasonable and allowed or
+      not.  And potentially limits applications from doing processing based
+      on very reasonable or obvious interpretations of the received
+      rcode/EDE combinations."
+
+      + Response: Paul H. gave us language to put in both the abstract
+        and introduction to address this.  Let me know if you think it
+        doesn't address this issue.
+
+      + Eric Orth objected:
+
+        I object to the addition of "Receivers MUST NOT change the processing of RCODEs
+        in messages based on extended error codes." in section 1.  I feel that it goes
+        too far in limiting options for applications to make use of the new error
+        codes, and it is too vague for an implementer to know what processing actions
+        are allowed or not.  As currently written, I do not feel that Chrome DNS would
+        be able to handle EDEs in any way and be confident of being spec-compliant.
+
+        Regarding the statement being too limiting for implementers, I don't understand
+        the motivation for such a strong MUST-level restriction.  Maybe I'm biased as a
+        client-side implementer, but I think we should avoid restricting application
+        behavior when not relevant to the spec'ed protocol itself.  If the goal is to
+        prevent applications from misinterpreting the meaning of RCODE/EDE combinations
+        or making false assumptions about what combinations may be sent, the spec
+        should clearly state what may be sent (as it currently does) and what it
+        means.  What an application then does with that properly communicated
+        information is not relevant to the spec..  If we forbid applications from doing
+        processing based on very reasonable or obvious interpretations of RCODE/EDE
+        combinations, I think it makes it much less likely that applications will find
+        value in and implement this spec.
+
+        Regarding being too vague, as-written, I do not understand what handling of EDE
+        is allowed or not in the current draft.  From discussions here, I assume the
+        intent isn't to prevent an application from reading an EDE and including it in
+        error logs or error messages to users.  But it's not at all clear enough for
+        MUST-level statements if that would be changing RCODE processing or not if such
+        logging and messaging are currently based on RCODE alone.
+
+        My previous comment on this topic (Sept 17) quoted here for reference:
+
+            Any suggestions of making absolute requirements of how the application
+            "acts on" EDE codes sounds way too restrictive to me.  Most of how the
+            application acts on any error codes is up to the application, and it would
+            be unnecessarily limiting to pretend otherwise.  Seems to me it would lead
+            to silliness like "this application processes SERVFAIL by sometimes
+            continuing to other servers and sometimes not" and then claiming they
+            aren't changing that processing by using EDE codes to determine the actual
+            continuation behavior.
+           
+            Specific thoughts:
+            *The text currently in the draft ("systems interpreting the extended error
+            codes MUST NOT assume that a combination will make sense") seems
+            reasonable.  Not overly restrictive.  Just a reasonable warning of a
+            potential false assumption of how the recursive resolver may act.
+            *Something like "applications MUST continue to follow requirements from
+            applicable specs on how to process rcodes no matter what EDE is also
+            received" also seems reasonable.  Clarifies that those cases where
+            requirements do exist on how an application acts on errors still apply but
+            doesn't pretend that the EDE spec now tells the application what to do in
+            all cases.
+            *Something like "applications SHOULD interpret EDE as supplemental to rcode
+            rather than as a replacement" also seems reasonable.  Clarifies the
+            communicated meaning of the code without over prescribing how the
+            application acts on that meaning.
+            *Something like "applications MUST NOT act on EDE" or "applications MUST
+            NOT change rcode processing" does not seem reasonable to me.  Way too
+            unclear what "diagnostic" processing is reasonable and allowed or not.  And
+            potentially limits applications from doing processing based on very
+            reasonable or obvious interpretations of the received rcode/EDE
+            combinations.
+
+      + I responded and changed the text:
+
+        > I object to the addition of "Receivers MUST NOT change the processing
+        > of RCODEs in messages based on extended error codes."
+
+        Actually, I agree with you.  That text was from suggestion and I put it
+        in unaltered.  I thought about changing it to a SHOULD NOT.
+
+        But, I like some of your suggestions:
+
+        > *Something like "applications MUST continue to follow requirements from
+        > applicable specs on how to process rcodes no matter what EDE is also
+        > received" also seems reasonable.  Clarifies that those cases where
+        > requirements do exist on how an application acts on errors still apply but
+        > doesn't pretend that the EDE spec now tells the application what to do in
+        > all cases.
+
+        I think your point is valid and follows the intent: EDE is *not*
+        supposed to supersede other specifications that specify how to process a
+        DNS response.
+
+        > *Something like "applications SHOULD interpret EDE as supplemental to rcode
+        > rather than as a replacement" also seems reasonable.  Clarifies the
+        > communicated meaning of the code without over prescribing how the
+        > application acts on that meaning.
+
+        Again, makes sense.  I think it's covered by your other sentence though?
+        (which I've just replaced the previous sentence with)
+
+
+****** TODO 2. Extended Error EDNS0 option format / forwarding /etc/
+      Final para: "The Extended DNS Error (EDE) option can be included in
+      any response (SERVFAIL, NXDOMAIN, REFUSED, and even NOERROR, etc) to a
+      query that includes OPT Pseudo-RR [RFC6891]. ..."
+
+      Comment: Given the level of discussion around behavior when
+      sending/receiving the EDE option, there should be some more text
+      giving guidance on behavior.
+
+      a. For recursive resolvers, it may be worth pointing that it is not
+      expected to copy/forward EDE values received from authoritative
+      nameservers to their clients.
+      b. What is the expectation on caching for the EDE code generated by a
+      recursive resolver in response to a query? My expectation is that it
+      will be cached (if the answer itself is cached) so the next response
+      has the same EDE code.
+      c. Truncation: In case a response including the EDE option with
+      EXTRA-TEXT filled in exceeds the effective UDP payload size, what is
+      the desired behavior for the EDE option? Should the EXTRA-TEXT field
+      be left empty in favor of filling in other RR types? Should the
+      response be marked truncated to require a re-query over TCP?
+
+      This is unlikely for failures but could happen when DNSSEC validation
+      could not be performed due to unsupported digest type.
+
+      + Response: good questions, and I think the WG needs to think
+        about whether to add that much more data.
+
+****** DONE 3.14 Extended DNS Error Code 13 - Cached Error
+       :LOGBOOK:
+       - State "DONE"       from "TODO"       [2019-09-27 Fri 15:28]
+       :END:
+      The resolver has cached SERVFAIL for this query.
+
+      Comment: To match the text the name should be "Cached SERVFAIL".
+
+****** NOCHANGE 5. Security Considerations
+      Para 2: "This information is unauthenticated information, and an attacker (e.g
+         a MITM or malicious recursive server) could insert an extended error
+         response into already untrusted data ..."
+      Comment: Agree with some other comments that this is not relevant
+      since no action is expected to be taken based on EDEs.
+      Comment: There are ideas in the thread to have links to info in the
+      EXTRA-TEXT and possibly display it to users. I guess the usual
+      warnings to not click on potentially unsafe links apply.
+
+      + Yeah, it really would be remiss to leave out that point.
+        There may be nothing we can do, but the whole point of a
+        security consideration is to properly disclose any known
+        threats/issues.
+
+      Thanks,
+      Puneet
+
+*** DONE Tony Finch
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-27 Fri 16:10]
+    :END:
+
+***** DONE On 9/13/19 10:01 PM, Tony Finch wrote:
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 16:09]
+      :END:
+      > 3.5.  Extended DNS Error Code 4 - Forged Answer
+      > 3.16.  Extended DNS Error Code 15 - Blocked
+      > 3.17.  Extended DNS Error Code 16 - Censored
+      > 3.19.  Extended DNS Error Code 18 - Filtered
+      >
+      > I don't understand the shades of meaning that these are supposed to
+      > distinguish.
+      >
+      > wrt "filtered", the description implies vaguely RPZ flavoured filtering,
+      > but it mentions a REFUSED RCODE which isn't what a sensible implementation
+      > would use for that purpose, so I am more confused.
+
+      With the switch to codes not specific to RCODE, I think some more
+      code-merging would be nice, in particular 3+19: stale (NXDOMAIN)
+      answer.  Perhaps also drop "4 forged" in favor of the other options?
+      (blocked, censored, if I understand the definitions)  Or is "forged"
+      meant for cases like the special top-level invalid. zone?
+
+      + Response: Those three codes were supplied in a previous
+        comment round and they are supposed to indicate policies being
+        applied from different sources.  Can you check the new text of
+        them to see if they are more understandable now?
+
+***** DONE I think the current -09 "Security considerations" section is a bit
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 15:34]
+      :END:
+      misleading.  It talks about the extended error being unauthenticated in
+      case of validation failure, but the current SERVFAIL is the very same
+      and that part is the more important bit (noticed by Paul Hoffman, too). 
+      With extended errors we only get more information of the same
+      authenticity.  In general, clients that don't want to validate
+      themselves can also choose a middle ground where they trust the resolver
+      and secure their link to it (typically by DoT or DoH).
+
+      Also, *if* the EDE codes will only be used for [diagnostics], I don't
+      really understand why have any "Security considerations" at all. 
+      Perhaps I'm just confused about the overall intention.
+      [diagnostics]
+      https://mailarchive.ietf.org/arch/msg/dnsop/rbkGvMH-vG-P5GHUx06-LRWYRgM
+
+      + Response: My thoughts on this is that it would be remiss to leave out
+        any known issues, even if they were "previously known".  The
+        point of a security considerations section is to document
+        known things that people should be aware of, and I'd count "we
+        can't verified the authenticity of these codes" as important
+        to document, even if clients won't act on them anyway.  I will
+        add a note that clients also can't trust rcodes.
+
+*** DONE Mats Dufberg
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-27 Fri 15:36]
+    :END:
+
+    Error codes 1 and 2, respectively, says "unsupported algorithm" in the
+    headline but "unknown algorithm" in the description. It should be
+    consistent, and I think unsupported makes most sense.
+
+    + good catch!  fixed.
+
+*** DONE Mats Dufberg 2
+    :LOGBOOK:
+    - State "DONE"       from              [2019-09-30 Mon 14:05]
+    :END:
+
+    Mats Dufberg <mats.dufberg@internetstiftelsen.se> writes:
+
+    > Section 1 ends with "Receivers MUST NOT change the processing of
+    > RCODEs in messages based on extended error codes" but it is not fully
+    > clear what that statement means in the light of the description in the
+    > beginning of the same section where the motivation for extended error
+    > codes is that the resolver cannot know what specific error that is
+    > behind, e.g., REFUSED and there does not know what the best next step
+    > is.
+
+    See the discussion with Eric about new wording for that sentence.  That
+    being said, I think your point is valid about misunderstanding the
+    purpose as well.  So I've added this sentence to the end of the first
+    paragraph:
+
+          What error messages should be presented to the user or logged
+          under these conditions?</t>
+
+    Seem ok?
+
+    > Both section 3.18 (filtered) and section 3.19 (prohibited) has code 17. In the
+    > registry table (4.2) it is code 17 and 18, respectively.
+
+    Fixed, thanks.
+
+    > Both 3.14 (Cached error) and 3.20 (Stale NXDOMAIN answer) reports that the
+    > RCODE returned was taken from cached. In 3.20 it is described in detail what
+    > the resolver has done before the answer is returned, whereas in 3.14 there are
+    > not details at all.
+    > 
+    > 3.14 needs more specification of when to use cached SERVFAIL.
+
+    Hmm...  What more would I put other than "the resolver is to include
+    this when it returns a SERVFAIL from the cache?"  I've changed the text
+    to
+
+        The resolver is returning the SERVFAIL RCODE from its cache.
+
+    Which I think is clearer.
+
+    > I think that the last sentence in 3.20 ("This is typically caused [...] result
+    > of a DoS attack against another network") does not belong to a standard
+    > document.
+
+    I've changed it to this:
+
+              This is may be caused, for example, by problems
+              communicating with an authoritative server, possibly as
+              result of a DoS attack against another network.
+
+    Which removes "typically", which I think you're right is out of place.
+    I don't think removing the sentence is helpful to the reader, so I'd
+    rather fix it.
+
+    > In 3.22 it would be better to say that the operation or query is not supported
+    > ("Not supported"). As the text is now it is unclear by whom it is deprecated.
+
+    Ok, I'm fine with that.  Changed.
+
+    > I suggest that the sentence "This may occur because its most recent
+    > zone is too old, or has expired, for example" is removed from 3.25
+    > since there could be multiple reasons and it is not needed to give an
+    > example in a standard document.
+
+    I'm not sure why you think examples aren't useful in standards
+    documents?  IMHO, they're used all the time (the IMAP RFC is one of my
+    favorites that is full of example usages).  In the previous example you
+    brought up above, I agree that we shouldn't be determining commonality
+    of possibilities.  But I think examples in generally greatly help the
+    reader determine how to more accurately interpret a specification. 
+
+*** DONE Paul Hoffman previously
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-27 Fri 14:42]
+    :END:
+
+***** DONE Proposal: add the following sentence to the end of the abstract:
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 14:41]
+      :END:
+      "Extended error information does not change the processing of RCODEs."
+
+  
+***** DONE Proposal: add to the end of the Introduction: Applications MUST NOT
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 14:42]
+      :END:
+      change the processing of RCODEs in messages based on extended error
+      codes.
+
+*** DONE Tony Finch in a sub thread to Paul
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-09-27 Fri 16:25]
+    :END:
+
+    Some questions about the intended meanings...
+
+***** DONE 3.6.  Extended DNS Error Code 5 - DNSSEC Indeterminate
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 15:14]
+      :END:
+
+      If I remember correctly, there isn't a consistent definition of what
+      "indeterminate" means. Perhaps it's worth adding a reference to the
+      intended definition.
+
+      [ actually maybe all the codes could have citations to where the error
+      cases are mentioned in existing specifications, perhaps with a comment
+      that the citations are not intended to be exhausive ]
+
+      + Response: good point.  I'll use a reference to 4035.  We'll
+        have to collect references for the rest...  That's a good (and
+        painful) idea.
+
+***** DONE 3.5.  Extended DNS Error Code 4 - Forged Answer
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 16:10]
+      :END:
+      3.16.  Extended DNS Error Code 15 - Blocked
+      3.17.  Extended DNS Error Code 16 - Censored
+      3.19.  Extended DNS Error Code 18 - Filtered
+
+      I don't understand the shades of meaning that these are supposed to
+      distinguish.
+
+      wrt "filtered", the description implies vaguely RPZ flavoured filtering,
+      but it mentions a REFUSED RCODE which isn't what a sensible implementation
+      would use for that purpose, so I am more confused.
+
+      3.18.  Extended DNS Error Code 17 - Prohibited
+
+      If I understand correctly, the four above are about the qname whereas this
+      is about the client? The ordering is a bit confusing.
+
+      + Response: Those three codes were supplied in a previous
+        comment round and they are supposed to indicate policies being
+        applied from different sources.  Can you check the new text of
+        them to see if they are more understandable now?
+      
+
+      
+***** DONE 3.21.  Extended DNS Error Code 20 - Lame
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2019-09-27 Fri 16:25]
+      :END:
+
+      This needs to be split into two: server doesn't know about the zone
+      queried for (typically RCODE=REFUSED), and server knows about the zone but
+      it has expired (typically RCODE=SERVFAIL).
+
+      Resolvers handling RD=0 queries typically answer from cache or would
+      answer REFUSED/Prohibited, I would have thought.
+    
+      + Response: I created an "Invalid Data" error code to handle
+        this.  Does this work for you?
+
+*** My summary of state
+
+    + most comments handled
+    + need clarification on two: Puneed Sood and adding handling of
+      recursive resolvers and caching.  This has been...
+    + Tony Finch wants to split the lame code into two, with a new one
+      being authoritative but won't serve data since its expired or
+      otherwise bad.
+    + reference adding
+* Dealing with forwarding
+  1. we could mandate that *no forwarding* of EDE happens
+  2. we could mandate that resolver/forwarders should *copy*
+  3. we could indicate they can *adjust the extra-text* field
+     + adds "src_address"
+  4. we could tracing elements to the packet -- *address it came from*
+     + *hop detection* (hard)
+     + one option is not tracing, but a *single source* identifier
+     + add *RECOMMENDED* to put your source information into the
+       *extra-info field*
+  5. we could add a *new EDE code for supplemental information* from
+     middle boxes -- IE, this EDE supplements the previous one
+  6. *make it experimental*, and publish now
+  7. *your idea here* - we'll discuss all options at singapore
+
+* stuff to do before singapore
+*** DONE what to do when packet gets to big - when truncation would occur
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-11-05 Tue 14:20]
+    :END:
+*** TODO come up with slides for everything:
+***** FCFS
+***** too big
+***** forwarding
+*** DONE the perfect is becoming the enemy of the ugood
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-11-05 Tue 12:32]
+    :END:
+*** DONE convert iana section to FCFS with private
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2019-11-05 Tue 12:32]
+    :END:
+
+* forwarding discussion
+
+# Toggle inline images: c-c c-x c-v
+#+BEGIN_SRC dot :results output :file ede-forwarding.png
+
+  digraph "graphname" {
+
+  C [label="Client"];
+  R [label="Resolver"];
+  A [label="root"];
+  T [label="TLD"];
+  E [label="Example.com"];
+  F [label="Forwarder"];
+
+  C -> F;
+  F -> R;
+  R -> A;
+  R -> T;
+  R -> E;
+  }
+
+          #+END_SRC
+
+#+RESULTS:
+[[file:ede-forwarding.png]]
+
+
+*** supplimental
+
+    | Src  | code      | message                             |
+    |------+-----------+-------------------------------------|
+    | RES  | FORWARDED | I got everything below from TLD com |
+    | TLD  | BOGUS     | failed                              |
+    | root | diff prob | xxx                                 |
+    | RES  | FORWARD   |                                     |
+
+*** what types of identifiers might go in
+
+    + text
+    + binary - any length
+
+***** types of identifiers    
+
+      1. nsid
+      2. hostname (fqdn)
+      3. ip address
+      4. URL? (eg from doh)
+      5. ip:port
+      6. cert subject name
+
+      options:
+
+      + utf-8 string - operator printable/readable
+        + note: nsid is bytes / but assume it'll printed (possibly as
+          hex dump)
+      + type field, iana registry for what it is
+
+#+BEGIN_SRC text
+                                              1   1   1   1   1   1
+      0   1   2   3   4   5   6   7   8   9   0   1   2   3   4   5  
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+0:  |                            OPTION-CODE                        |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+2:  |                           OPTION-LENGTH                       |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+4:  | INFO-CODE                                                     |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+6:  | SRC_LENGTH                                                    |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+8:  / SRC_FIELD (which can be zero length)                          /
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+10: / EXTRA-TEXT (can be zero length)...                            /
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+
+#+END_SRC
+
+*** other
+
+    + near/far/unknown bits still desired by Petr
+
+* message to dnsop
+
+  After multiple discussions with dnsop members (including
+  implementers) on the mailing list and in person, we've come up with
+  a number of mechanisms that might work for passing EDE options
+  through a DNS forwarder or similar.  Though some of us already have
+  preferences, we're listing the ideas we have so far below.  We would
+  like to hold a discussion about the path forward in dnsop in
+  Singapore.
+
+  Options for how to deal with EDE forwarding:
+
+  1. We could mandate that no forwarding of EDE happens
+  2. We could mandate that resolver/forwarders should copy from one
+     packet to the next
+  3. We could indicate they can adjust the extra-text field to add
+     additional information, such as adding where it came from.
+  4. We could tracing elements to the packet -- like the address where
+     it came from
+     a. A single source added by the entity generating the EDE option.
+        See below.
+     b. Multiple sources, with each box adding another one as it
+        traverses (note: significantly more complex)
+     c. We could RECOMMEND putting a source indication into the
+        extra-info field
+  5. We could add a new EDE code for supplemental information to be
+     added after a previous one, indicating a chain.  But this
+     requires order preservation which is probably not a good idea
+     since EDNS0 doesn't require order preservation.
+  6. Make the document experimental, and publish as it is now and deal
+     with it after deployment experience has been obtained.
+  7. Your idea here - we'll discuss all options at singapore
+
+Additional information for adding source information for part 4a/b: we
+need to specify how to indicate what to add as a source field format.
+We expect any option to need to include a NSID value as a likely good
+choice.  There are a number of other types that we came up with that
+might be source indicators:
+
+    1. nsid
+    2. hostname (fqdn)
+    3. ip address
+    4. URL (eg from doh)
+    5. ip:port
+    6. cert subject name
+    7. ...
+
+We are, again, listing all options for completeness though we have
+personal views on which might be best.  We note that NSID is already
+listed as a binary field, and thus to a large extent the rest of these
+could, technically, be NSID values already anyway.  We could leave it
+free-form, or we could (adding complexity) add a source type field
+(and another IANA registry).
+
+The resulting packet format would look something like this:
+
+
+                                              1   1   1   1   1   1
+      0   1   2   3   4   5   6   7   8   9   0   1   2   3   4   5  
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+0:  |                            OPTION-CODE                        |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+2:  |                           OPTION-LENGTH                       |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+4:  | INFO-CODE                                                     |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+6:  | SRC_LENGTH                                                    |
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+8:  / SRC_FIELD (which can be zero length)                          /
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+10: / EXTRA-TEXT (can be zero length)...                            /
+    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+

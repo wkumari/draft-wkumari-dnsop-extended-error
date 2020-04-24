@@ -3,7 +3,7 @@
 <!ENTITY rfc2119 PUBLIC "" ".//reference.RFC.2119.xml">
 ]>
 <!-- WK: Set category, IPR, docName -->
-<rfc category="std" docName="draft-ietf-dnsop-extended-error-14"
+<rfc category="std" docName="draft-ietf-dnsop-extended-error-15"
      ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -110,7 +110,7 @@
       </address>
     </author>
 
-    <date day="15" month="January" year="2020"/>
+    <date day="24" month="April" year="2020"/>
 
     <abstract>
       <t>This document defines an extensible method to return
@@ -148,7 +148,7 @@
       resolvers only option is to ask the next configured DNS
       resolver. The result of trying the next resolver is one of two
       outcomes: either the next resolver also validates, and a
-      SERVFAIL is returned again or the next resolver is not a
+      SERVFAIL is returned again; or the next resolver is not a
       validating resolver, and the user is returned a potentially
       harmful result.  With an Extended DNS Error (EDE) option
       enclosed in the response message, the resolver is able to return
@@ -392,16 +392,18 @@
 	         title="Extended DNS Error Code 15 - Blocked">
           <t>The server is unable to respond to the request because
           the domain is blacklisted due to an internal security policy
-          imposed by the operator of that server.</t>
+          imposed by the operator of the server resolving or forwarding
+          the query.</t>
         </section>
 
         <section anchor="errcensored"
 	         title="Extended DNS Error Code 16 - Censored">
           <t>The server is unable to respond to the request because
           the domain is blacklisted due to an external requirement
-          imposed by an entity other than the server operator. Note
-          that how the imposed policy is applied is irrelevant
-          (in-band DNS filtering, court order, etc).</t>
+          imposed by an entity other than the operator of the server
+          resolving or forwarding the query. Note that how the imposed
+          policy is applied is irrelevant (in-band DNS filtering,
+          court order, etc).</t>
         </section>
 
         <section anchor="errfiltered"
@@ -526,7 +528,7 @@
     <t hangText="INFO-CODE:">3</t>
     <t hangText="Purpose:">Stale Answer</t>
     <t hangText="Reference:"><xref target="stalenoerror" />,
-    <xref target="I-D.ietf-dnsop-serve-stale" /></t>
+    <xref target="RFC8767" /></t>
     </list></t>
 
     <t><list style="hanging" hangIndent="10">
@@ -692,8 +694,8 @@
 
       <t>By design, EDE potentially exposes additional information
       DNS resolution processes that may leak information.  An example
-      of this is the Prohibited EDE code (18), which may leak the contents
-      of a network's blacklist.</t>
+      of this is the Prohibited EDE code (18), which may leak the fact
+      that the name is on a blacklist.</t>
     </section>
 
     <section title="Acknowledgements">
@@ -724,7 +726,7 @@
       <?rfc include='reference.RFC.6891'?>
       <?rfc include='reference.RFC.8174'?>
       <?rfc include='reference.RFC.8499' ?>
-      <?rfc include="reference.I-D.ietf-dnsop-serve-stale"?>
+      <?rfc include='reference.RFC.8767' ?>
     </references>
 
     <references title="Informative References">

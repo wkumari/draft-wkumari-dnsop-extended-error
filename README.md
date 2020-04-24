@@ -117,7 +117,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
 
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  12
-   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  12
+   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  13
      8.1.  Normative References  . . . . . . . . . . . . . . . . . .  13
      8.2.  Informative References  . . . . . . . . . . . . . . . . .  13
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  14
@@ -138,7 +138,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
    A good example of issues that would benefit from additional error
    information are errors caused by DNSSEC validation issues.  When a
-   stub resolver queries a name which is DNSSEC bogus (using a
+   stub resolver queries a name which is DNSSEC bogus [RFC8499] (using a
    validating resolver), the stub resolver receives only a SERVFAIL in
    response.  Unfortunately, the SERVFAIL Response Code (RCODE) is used
    to signal many sorts of DNS errors, and so the stub resolvers only
@@ -470,7 +470,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
    Value  Name                 Status    Reference
    -----  ----------------     ------    ------------------
-    TBD   Extended DNS Error    TBD       [ This document ]
+    TBD   Extended DNS Error    Standard       [ This document ]
 
 5.2.  New Registry for Extended DNS Error Codes
 
@@ -644,6 +644,11 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
    (RCODEs) also contain no authentication and can be just as easily
    manipulated.
 
+   By design, EDE potentially exposes additional information DNS
+   resolution processes that may leak information.  An example of this
+   is the Prohibited EDE code (18), which may leak the contents of a
+   network's blacklist.
+
 7.  Acknowledgements
 
    The authors wish to thank Joe Abley, Mark Andrews, Tim April,
@@ -663,11 +668,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
    "Mushroom Infectors".  This was funny at the time we wrote it, but we
    cannot remember why...
 
-8.  References
-
-
-
-
 
 
 
@@ -675,6 +675,8 @@ Kumari, et al.            Expires July 18, 2020                [Page 12]
 
 Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
+
+8.  References
 
 8.1.  Normative References
 
@@ -702,6 +704,10 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
+   [RFC8499]  Hoffman, P., Sullivan, A., and K. Fujiwara, "DNS
+              Terminology", BCP 219, RFC 8499, DOI 10.17487/RFC8499,
+              January 2019, <https://www.rfc-editor.org/info/rfc8499>.
+
 8.2.  Informative References
 
    [GeoffValidation]
@@ -718,12 +724,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
               ( SIG(0)s )", RFC 2931, DOI 10.17487/RFC2931, September
               2000, <https://www.rfc-editor.org/info/rfc2931>.
 
-   [RFC8094]  Reddy, T., Wing, D., and P. Patil, "DNS over Datagram
-              Transport Layer Security (DTLS)", RFC 8094,
-              DOI 10.17487/RFC8094, February 2017,
-              <https://www.rfc-editor.org/info/rfc8094>.
-
-
 
 
 
@@ -731,6 +731,11 @@ Kumari, et al.            Expires July 18, 2020                [Page 13]
 
 Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
+
+   [RFC8094]  Reddy, T., Wing, D., and P. Patil, "DNS over Datagram
+              Transport Layer Security (DTLS)", RFC 8094,
+              DOI 10.17487/RFC8094, February 2017,
+              <https://www.rfc-editor.org/info/rfc8094>.
 
 Authors' Addresses
 
@@ -774,11 +779,6 @@ Authors' Addresses
    US
 
    Email: tale@dd.org
-
-
-
-
-
 
 
 

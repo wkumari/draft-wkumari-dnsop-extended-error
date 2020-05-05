@@ -660,7 +660,7 @@
 
     <t><list style="hanging" hangIndent="10">
     <t hangText="INFO-CODE:">25-65535</t>
-    <t hangText="Purpose:">Unasigned</t>
+    <t hangText="Purpose:">Unassigned</t>
     <t hangText="Reference:"><xref target="IANA" /></t>
     </list></t>
 

@@ -233,7 +233,8 @@
           index into the "Extended DNS Errors" registry defined and
           created in <xref target="IANA" />.</t>
 
-          <t>EXTRA-TEXT, a variable length, UTF-8 encoded, text field
+          <t>EXTRA-TEXT, a variable length, UTF-8 encoded <xref
+          target="RFC5198" />, text field
           that may hold additional textual information. This
           information is intended for human consumption (not automated
           parsing).  The EXTRA-TEXT field may be zero octets in
@@ -721,6 +722,7 @@
     <references title="Normative References">
       <?rfc include='reference.RFC.2119'?>
       <?rfc include='reference.RFC.4035'?>
+      <?rfc include='reference.RFC.5198?>
       <?rfc include='reference.RFC.6891'?>
       <?rfc include='reference.RFC.8174'?>
       <?rfc include='reference.RFC.8499' ?>

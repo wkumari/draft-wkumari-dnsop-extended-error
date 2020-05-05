@@ -234,14 +234,16 @@
           created in <xref target="IANA" />.</t>
 
           <t>EXTRA-TEXT, a variable length, UTF-8 encoded <xref
-          target="RFC5198" />, text field
-          that may hold additional textual information. This
-          information is intended for human consumption (not automated
-          parsing).  The EXTRA-TEXT field may be zero octets in
-          length, indicating that there is no EXTRA-TEXT included.
-          Care should be taken not to include private information in
-          the EXTRA-TEXT field that an observer would not otherwise
-          have access to, such as account numbers.</t>
+          target="RFC5198" />, text field that may hold additional
+          textual information. This information is intended for human
+          consumption (not automated parsing).  EDE text may be null
+          terminated but MUST NOT be assumed to be; the length MUST be
+          derived from the OPTION-LENGTH field. The EXTRA-TEXT field
+          may be zero octets in length, indicating that there is no
+          EXTRA-TEXT included.  Care should be taken not to include
+          private information in the EXTRA-TEXT field that an observer
+          would not otherwise have access to, such as account
+          numbers.</t>
         </list></t>
 
       <t>The Extended DNS Error (EDE) option can be included in any

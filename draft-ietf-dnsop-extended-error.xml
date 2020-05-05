@@ -245,9 +245,9 @@
       size <xref target="RFC6891" />, servers SHOULD truncate messages
       by dropping EDE options before dropping other data from packets.
       Implementations SHOULD set the truncation bit when dropping EDE
-      options.  Because long EXTRA-TEXT fields may trigger truncation,
-      which is undesirable given the supplemental nature of
-      EDE. Implementers and operators creating EDE options SHOULD
+      options.  Because long EXTRA-TEXT fields may trigger truncation
+      (which is undesirable given the supplemental nature of
+      EDE) implementers and operators creating EDE options SHOULD
       avoid lengthy EXTRA-TEXT contents.</t>
 
       <t>When a resolver or forwarder receives an EDE option, whether

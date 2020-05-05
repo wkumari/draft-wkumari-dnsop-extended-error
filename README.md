@@ -7,18 +7,18 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Standards Track                                 E. Hunt
-Expires: October 26, 2020                                            ISC
+Expires: November 6, 2020                                            ISC
                                                                R. Arends
                                                                    ICANN
                                                              W. Hardaker
                                                                  USC/ISI
                                                              D. Lawrence
                                                             Oracle + Dyn
-                                                          April 24, 2020
+                                                            May 05, 2020
 
 
                           Extended DNS Errors
-                   draft-ietf-dnsop-extended-error-15
+                   draft-ietf-dnsop-extended-error-16
 
 Abstract
 
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on October 26, 2020.
+   This Internet-Draft will expire on November 6, 2020.
 
 Copyright Notice
 
@@ -55,9 +55,9 @@ Copyright Notice
 
 
 
-Kumari, et al.          Expires October 26, 2020                [Page 1]
+Kumari, et al.          Expires November 6, 2020                [Page 1]
 
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+Internet-Draft       draft-ietf-dnsop-extended-error            May 2020
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -111,9 +111,9 @@ Table of Contents
 
 
 
-Kumari, et al.          Expires October 26, 2020                [Page 2]
+Kumari, et al.          Expires November 6, 2020                [Page 2]
 
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+Internet-Draft       draft-ietf-dnsop-extended-error            May 2020
 
 
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  12
@@ -167,9 +167,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 
-Kumari, et al.          Expires October 26, 2020                [Page 3]
+Kumari, et al.          Expires November 6, 2020                [Page 3]
 
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+Internet-Draft       draft-ietf-dnsop-extended-error            May 2020
 
 
    14 [RFC2119] [RFC8174] when, and only when, they appear in all
@@ -223,9 +223,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 
-Kumari, et al.          Expires October 26, 2020                [Page 4]
+Kumari, et al.          Expires November 6, 2020                [Page 4]
 
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+Internet-Draft       draft-ietf-dnsop-extended-error            May 2020
 
 
    initial codepoints, but is extensible via the IANA registry defined
@@ -279,9 +279,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 
-Kumari, et al.          Expires October 26, 2020                [Page 5]
+Kumari, et al.          Expires November 6, 2020                [Page 5]
 
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+Internet-Draft       draft-ietf-dnsop-extended-error            May 2020
 
 
 4.1.  Extended DNS Error Code 0 - Other
@@ -335,9 +335,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 
-Kumari, et al.          Expires October 26, 2020                [Page 6]
+Kumari, et al.          Expires November 6, 2020                [Page 6]
 
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+Internet-Draft       draft-ietf-dnsop-extended-error            May 2020
 
 
 4.9.  Extended DNS Error Code 8 - Signature Not Yet Valid
@@ -391,9 +391,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 
-Kumari, et al.          Expires October 26, 2020                [Page 7]
+Kumari, et al.          Expires November 6, 2020                [Page 7]
 
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+Internet-Draft       draft-ietf-dnsop-extended-error            May 2020
 
 
 4.18.  Extended DNS Error Code 17 - Filtered
@@ -447,9 +447,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 
-Kumari, et al.          Expires October 26, 2020                [Page 8]
+Kumari, et al.          Expires November 6, 2020                [Page 8]
 
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+Internet-Draft       draft-ietf-dnsop-extended-error            May 2020
 
 
 4.25.  Extended DNS Error Code 24 - Invalid Data
@@ -503,9 +503,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 
-Kumari, et al.          Expires October 26, 2020                [Page 9]
+Kumari, et al.          Expires November 6, 2020                [Page 9]
 
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+Internet-Draft       draft-ietf-dnsop-extended-error            May 2020
 
 
    Purpose:  Unsupported DS Digest Type
@@ -559,9 +559,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 
-Kumari, et al.          Expires October 26, 2020               [Page 10]
+Kumari, et al.          Expires November 6, 2020               [Page 10]
 
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+Internet-Draft       draft-ietf-dnsop-extended-error            May 2020
 
 
    Purpose:  Not Ready.
@@ -615,9 +615,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 
-Kumari, et al.          Expires October 26, 2020               [Page 11]
+Kumari, et al.          Expires November 6, 2020               [Page 11]
 
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+Internet-Draft       draft-ietf-dnsop-extended-error            May 2020
 
 
 6.  Security Considerations
@@ -671,9 +671,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 
-Kumari, et al.          Expires October 26, 2020               [Page 12]
+Kumari, et al.          Expires November 6, 2020               [Page 12]
 
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+Internet-Draft       draft-ietf-dnsop-extended-error            May 2020
 
 
 8.  References
@@ -727,9 +727,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 
-Kumari, et al.          Expires October 26, 2020               [Page 13]
+Kumari, et al.          Expires November 6, 2020               [Page 13]
 
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+Internet-Draft       draft-ietf-dnsop-extended-error            May 2020
 
 
    [RFC2931]  Eastlake 3rd, D., "DNS Request and Transaction Signatures
@@ -783,9 +783,9 @@ Authors' Addresses
 
 
 
-Kumari, et al.          Expires October 26, 2020               [Page 14]
+Kumari, et al.          Expires November 6, 2020               [Page 14]
 
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+Internet-Draft       draft-ietf-dnsop-extended-error            May 2020
 
 
    David C Lawrence
@@ -839,5 +839,5 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 
-Kumari, et al.          Expires October 26, 2020               [Page 15]
+Kumari, et al.          Expires November 6, 2020               [Page 15]
 ```

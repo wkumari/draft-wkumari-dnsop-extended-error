@@ -7,18 +7,18 @@
 Network Working Group                                          W. Kumari
 Internet-Draft                                                    Google
 Intended status: Standards Track                                 E. Hunt
-Expires: July 18, 2020                                               ISC
+Expires: October 26, 2020                                            ISC
                                                                R. Arends
                                                                    ICANN
                                                              W. Hardaker
                                                                  USC/ISI
                                                              D. Lawrence
                                                             Oracle + Dyn
-                                                        January 15, 2020
+                                                          April 24, 2020
 
 
                           Extended DNS Errors
-                   draft-ietf-dnsop-extended-error-14
+                   draft-ietf-dnsop-extended-error-15
 
 Abstract
 
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on July 18, 2020.
+   This Internet-Draft will expire on October 26, 2020.
 
 Copyright Notice
 
@@ -55,9 +55,9 @@ Copyright Notice
 
 
 
-Kumari, et al.            Expires July 18, 2020                 [Page 1]
+Kumari, et al.          Expires October 26, 2020                [Page 1]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -111,9 +111,9 @@ Table of Contents
 
 
 
-Kumari, et al.            Expires July 18, 2020                 [Page 2]
+Kumari, et al.          Expires October 26, 2020                [Page 2]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  12
@@ -144,12 +144,12 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
    to signal many sorts of DNS errors, and so the stub resolvers only
    option is to ask the next configured DNS resolver.  The result of
    trying the next resolver is one of two outcomes: either the next
-   resolver also validates, and a SERVFAIL is returned again or the next
-   resolver is not a validating resolver, and the user is returned a
-   potentially harmful result.  With an Extended DNS Error (EDE) option
-   enclosed in the response message, the resolver is able to return a
-   more descriptive reason as to why any failures happened, or add
-   additional context to a message containing a NOERROR RCODE.
+   resolver also validates, and a SERVFAIL is returned again; or the
+   next resolver is not a validating resolver, and the user is returned
+   a potentially harmful result.  With an Extended DNS Error (EDE)
+   option enclosed in the response message, the resolver is able to
+   return a more descriptive reason as to why any failures happened, or
+   add additional context to a message containing a NOERROR RCODE.
 
    This document specifies a mechanism to extend DNS errors to provide
    additional information about the cause of an error.  These extended
@@ -167,9 +167,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
 
 
-Kumari, et al.            Expires July 18, 2020                 [Page 3]
+Kumari, et al.          Expires October 26, 2020                [Page 3]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
    extended error codes MUST NOT assume that a combination will make
@@ -223,9 +223,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
 
 
-Kumari, et al.            Expires July 18, 2020                 [Page 4]
+Kumari, et al.          Expires October 26, 2020                [Page 4]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
       message.  The INFO-CODE serves as an index into the "Extended DNS
@@ -279,9 +279,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
 
 
-Kumari, et al.            Expires July 18, 2020                 [Page 5]
+Kumari, et al.          Expires October 26, 2020                [Page 5]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 4.1.  Extended DNS Error Code 0 - Other
@@ -335,9 +335,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
 
 
-Kumari, et al.            Expires July 18, 2020                 [Page 6]
+Kumari, et al.          Expires October 26, 2020                [Page 6]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 4.9.  Extended DNS Error Code 8 - Signature Not Yet Valid
@@ -379,21 +379,21 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
    The server is unable to respond to the request because the domain is
    blacklisted due to an internal security policy imposed by the
-   operator of that server.
+   operator of the server resolving or forwarding the query.
 
 4.17.  Extended DNS Error Code 16 - Censored
 
    The server is unable to respond to the request because the domain is
    blacklisted due to an external requirement imposed by an entity other
-   than the server operator.  Note that how the imposed policy is
-   applied is irrelevant (in-band DNS filtering, court order, etc).
+   than the operator of the server resolving or forwarding the query.
+   Note that how the imposed policy is applied is irrelevant (in-band
+   DNS filtering, court order, etc).
 
 
 
-
-Kumari, et al.            Expires July 18, 2020                 [Page 7]
+Kumari, et al.          Expires October 26, 2020                [Page 7]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 4.18.  Extended DNS Error Code 17 - Filtered
@@ -447,9 +447,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
 
 
-Kumari, et al.            Expires July 18, 2020                 [Page 8]
+Kumari, et al.          Expires October 26, 2020                [Page 8]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 4.25.  Extended DNS Error Code 24 - Invalid Data
@@ -503,9 +503,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
 
 
-Kumari, et al.            Expires July 18, 2020                 [Page 9]
+Kumari, et al.          Expires October 26, 2020                [Page 9]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
    Purpose:  Unsupported DS Digest Type
@@ -513,7 +513,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
    INFO-CODE:  3
    Purpose:  Stale Answer
-   Reference:  Section 4.4, [I-D.ietf-dnsop-serve-stale]
+   Reference:  Section 4.4, [RFC8767]
 
    INFO-CODE:  4
    Purpose:  Forged Answer
@@ -559,9 +559,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
 
 
-Kumari, et al.            Expires July 18, 2020                [Page 10]
+Kumari, et al.          Expires October 26, 2020               [Page 10]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
    Purpose:  Not Ready.
@@ -615,9 +615,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
 
 
-Kumari, et al.            Expires July 18, 2020                [Page 11]
+Kumari, et al.          Expires October 26, 2020               [Page 11]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 6.  Security Considerations
@@ -646,8 +646,8 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
    By design, EDE potentially exposes additional information DNS
    resolution processes that may leak information.  An example of this
-   is the Prohibited EDE code (18), which may leak the contents of a
-   network's blacklist.
+   is the Prohibited EDE code (18), which may leak the fact that the
+   name is on a blacklist.
 
 7.  Acknowledgements
 
@@ -671,19 +671,14 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
 
 
-Kumari, et al.            Expires July 18, 2020                [Page 12]
+Kumari, et al.          Expires October 26, 2020               [Page 12]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
 8.  References
 
 8.1.  Normative References
-
-   [I-D.ietf-dnsop-serve-stale]
-              Lawrence, D., Kumari, W., and P. Sood, "Serving Stale Data
-              to Improve DNS Resiliency", draft-ietf-dnsop-serve-
-              stale-10 (work in progress), December 2019.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -708,6 +703,11 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
               Terminology", BCP 219, RFC 8499, DOI 10.17487/RFC8499,
               January 2019, <https://www.rfc-editor.org/info/rfc8499>.
 
+   [RFC8767]  Lawrence, D., Kumari, W., and P. Sood, "Serving Stale Data
+              to Improve DNS Resiliency", RFC 8767,
+              DOI 10.17487/RFC8767, March 2020,
+              <https://www.rfc-editor.org/info/rfc8767>.
+
 8.2.  Informative References
 
    [GeoffValidation]
@@ -727,9 +727,9 @@ Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
 
 
 
-Kumari, et al.            Expires July 18, 2020                [Page 13]
+Kumari, et al.          Expires October 26, 2020               [Page 13]
 
-Internet-Draft       draft-ietf-dnsop-extended-error        January 2020
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
    [RFC8094]  Reddy, T., Wing, D., and P. Patil, "DNS over Datagram
@@ -783,5 +783,5 @@ Authors' Addresses
 
 
 
-Kumari, et al.            Expires July 18, 2020                [Page 14]
+Kumari, et al.          Expires October 26, 2020               [Page 14]
 ```

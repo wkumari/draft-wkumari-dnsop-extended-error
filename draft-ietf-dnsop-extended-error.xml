@@ -165,21 +165,6 @@
       resolvers, recursive resolvers, and authoritative resolvers)
       might receive and use them.</t>
 
-      <t>This document does not allow or prohibit any particular
-      extended error codes and information to be matched with any
-      particular RCODEs. Some combinations of extended error codes and
-      RCODEs may seem nonsensical (such as resolver-specific extended
-      error codes in responses from authoritative servers), so systems
-      interpreting the extended error codes MUST NOT assume that a
-      combination will make sense.  Receivers MUST be able to accept
-      EDE codes and EXTRA-TEXT in all messages, including those with a
-      NOERROR RCODE, but need not act on them.  Applications MUST
-      continue to follow requirements from applicable specifications on how to
-      process RCODEs no matter what EDE values are also received.
-      Senders MAY include more than one EDE option and receivers MUST
-      be able to accept (but not necessarily process or act on)
-      multiple EDE options in a DNS message.</t>
-
       <section title="Requirements notation">
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
       NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
@@ -274,6 +259,21 @@
       attributed in the EXTRA-TEXT field, since an EDNS0 option
       received by the original client will appear to have come from
       the resolver or forwarder sending it.</t>
+
+      <t>This document does not allow or prohibit any particular
+      extended error codes and information to be matched with any
+      particular RCODEs. Some combinations of extended error codes and
+      RCODEs may seem nonsensical (such as resolver-specific extended
+      error codes in responses from authoritative servers), so systems
+      interpreting the extended error codes MUST NOT assume that a
+      combination will make sense.  Receivers MUST be able to accept
+      EDE codes and EXTRA-TEXT in all messages, including those with a
+      NOERROR RCODE, but need not act on them.  Applications MUST
+      continue to follow requirements from applicable specifications on how to
+      process RCODEs no matter what EDE values are also received.
+      Senders MAY include more than one EDE option and receivers MUST
+      be able to accept (but not necessarily process or act on)
+      multiple EDE options in a DNS message.</t>
     </section>
 
     <section title="Defined Extended DNS Errors">

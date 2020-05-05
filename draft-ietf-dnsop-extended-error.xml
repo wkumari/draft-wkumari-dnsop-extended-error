@@ -681,7 +681,7 @@
       <t>EDE information is unauthenticated information, unless
       secured by a form of secured DNS transaction such as <xref
       target="RFC2845"/>, <xref target="RFC2931"/>, <xref
-      target="RFC8094"/> or <xref target="RFC8484">. An attacker (e.g a MITM or malicious
+      target="RFC8094"/> or <xref target="RFC8484" />. An attacker (e.g a MITM or malicious
       recursive server) could insert an extended error response into
       untrusted data &mdash; although ideally clients and resolvers
       would not trust any unauthenticated information.  As such, EDE
@@ -724,20 +724,20 @@
 
   <back>
     <references title="Normative References">
-      <?rfc include='reference.RFC.2119'?>
-      <?rfc include='reference.RFC.4035'?>
-      <?rfc include='reference.RFC.5198?>
-      <?rfc include='reference.RFC.6891'?>
-      <?rfc include='reference.RFC.8174'?>
+      <?rfc include='reference.RFC.2119' ?>
+      <?rfc include='reference.RFC.4035' ?>
+      <?rfc include='reference.RFC.5198' ?>
+      <?rfc include='reference.RFC.6891' ?>
+      <?rfc include='reference.RFC.8174' ?>
       <?rfc include='reference.RFC.8499' ?>
       <?rfc include='reference.RFC.8767' ?>
     </references>
 
     <references title="Informative References">
       <?rfc include='reference.RFC.2845' ?>
-      <?rfc include='reference.RFC.2931'?>
+      <?rfc include='reference.RFC.2931' ?>
       <?rfc include='reference.RFC.8094' ?>
-      <?rfc include='reference.RFC.8484 ?>
+      <?rfc include='reference.RFC.8484' ?>
 
       <reference anchor="GeoffValidation"
                  target="http://www.potaroo.net/presentations/2016-06-27-dnssec.pdf">

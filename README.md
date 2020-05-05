@@ -73,7 +73,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 Table of Contents
 
    1.  Introduction and background . . . . . . . . . . . . . . . . .   3
-     1.1.  Requirements notation . . . . . . . . . . . . . . . . . .   4
+     1.1.  Requirements notation . . . . . . . . . . . . . . . . . .   3
    2.  Extended DNS Error EDNS0 option format  . . . . . . . . . . .   4
    3.  Extended DNS Error Processing . . . . . . . . . . . . . . . .   5
    4.  Defined Extended DNS Errors . . . . . . . . . . . . . . . . .   5
@@ -141,10 +141,10 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
    stub resolver queries a name which is DNSSEC bogus [RFC8499] (using a
    validating resolver), the stub resolver receives only a SERVFAIL in
    response.  Unfortunately, the SERVFAIL Response Code (RCODE) is used
-   to signal many sorts of DNS errors, and so the stub resolvers only
+   to signal many sorts of DNS errors, and so the stub resolver's only
    option is to ask the next configured DNS resolver.  The result of
    trying the next resolver is one of two outcomes: either the next
-   resolver also validates, and a SERVFAIL is returned again; or the
+   resolver also validates, and a SERVFAIL is returned again, or the
    next resolver is not a validating resolver, and the user is returned
    a potentially harmful result.  With an Extended DNS Error (EDE)
    option enclosed in the response message, the resolver is able to
@@ -153,17 +153,17 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
    This document specifies a mechanism to extend DNS errors to provide
    additional information about the cause of an error.  These extended
-   DNS error codes are described in this document and can be used by any
+   DNS error codes are described in this document can be used by any
    system that sends DNS queries and receives a response containing an
    EDE option.  Different codes are useful in different circumstances,
    and thus different systems (stub resolvers, recursive resolvers, and
    authoritative resolvers) might receive and use them.
 
-   This document does not allow or prohibit any particular extended
-   error codes and information to be matched with any particular RCODEs.
-   Some combinations of extended error codes and RCODEs may seem
-   nonsensical (such as resolver-specific extended error codes in
-   responses from authoritative servers), so systems interpreting the
+1.1.  Requirements notation
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in BCP
 
 
 
@@ -172,20 +172,6 @@ Kumari, et al.          Expires October 26, 2020                [Page 3]
 Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
-   extended error codes MUST NOT assume that a combination will make
-   sense.  Receivers MUST be able to accept EDE codes and EXTRA-TEXT in
-   all messages, including those with a NOERROR RCODE, but need not act
-   on them.  Applications MUST continue to follow requirements from
-   applicable specifications on how to process RCODEs no matter what EDE
-   values are also received.  Senders MAY include more than one EDE
-   option and receivers MUST be able to accept (but not necessarily
-   process or act on) multiple EDE options in a DNS message.
-
-1.1.  Requirements notation
-
-   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-   "OPTIONAL" in this document are to be interpreted as described in BCP
    14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
@@ -219,20 +205,13 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
    o  INFO-CODE, 16-bits, which is the principal contribution of this
       document.  This 16-bit value, encoded in network (MSB) byte order,
       provides the additional context for the RESPONSE-CODE of the DNS
-
-
-
-
-Kumari, et al.          Expires October 26, 2020                [Page 4]
-
-Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
-
-
       message.  The INFO-CODE serves as an index into the "Extended DNS
       Errors" registry defined and created in Section 5.2.
-   o  EXTRA-TEXT, a variable length, UTF-8 encoded, text field that may
-      hold additional textual information.  This information is intended
-      for human consumption (not automated parsing).  The EXTRA-TEXT
+   o  EXTRA-TEXT, a variable length, UTF-8 encoded [RFC5198], text field
+      that may hold additional textual information.  This information is
+      intended for human consumption (not automated parsing).  EDE text
+      may be null terminated but MUST NOT be assumed to be; the length
+      MUST be derived from the OPTION-LENGTH field.  The EXTRA-TEXT
       field may be zero octets in length, indicating that there is no
       EXTRA-TEXT included.  Care should be taken not to include private
       information in the EXTRA-TEXT field that an observer would not
@@ -241,6 +220,14 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
    The Extended DNS Error (EDE) option can be included in any response
    (SERVFAIL, NXDOMAIN, REFUSED, and even NOERROR, etc) to a query that
    includes OPT Pseudo-RR [RFC6891].  This document includes a set of
+
+
+
+Kumari, et al.          Expires October 26, 2020                [Page 4]
+
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+
+
    initial codepoints, but is extensible via the IANA registry defined
    and created in Section 5.2.
 
@@ -250,8 +237,8 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
    [RFC6891], servers SHOULD truncate messages by dropping EDE options
    before dropping other data from packets.  Implementations SHOULD set
    the truncation bit when dropping EDE options.  Because long EXTRA-
-   TEXT fields may trigger truncation, which is undesirable given the
-   supplemental nature of EDE.  Implementers and operators creating EDE
+   TEXT fields may trigger truncation (which is undesirable given the
+   supplemental nature of EDE) implementers and operators creating EDE
    options SHOULD avoid lengthy EXTRA-TEXT contents.
 
    When a resolver or forwarder receives an EDE option, whether or not
@@ -263,6 +250,20 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
    field, since an EDNS0 option received by the original client will
    appear to have come from the resolver or forwarder sending it.
 
+   This document does not allow or prohibit any particular extended
+   error codes and information to be matched with any particular RCODEs.
+   Some combinations of extended error codes and RCODEs may seem
+   nonsensical (such as resolver-specific extended error codes in
+   responses from authoritative servers), so systems interpreting the
+   extended error codes MUST NOT assume that a combination will make
+   sense.  Receivers MUST be able to accept EDE codes and EXTRA-TEXT in
+   all messages, including those with a NOERROR RCODE, but need not act
+   on them.  Applications MUST continue to follow requirements from
+   applicable specifications on how to process RCODEs no matter what EDE
+   values are also received.  Senders MAY include more than one EDE
+   option and receivers MUST be able to accept (but not necessarily
+   process or act on) multiple EDE options in a DNS message.
+
 4.  Defined Extended DNS Errors
 
    This document defines some initial EDE codes.  The mechanism is
@@ -271,7 +272,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
    INFO-CODE from the EDE EDNS option is used to serve as an index into
    the "Extended DNS Error" IANA registry, the initial values for which
    are defined in the following sub-sections.
-
 
 
 
@@ -483,7 +483,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
    Registration Procedures:
 
    o  0 - 49151: First come, first served.
-   o  49152 - 65280: Private use.
+   o  49152 - 65535: Private use.
 
    Reference: [this document]
 
@@ -608,7 +608,7 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
    Reference:  Section 4.25
 
    INFO-CODE:  25-65535
-   Purpose:  Unasigned
+   Purpose:  Unassigned
    Reference:  Section 5.2
 
 
@@ -630,19 +630,19 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
    provide.
 
    EDE information is unauthenticated information, unless secured by a
-   form of secured DNS transaction such as [RFC2845], [RFC2931] or
-   [RFC8094].  An attacker (e.g a MITM or malicious recursive server)
-   could insert an extended error response into untrusted data --
-   although ideally clients and resolvers would not trust any
-   unauthenticated information.  As such, EDE content should be treated
-   only as diagnostic information and MUST NOT alter DNS protocol
-   processing.  Until all DNS answers are authenticated via DNSSEC or
-   the other mechanisms mentioned above, there are some tradeoffs.  As
-   an example, an attacker who is able to insert the DNSSEC Bogus
-   Extended Error into a DNS message could instead simply reply with a
-   fictitious address (A or AAAA) record.  Note that DNS Response Codes
-   (RCODEs) also contain no authentication and can be just as easily
-   manipulated.
+   form of secured DNS transaction such as [RFC2845], [RFC2931],
+   [RFC8094] or [RFC8484].  An attacker (e.g a MITM or malicious
+   recursive server) could insert an extended error response into
+   untrusted data -- although ideally clients and resolvers would not
+   trust any unauthenticated information.  As such, EDE content should
+   be treated only as diagnostic information and MUST NOT alter DNS
+   protocol processing.  Until all DNS answers are authenticated via
+   DNSSEC or the other mechanisms mentioned above, there are some
+   tradeoffs.  As an example, an attacker who is able to insert the
+   DNSSEC Bogus Extended Error into a DNS message could instead simply
+   reply with a fictitious address (A or AAAA) record.  Note that DNS
+   Response Codes (RCODEs) also contain no authentication and can be
+   just as easily manipulated.
 
    By design, EDE potentially exposes additional information DNS
    resolution processes that may leak information.  An example of this
@@ -690,6 +690,10 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
               Extensions", RFC 4035, DOI 10.17487/RFC4035, March 2005,
               <https://www.rfc-editor.org/info/rfc4035>.
 
+   [RFC5198]  Klensin, J. and M. Padlipsky, "Unicode Format for Network
+              Interchange", RFC 5198, DOI 10.17487/RFC5198, March 2008,
+              <https://www.rfc-editor.org/info/rfc5198>.
+
    [RFC6891]  Damas, J., Graff, M., and P. Vixie, "Extension Mechanisms
               for DNS (EDNS(0))", STD 75, RFC 6891,
               DOI 10.17487/RFC6891, April 2013,
@@ -720,10 +724,6 @@ Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
               (TSIG)", RFC 2845, DOI 10.17487/RFC2845, May 2000,
               <https://www.rfc-editor.org/info/rfc2845>.
 
-   [RFC2931]  Eastlake 3rd, D., "DNS Request and Transaction Signatures
-              ( SIG(0)s )", RFC 2931, DOI 10.17487/RFC2931, September
-              2000, <https://www.rfc-editor.org/info/rfc2931>.
-
 
 
 
@@ -732,10 +732,18 @@ Kumari, et al.          Expires October 26, 2020               [Page 13]
 Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
 
 
+   [RFC2931]  Eastlake 3rd, D., "DNS Request and Transaction Signatures
+              ( SIG(0)s )", RFC 2931, DOI 10.17487/RFC2931, September
+              2000, <https://www.rfc-editor.org/info/rfc2931>.
+
    [RFC8094]  Reddy, T., Wing, D., and P. Patil, "DNS over Datagram
               Transport Layer Security (DTLS)", RFC 8094,
               DOI 10.17487/RFC8094, February 2017,
               <https://www.rfc-editor.org/info/rfc8094>.
+
+   [RFC8484]  Hoffman, P. and P. McManus, "DNS Queries over HTTPS
+              (DoH)", RFC 8484, DOI 10.17487/RFC8484, October 2018,
+              <https://www.rfc-editor.org/info/rfc8484>.
 
 Authors' Addresses
 
@@ -772,6 +780,14 @@ Authors' Addresses
    Email: ietf@hardakers.net
 
 
+
+
+
+Kumari, et al.          Expires October 26, 2020               [Page 14]
+
+Internet-Draft       draft-ietf-dnsop-extended-error          April 2020
+
+
    David C Lawrence
    Oracle + Dyn
    150 Dow St
@@ -783,5 +799,45 @@ Authors' Addresses
 
 
 
-Kumari, et al.          Expires October 26, 2020               [Page 14]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kumari, et al.          Expires October 26, 2020               [Page 15]
 ```

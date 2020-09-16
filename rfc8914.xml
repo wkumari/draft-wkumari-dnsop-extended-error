@@ -75,7 +75,11 @@
 <!-- [rfced] Please insert any keywords (beyond those that appear in
 the title) for use on https://www.rfc-editor.org/search. -->
 
-<keyword>example</keyword>
+<keyword>DNS</keyword>
+<keyword>Error</keyword>
+<keyword>Domain</keyword>
+<keyword>Name</keyword>
+<keyword>System</keyword>
 
     <abstract>
       <t>This document defines an extensible method to return
@@ -165,7 +169,7 @@ the title) for use on https://www.rfc-editor.org/search. -->
       <dl newline="true">
         <dt>OPTION-CODE: </dt>
 	<dd>2 octets / 16 bits (defined in <xref target="RFC6891"
-	format="default"/>), for EDE is 15.</dd> 
+	format="default"/>) contains the value 15 for EDE.</dd> 
 	
           <dt>OPTION-LENGTH: </dt>
 	  <dd>2 octets / 16 bits (defined in <xref target="RFC6891" format="default"/>) contains
@@ -197,7 +201,7 @@ the title) for use on https://www.rfc-editor.org/search. -->
 	
       <t>The Extended DNS Error (EDE) option can be included in any
       response (SERVFAIL, NXDOMAIN, REFUSED, even NOERROR, etc.) to
-      a query that includes OPT pseudo-RR <xref target="RFC6891" format="default"/>.
+      a query that includes an OPT pseudo-RR <xref target="RFC6891" format="default"/>.
       This document includes a set of initial codepoints but is
       extensible via the IANA registry defined and created in <xref target="IANA" format="default"/>.</t>
     </section>
@@ -224,7 +228,7 @@ the title) for use on https://www.rfc-editor.org/search. -->
       extended error codes and information to be matched with any
       particular RCODEs. Some combinations of extended error codes and
       RCODEs may seem nonsensical (such as resolver-specific extended
-      error codes in responses from authoritative servers), so systems
+      error codes received in responses from authoritative servers), so systems
       interpreting the extended error codes <bcp14>MUST NOT</bcp14> assume that a
       combination will make sense.  Receivers <bcp14>MUST</bcp14> be able to accept
       EDE codes and EXTRA-TEXT in all messages, including those with a
@@ -335,14 +339,14 @@ the title) for use on https://www.rfc-editor.org/search. -->
       <section anchor="errblocked" numbered="true" toc="default">
         <name>Extended DNS Error Code 15 - Blocked</name>
         <t>The server is unable to respond to the request because
-          the domain is blacklisted due to an internal security policy
+          the domain is on a blocklist due to an internal security policy
           imposed by the operator of the server resolving or forwarding
           the query.</t>
       </section>
       <section anchor="errcensored" numbered="true" toc="default">
         <name>Extended DNS Error Code 16 - Censored</name>
         <t>The server is unable to respond to the request because
-          the domain is blacklisted due to an external requirement
+          the domain is on a blocklist due to an external requirement
           imposed by an entity other than the operator of the server
           resolving or forwarding the query. Note that how the imposed
           policy is applied is irrelevant (in-band DNS filtering,
@@ -351,7 +355,7 @@ the title) for use on https://www.rfc-editor.org/search. -->
       <section anchor="errfiltered" numbered="true" toc="default">
         <name>Extended DNS Error Code 17 - Filtered</name>
         <t>The server is unable to respond to the request because
-          the domain is blacklisted as requested by the client.
+          the domain is on a blocklist as requested by the client.
           Functionally, this amounts to "you requested that we filter
           domains like this one."</t>
       </section>
@@ -360,7 +364,7 @@ the title) for use on https://www.rfc-editor.org/search. -->
         <t>An authoritative server or recursive resolver that receives a query from
           an "unauthorized" client can annotate its REFUSED message with this
           code. Examples of "unauthorized" clients are recursive queries from
-          IP addresses outside the network, blacklisted IP addresses, local
+          IP addresses outside the network, blocklisted IP addresses, local
           policy, etc.</t>
       </section>
       <section anchor="stalenx" numbered="true" toc="default">
@@ -641,7 +645,7 @@ the title) for use on https://www.rfc-editor.org/search. -->
       contain no authentication and can be just as easily manipulated.
       </t>
       <t>By design, EDE potentially exposes additional information
-      DNS resolution processes that may leak information. 
+      via DNS resolution processes that may leak information. 
 <!--[rfced] We are having some trouble parsing this sentence, particularly
 because of the first instance of "information". Please let us know how we may
 clairfy. 
@@ -657,10 +661,14 @@ Perhaps:
 Or:
    By design, EDE potentially exposes additional information from DNS
    resolution processes that may leak information. 
+
+ANSWER: Good catch, but really none of those.  I think adding "via" as I did
+above fixes the sentence.  Look ok?  -Wes
+
 -->
       An example
       of this is the Prohibited EDE code (18), which may leak the fact
-      that the name is on a blacklist.</t>
+      that the name is on a blocklist.</t>
     </section>
   </middle>
   <back>
@@ -714,22 +722,7 @@ Or:
       Sury"/>, <contact fullname="John Todd"/>, <contact fullname="Loganaden
       Velvindron"/>, and <contact fullname="Paul Vixie"/>.  They also vaguely
       remember discussing this with a number of people over the years but have
-      forgotten who all of them were; if you were one of them and are not
-      listed, please let us know and we'll acknowledge you.</t>
-
-<!--[rfced] How would you like this text to be updated since it will be
-published as an RFC?
-
-Current:
-   They also vaguely remember discussing this with a number
-   of people over the years but have forgotten who all of them were; if
-   you were one of them and are not listed, please let us know and we'll
-   acknowledge you.
-
-Perhaps:
-   They also vaguely remember discussing this with a number
-   of people over the years but have forgotten who all of them were.
--->
+      forgotten who all of them were.</t>
 
       <t>One author also wants to thank the band Infected Mushroom
       for providing a good background soundtrack (and to see if he can
